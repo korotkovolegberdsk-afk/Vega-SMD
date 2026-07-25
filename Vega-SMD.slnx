@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="Vega.Core/Vega.Core.csproj" Id="f4474eda-0654-44ad-a3a8-bcc3d2267b69" />
+  <Project Path="Vega.Data/Vega.Data.csproj" Id="6d56c6ea-1719-475f-b555-96d9813db207" />
+  <Project Path="Vega.Infrastructure/Vega.Infrastructure.csproj" Id="d4e6b3f9-f225-4e73-81c4-ad9ae7905a61" />
+  <Project Path="Vega.Models/Vega.Models.csproj" Id="1c0adcd8-9427-4750-9e49-d4e748f7719b" />
+  <Project Path="Vega.Services/Vega.Services.csproj" Id="b8f781e8-f992-48b9-a50b-b874d6fc5fde" />
+  <Project Path="Vega.Tests/Vega.Tests.csproj" Id="147b617e-fa9e-45fe-9449-2781447353e1" />
+  <Project Path="Vega.UI/Vega.UI.csproj" Id="15c4b6c7-c17f-4af5-b391-00a4a1f25999" />
+</Solution>

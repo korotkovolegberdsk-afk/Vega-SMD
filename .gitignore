@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# User
+*.user
+*.suo
+
+# Database cache
+*.VC.db
+*.opendb
+*.dbcache
+*.dbcache.v2
+
+# Rider
+.idea/
+
+# NuGet
+packages/
+
+# Temp
+Tmp/
