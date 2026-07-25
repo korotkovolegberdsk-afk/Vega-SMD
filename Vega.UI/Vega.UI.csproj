@@ -9,14 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\" />
     <Folder Include="Resources\" />
     <Folder Include="Styles\" />
     <Folder Include="Converters\" />
     <Folder Include="Controls\" />
-    <Folder Include="Dialogs\" />
     <Folder Include="Themes\" />
     <Folder Include="Images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vega.Core\Vega.Core.csproj" />
   </ItemGroup>
 
 </Project>
