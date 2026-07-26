@@ -1,0 +1,136 @@
+<Window x:Class="Vega.UI.Views.PackageEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Package Editor"
+        Width="650"
+        Height="750"
+        WindowStartupLocation="CenterScreen">
+
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <ScrollViewer Grid.Row="0">
+
+            <StackPanel>
+
+
+                <TextBlock Text="Package Editor"
+                           FontSize="26"
+                           FontWeight="Bold"
+                           Margin="0,0,0,20"/>
+
+
+                <TextBlock Text="Package Name"
+                           FontWeight="Bold"/>
+
+                <TextBox Text="{Binding PackageName}"
+                         Height="30"/>
+
+
+
+                <TextBlock Text="Description"
+                           FontWeight="Bold"
+                           Margin="0,15,0,0"/>
+
+                <TextBox Text="{Binding DisplayName}"
+                         Height="30"/>
+
+
+
+                <Separator Margin="0,20,0,10"/>
+
+
+                <TextBlock Text="Package Dimensions (mm)"
+                           FontSize="18"
+                           FontWeight="Bold"/>
+
+
+                <TextBlock Text="Length"/>
+
+                <TextBox Text="{Binding Length}"
+                         Height="30"/>
+
+
+                <TextBlock Text="Width"
+                           Margin="0,10,0,0"/>
+
+                <TextBox Text="{Binding Width}"
+                         Height="30"/>
+
+
+                <TextBlock Text="Height"
+                           Margin="0,10,0,0"/>
+
+                <TextBox Text="{Binding Height}"
+                         Height="30"/>
+
+
+
+                <Separator Margin="0,20,0,10"/>
+
+
+
+                <TextBlock Text="Standards"
+                           FontSize="18"
+                           FontWeight="Bold"/>
+
+
+                <TextBlock Text="IPC"/>
+
+                <TextBox Text="{Binding IPCName}"
+                         Height="30"/>
+
+
+
+                <Separator Margin="0,20,0,10"/>
+
+
+
+                <TextBlock Text="AOI Recommendations"
+                           FontSize="18"
+                           FontWeight="Bold"/>
+
+
+                <TextBox Text="{Binding AOIRecommendations}"
+                         Height="80"
+                         TextWrapping="Wrap"/>
+
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0">
+
+
+            <Button Content="Save"
+                    Width="120"
+                    Height="40"
+                    Margin="0,0,10,0"
+                    Click="Save_Click"/>
+
+
+            <Button Content="Cancel"
+                    Width="120"
+                    Height="40"
+                    Click="Cancel_Click"/>
+
+
+        </StackPanel>
+
+
+    </Grid>
+
+
+</Window>

@@ -1,6 +1,5 @@
-Ôªøusing System.Windows;
+using System.Windows;
 using Vega.Infrastructure.Tools.ProjectArchive;
-using Vega.UI.ViewModels;
 
 namespace Vega.UI.Views;
 
@@ -9,15 +8,15 @@ public partial class ShellWindow : Window
     public ShellWindow()
     {
         InitializeComponent();
-
-        DataContext = new PackageLibraryViewModel();
     }
+
 
 
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
         Close();
     }
+
 
 
     private void CreateArchive_Click(object sender, RoutedEventArgs e)
@@ -31,7 +30,23 @@ public partial class ShellWindow : Window
 
 
         MessageBox.Show(
-            $"–ê—Ä—Ö–∏–≤ —Å–æ–∑–¥–∞–Ω:\n{archive}",
+            $"¿ıË‚ ÒÓÁ‰‡Ì:\n{archive}",
             "Vega-SMD");
+    }
+
+
+
+    private void AddPackage_Click(object sender, RoutedEventArgs e)
+    {
+        var editor = new PackageEditorWindow();
+
+
+        var result = editor.ShowDialog();
+
+
+        if (result == true)
+        {
+            PackageLibrary.Reload();
+        }
     }
 }

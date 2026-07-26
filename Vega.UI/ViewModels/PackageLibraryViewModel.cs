@@ -20,6 +20,12 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
 
 
 
+    public ObservableCollection<string> Categories { get; }
+        = new();
+
+
+
+
     private PackageSearchResult? _selectedPackage;
 
     public PackageSearchResult? SelectedPackage
@@ -29,9 +35,11 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
         set
         {
             _selectedPackage = value;
+
             OnPropertyChanged();
         }
     }
+
 
 
 
@@ -53,14 +61,70 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
 
 
 
+
+
+    private string _selectedCategory = "";
+
+    public string SelectedCategory
+    {
+        get => _selectedCategory;
+
+        set
+        {
+            _selectedCategory = value;
+
+            OnPropertyChanged();
+
+            FilterPackages();
+        }
+    }
+
+
+
+
+
     public PackageLibraryViewModel()
     {
         _packageService = new PackageService();
 
+        Reload();
+    }
+
+
+
+
+
+    public void Reload()
+    {
         _allPackages = _packageService.GetPackages();
+
+
+        LoadCategories();
+
 
         FilterPackages();
     }
+
+
+
+
+
+    private void LoadCategories()
+    {
+        Categories.Clear();
+
+
+        foreach (var category in _allPackages
+                     .Select(x => x.Category)
+                     .Where(x => !string.IsNullOrEmpty(x))
+                     .Distinct()
+                     .OrderBy(x => x))
+        {
+            Categories.Add(category);
+        }
+    }
+
+
 
 
 
@@ -69,51 +133,90 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
         Packages.Clear();
 
 
+        var text = SearchText.Trim();
+
+
+
         foreach (var package in _allPackages)
         {
-            var text = SearchText.Trim();
 
-
-            if (string.IsNullOrEmpty(text))
+            if (!string.IsNullOrEmpty(SelectedCategory))
             {
-                Packages.Add(package);
-                continue;
+                bool categoryMatch =
+                    package.Category.Contains(
+                        SelectedCategory,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    package.Family.Contains(
+                        SelectedCategory,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    package.PackageName.Contains(
+                        SelectedCategory,
+                        StringComparison.OrdinalIgnoreCase);
+
+
+
+                if (!categoryMatch)
+                {
+                    continue;
+                }
             }
 
 
 
-            if (package.PackageName.Contains(
-                    text,
-                    StringComparison.OrdinalIgnoreCase)
-                ||
-                package.Category.Contains(
-                    text,
-                    StringComparison.OrdinalIgnoreCase)
-                ||
-                package.Family.Contains(
-                    text,
-                    StringComparison.OrdinalIgnoreCase)
-                ||
-                package.IPCName.Contains(
-                    text,
-                    StringComparison.OrdinalIgnoreCase)
-                ||
-                package.YamahaName.Contains(
-                    text,
-                    StringComparison.OrdinalIgnoreCase)
-                ||
-                package.MirtecName.Contains(
-                    text,
-                    StringComparison.OrdinalIgnoreCase))
+
+            if (!string.IsNullOrEmpty(text))
             {
-                Packages.Add(package);
+                bool searchMatch =
+                    package.PackageName.Contains(
+                        text,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    package.DisplayName.Contains(
+                        text,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    package.Category.Contains(
+                        text,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    package.Family.Contains(
+                        text,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    package.IPCName.Contains(
+                        text,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    package.YamahaName.Contains(
+                        text,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    package.MirtecName.Contains(
+                        text,
+                        StringComparison.OrdinalIgnoreCase);
+
+
+
+                if (!searchMatch)
+                {
+                    continue;
+                }
             }
+
+
+
+            Packages.Add(package);
         }
     }
 
 
 
+
+
     public event PropertyChangedEventHandler? PropertyChanged;
+
 
 
     private void OnPropertyChanged(
