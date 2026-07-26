@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Components\" />
-    <Folder Include="Packages\" />
     <Folder Include="Stencils\" />
     <Folder Include="AOI\" />
     <Folder Include="SPI\" />

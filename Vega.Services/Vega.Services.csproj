@@ -14,4 +14,8 @@
     <Folder Include="Update\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Vega.Data\Vega.Data.csproj" />
+  </ItemGroup>
+
 </Project>

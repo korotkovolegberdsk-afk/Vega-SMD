@@ -8,11 +8,16 @@
 
   <ItemGroup>
     <Folder Include="Context\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="SQLite\" />
     <Folder Include="Import\" />
     <Folder Include="Export\" />
-    <Folder Include="Migration\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vega.Models\Vega.Models.csproj" />
   </ItemGroup>
 
 </Project>

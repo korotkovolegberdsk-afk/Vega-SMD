@@ -1,13 +1,20 @@
-﻿namespace Vega.Core.ProjectManagement;
+﻿using Vega.Models.Projects;
+
+namespace Vega.Core.ProjectManagement;
 
 public class ProjectManager
 {
+    public ProjectInfo? CurrentProject { get; private set; }
+
+    public bool IsProjectOpen => CurrentProject != null;
+
     public ProjectManager()
     {
     }
 
-    public void NewProject()
+    public void NewProject(ProjectInfo project)
     {
+        CurrentProject = project;
     }
 
     public void OpenProject()
@@ -24,5 +31,6 @@ public class ProjectManager
 
     public void CloseProject()
     {
+        CurrentProject = null;
     }
 }

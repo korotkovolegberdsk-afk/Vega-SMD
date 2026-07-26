@@ -14,4 +14,8 @@
     <Folder Include="Helpers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Vega.Models\Vega.Models.csproj" />
+  </ItemGroup>
+
 </Project>

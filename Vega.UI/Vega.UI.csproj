@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vega.Core\Vega.Core.csproj" />
+    <ProjectReference Include="..\Vega.Infrastructure\Vega.Infrastructure.csproj" />
+    <ProjectReference Include="..\Vega.Services\Vega.Services.csproj" />
   </ItemGroup>
 
 </Project>
