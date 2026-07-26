@@ -11,7 +11,6 @@ public class PackageEditorViewModel : INotifyPropertyChanged
     public string PackageName
     {
         get => _packageName;
-
         set
         {
             _packageName = value;
@@ -26,7 +25,6 @@ public class PackageEditorViewModel : INotifyPropertyChanged
     public string DisplayName
     {
         get => _displayName;
-
         set
         {
             _displayName = value;
@@ -36,48 +34,35 @@ public class PackageEditorViewModel : INotifyPropertyChanged
 
 
 
-    private double _length;
 
-    public double Length
+
+    private string _category = "";
+
+    public string Category
     {
-        get => _length;
-
+        get => _category;
         set
         {
-            _length = value;
+            _category = value;
             OnPropertyChanged();
         }
     }
 
 
 
-    private double _width;
 
-    public double Width
+    private string _family = "";
+
+    public string Family
     {
-        get => _width;
-
+        get => _family;
         set
         {
-            _width = value;
+            _family = value;
             OnPropertyChanged();
         }
     }
 
-
-
-    private double _height;
-
-    public double Height
-    {
-        get => _height;
-
-        set
-        {
-            _height = value;
-            OnPropertyChanged();
-        }
-    }
 
 
 
@@ -86,7 +71,6 @@ public class PackageEditorViewModel : INotifyPropertyChanged
     public string IPCName
     {
         get => _ipcName;
-
         set
         {
             _ipcName = value;
@@ -96,18 +80,226 @@ public class PackageEditorViewModel : INotifyPropertyChanged
 
 
 
+
+    private string _jedecName = "";
+
+    public string JEDECName
+    {
+        get => _jedecName;
+        set
+        {
+            _jedecName = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+    private string _yamahaName = "";
+
+    public string YamahaName
+    {
+        get => _yamahaName;
+        set
+        {
+            _yamahaName = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+    private string _mirtecName = "";
+
+    public string MirtecName
+    {
+        get => _mirtecName;
+        set
+        {
+            _mirtecName = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private double _length;
+
+    public double Length
+    {
+        get => _length;
+        set
+        {
+            _length = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private double _width;
+
+    public double Width
+    {
+        get => _width;
+        set
+        {
+            _width = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private double _height;
+
+    public double Height
+    {
+        get => _height;
+        set
+        {
+            _height = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private double _pitch;
+
+    public double Pitch
+    {
+        get => _pitch;
+        set
+        {
+            _pitch = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private int _leads;
+
+    public int Leads
+    {
+        get => _leads;
+        set
+        {
+            _leads = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private double _stencilThickness;
+
+    public double StencilThickness
+    {
+        get => _stencilThickness;
+        set
+        {
+            _stencilThickness = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private double _areaRatio;
+
+    public double AreaRatio
+    {
+        get => _areaRatio;
+        set
+        {
+            _areaRatio = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private double _aspectRatio;
+
+    public double AspectRatio
+    {
+        get => _aspectRatio;
+        set
+        {
+            _aspectRatio = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
+    private string _aperture = "";
+
+    public string Aperture
+    {
+        get => _aperture;
+        set
+        {
+            _aperture = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+
+
+
     private string _aoiRecommendations = "";
 
     public string AOIRecommendations
     {
         get => _aoiRecommendations;
-
         set
         {
             _aoiRecommendations = value;
             OnPropertyChanged();
         }
     }
+
+
+
+
+
+    private string _spiRecommendations = "";
+
+    public string SPIRecommendations
+    {
+        get => _spiRecommendations;
+        set
+        {
+            _spiRecommendations = value;
+            OnPropertyChanged();
+        }
+    }
+
+
 
 
 

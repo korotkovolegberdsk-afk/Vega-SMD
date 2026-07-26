@@ -1,4 +1,4 @@
-using Vega.Data.Migration;
+﻿using Vega.Data.Migration;
 using Vega.Data.Repositories;
 using Vega.Data.SQLite;
 using Vega.Models.Packages;
@@ -25,6 +25,12 @@ public class PackageService
 
 
 
+        var categoryMigration = new PackageCategoryMigration();
+
+        categoryMigration.FillDefaultPackageCategories();
+
+
+
         var cleanup = new DatabaseCleanup();
 
         cleanup.RemovePackageDuplicates();
@@ -40,6 +46,15 @@ public class PackageService
     public List<PackageSearchResult> GetPackages()
     {
         return _repository.GetAll();
+    }
+
+
+
+
+    public PackageSearchResult? GetPackageById(
+        int id)
+    {
+        return _repository.GetById(id);
     }
 
 
@@ -66,3 +81,4 @@ public class PackageService
         _repository.Delete(id);
     }
 }
+

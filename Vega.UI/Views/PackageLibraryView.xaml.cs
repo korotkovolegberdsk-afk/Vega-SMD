@@ -1,4 +1,4 @@
-using System.Windows;
+п»їusing System.Windows;
 using System.Windows.Controls;
 using Vega.UI.ViewModels;
 
@@ -17,8 +17,6 @@ public partial class PackageLibraryView : UserControl
         _viewModel = new PackageLibraryViewModel();
 
         DataContext = _viewModel;
-
-        _viewModel.Reload();
     }
 
 
@@ -37,15 +35,9 @@ public partial class PackageLibraryView : UserControl
         object sender,
         RoutedPropertyChangedEventArgs<object> e)
     {
-        if (e.NewValue is TreeViewItem item)
+        if (e.NewValue is PackageCategoryNode category)
         {
-            var category = item.Header?.ToString();
-
-
-            if (!string.IsNullOrEmpty(category))
-            {
-                _viewModel.SelectedCategory = category;
-            }
+            _viewModel.SelectedCategory = category;
         }
     }
 
@@ -108,7 +100,7 @@ public partial class PackageLibraryView : UserControl
 
 
         var answer = MessageBox.Show(
-            $"Удалить компонент {_viewModel.SelectedPackage.PackageName}?",
+            $"РЈРґР°Р»РёС‚СЊ РєРѕРјРїРѕРЅРµРЅС‚ {_viewModel.SelectedPackage.PackageName}?",
             "Vega-SMD",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);

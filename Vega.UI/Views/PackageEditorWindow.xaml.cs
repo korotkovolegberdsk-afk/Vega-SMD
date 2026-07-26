@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using Vega.Models.Packages;
 using Vega.Services.Library;
 using Vega.UI.ViewModels;
@@ -49,7 +49,22 @@ public partial class PackageEditorWindow : Window
 
         model.IPCName = package.IPCName;
 
+        model.Category = package.Category;
+        model.Family = package.Family;
+        model.JEDECName = package.JEDECName;
+        model.YamahaName = package.YamahaName;
+        model.MirtecName = package.MirtecName;
+
+        model.Pitch = package.Pitch;
+        model.Leads = package.LeadCount;
+
+        model.StencilThickness = package.StencilThickness;
+        model.AreaRatio = package.AreaRatio;
+        model.AspectRatio = package.AspectRatio;
+        model.Aperture = package.ApertureType;
+
         model.AOIRecommendations = package.AOIRecommendations;
+        model.SPIRecommendations = package.SPIRecommendations;
     }
 
 
@@ -80,7 +95,22 @@ public partial class PackageEditorWindow : Window
 
             IPCName = model.IPCName,
 
-            AOIRecommendations = model.AOIRecommendations
+            Category = model.Category,
+            Family = model.Family,
+            JEDECName = model.JEDECName,
+            YamahaName = model.YamahaName,
+            MirtecName = model.MirtecName,
+
+            Pitch = model.Pitch,
+            LeadCount = model.Leads,
+
+            StencilThickness = model.StencilThickness,
+            AreaRatio = model.AreaRatio,
+            AspectRatio = model.AspectRatio,
+            ApertureType = model.Aperture,
+
+            AOIRecommendations = model.AOIRecommendations,
+            SPIRecommendations = model.SPIRecommendations
         };
 
 

@@ -7,20 +7,14 @@
 
 
         <Grid.RowDefinitions>
-
             <RowDefinition Height="Auto"/>
-
             <RowDefinition Height="*"/>
-
         </Grid.RowDefinitions>
-
-
 
 
 
         <DockPanel Grid.Row="0"
                    Margin="0,0,0,10">
-
 
             <Button Content="+ Новый"
                     Width="100"
@@ -28,13 +22,11 @@
                     Margin="0,0,10,0"
                     Click="NewPackage_Click"/>
 
-
             <Button Content="Изменить"
                     Width="110"
                     Height="35"
                     Margin="0,0,10,0"
                     Click="EditPackage_Click"/>
-
 
             <Button Content="Удалить"
                     Width="100"
@@ -42,16 +34,12 @@
                     Margin="0,0,20,0"
                     Click="DeletePackage_Click"/>
 
-
             <TextBox Width="250"
                      Height="35"
                      VerticalContentAlignment="Center"
-                     Text="{Binding SearchText}"/>
-
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
         </DockPanel>
-
-
 
 
 
@@ -59,36 +47,39 @@
         <Grid Grid.Row="1">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="180"/>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="320"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
-
-
-
-
-
 
 
 
             <Border Grid.Column="0"
                     BorderThickness="1"
                     BorderBrush="Gray"
+                    Padding="8"
                     Margin="0,0,10,0">
 
+                <DockPanel>
 
-                <TreeView ItemsSource="{Binding Categories}"
-                          SelectedItemChanged="Category_Selected">
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Категории"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,8"/>
 
-                    <TreeView.ItemTemplate>
-                        <HierarchicalDataTemplate>
-                            <TextBlock Text="{Binding}"/>
-                        </HierarchicalDataTemplate>
-                    </TreeView.ItemTemplate>
+                    <TreeView ItemsSource="{Binding Categories}"
+                              SelectedItemChanged="Category_Selected">
 
-                </TreeView>
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Name}"/>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
 
+                    </TreeView>
+
+                </DockPanel>
 
             </Border>
 
@@ -96,147 +87,159 @@
 
 
 
+            <Border Grid.Column="1"
+                    BorderThickness="1"
+                    BorderBrush="Gray"
+                    Padding="6"
+                    Margin="0,0,10,0">
 
+                <DockPanel>
 
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Компоненты"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,8"/>
 
+                    <ListBox ItemsSource="{Binding Packages}"
+                             SelectedItem="{Binding SelectedPackage, Mode=TwoWay}"
+                             MouseDoubleClick="PackageList_MouseDoubleClick">
 
-            <ListBox Grid.Column="1"
-                     ItemsSource="{Binding Packages}"
-                     SelectedItem="{Binding SelectedPackage}"
-                     MouseDoubleClick="PackageList_MouseDoubleClick">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="5">
 
+                                    <TextBlock Text="{Binding PackageName}"
+                                               FontWeight="Bold"/>
 
-                <ListBox.ItemTemplate>
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               TextWrapping="Wrap"/>
 
-                    <DataTemplate>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
 
+                    </ListBox>
 
-                        <StackPanel Margin="5">
+                </DockPanel>
 
-
-                            <TextBlock Text="{Binding PackageName}"
-                                       FontWeight="Bold"/>
-
-
-                            <TextBlock Text="{Binding DisplayName}"/>
-
-
-                        </StackPanel>
-
-
-                    </DataTemplate>
-
-
-                </ListBox.ItemTemplate>
-
-
-            </ListBox>
-
-
-
-
+            </Border>
 
 
 
 
 
             <Border Grid.Column="2"
-                    Margin="20,0,0,0">
+                    BorderThickness="1"
+                    BorderBrush="Gray"
+                    Padding="16">
 
-
-                <ScrollViewer>
-
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
 
                     <StackPanel>
 
-
                         <TextBlock Text="{Binding SelectedPackage.PackageName}"
                                    FontSize="24"
-                                   FontWeight="Bold"/>
-
-
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"/>
 
                         <TextBlock Text="{Binding SelectedPackage.DisplayName}"
-                                   Margin="0,10,0,0"/>
-
-
-                        <TextBlock Text="{Binding SelectedPackage.Category, StringFormat=Category: {0}}"
-                                   Margin="0,5"/>
-
-
-                        <TextBlock Text="{Binding SelectedPackage.Family, StringFormat=Family: {0}}"
-                                   Margin="0,5"/>
-
+                                   Margin="0,10,0,0"
+                                   TextWrapping="Wrap"/>
 
                         <Separator Margin="0,15,0,10"/>
 
+                        <TextBlock Text="Основные параметры"
+                                   FontWeight="Bold"
+                                   FontSize="16"/>
 
+                        <TextBlock Text="{Binding SelectedPackage.Category, StringFormat=Category: {0}}"
+                                   Margin="0,8,0,0"/>
+
+                        <TextBlock Text="{Binding SelectedPackage.Family, StringFormat=Family: {0}}"
+                                   Margin="0,5,0,0"/>
+
+                        <TextBlock Text="{Binding SelectedPackage.IPCName, StringFormat=IPC: {0}}"
+                                   Margin="0,5,0,0"/>
+
+                        <TextBlock Text="{Binding SelectedPackage.JEDECName, StringFormat=JEDEC: {0}}"
+                                   Margin="0,5,0,0"/>
+
+                        <Separator Margin="0,15,0,10"/>
 
                         <TextBlock Text="Dimensions"
                                    FontWeight="Bold"
                                    FontSize="16"/>
 
-
-
                         <TextBlock Text="{Binding SelectedPackage.Length, StringFormat=Length: {0} mm}"
-                                   Margin="0,5"/>
-
+                                   Margin="0,8,0,0"/>
 
                         <TextBlock Text="{Binding SelectedPackage.Width, StringFormat=Width: {0} mm}"
-                                   Margin="0,5"/>
-
+                                   Margin="0,5,0,0"/>
 
                         <TextBlock Text="{Binding SelectedPackage.Height, StringFormat=Height: {0} mm}"
-                                   Margin="0,5"/>
+                                   Margin="0,5,0,0"/>
 
+                        <TextBlock Text="{Binding SelectedPackage.Pitch, StringFormat=Pitch: {0} mm}"
+                                   Margin="0,5,0,0"/>
 
-
-
+                        <TextBlock Text="{Binding SelectedPackage.LeadCount, StringFormat=Leads: {0}}"
+                                   Margin="0,5,0,0"/>
 
                         <Separator Margin="0,15,0,10"/>
 
-
-
-                        <TextBlock Text="IPC"
+                        <TextBlock Text="Stencil"
                                    FontWeight="Bold"
                                    FontSize="16"/>
 
+                        <TextBlock Text="{Binding SelectedPackage.StencilThickness, StringFormat=Thickness: {0} mm}"
+                                   Margin="0,8,0,0"/>
 
+                        <TextBlock Text="{Binding SelectedPackage.AreaRatio, StringFormat=Area ratio: {0}}"
+                                   Margin="0,5,0,0"/>
 
-                        <TextBlock Text="{Binding SelectedPackage.IPCName}"
-                                   Margin="0,5"/>
+                        <TextBlock Text="{Binding SelectedPackage.AspectRatio, StringFormat=Aspect ratio: {0}}"
+                                   Margin="0,5,0,0"/>
 
-
-
-
+                        <TextBlock Text="{Binding SelectedPackage.ApertureType, StringFormat=Aperture: {0}}"
+                                   Margin="0,5,0,0"/>
 
                         <Separator Margin="0,15,0,10"/>
-
-
 
                         <TextBlock Text="AOI Recommendations"
                                    FontWeight="Bold"
                                    FontSize="16"/>
 
-
-
                         <TextBlock Text="{Binding SelectedPackage.AOIRecommendations}"
+                                   Margin="0,8,0,0"
                                    TextWrapping="Wrap"/>
 
+                        <TextBlock Text="SPI Recommendations"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Margin="0,15,0,0"/>
+
+                        <TextBlock Text="{Binding SelectedPackage.SPIRecommendations}"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Notes"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Margin="0,15,0,0"/>
+
+                        <TextBlock Text="{Binding SelectedPackage.Notes}"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap"/>
 
                     </StackPanel>
 
-
                 </ScrollViewer>
-
 
             </Border>
 
-
         </Grid>
 
-
     </Grid>
-
 
 </UserControl>
