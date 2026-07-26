@@ -1,12 +1,22 @@
 ﻿using System.Windows;
+using Vega.UI.ViewModels;
 
-namespace Vega.UI.Views
+namespace Vega.UI.Views;
+
+public partial class ShellWindow : Window
 {
-    public partial class ShellWindow : Window
+    private readonly ShellViewModel _viewModel;
+
+    public ShellWindow()
     {
-        public ShellWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+
+        _viewModel = new ShellViewModel();
+        DataContext = _viewModel;
+    }
+
+    private void Exit_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
     }
 }

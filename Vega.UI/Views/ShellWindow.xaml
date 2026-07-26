@@ -9,7 +9,18 @@
     <DockPanel>
 
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Файл"/>
+
+            <MenuItem Header="_Файл">
+                <MenuItem Header="_Новый проект"/>
+                <Separator/>
+                <MenuItem Header="_Открыть..."/>
+                <MenuItem Header="_Сохранить"/>
+                <MenuItem Header="Сохранить _как..."/>
+                <Separator/>
+                <MenuItem Header="_Выход"
+                          Click="Exit_Click"/>
+            </MenuItem>
+
             <MenuItem Header="_Проект"/>
             <MenuItem Header="_Импорт"/>
             <MenuItem Header="_Библиотека"/>
@@ -17,6 +28,7 @@
             <MenuItem Header="_SPI"/>
             <MenuItem Header="_Трафарет"/>
             <MenuItem Header="_Справка"/>
+
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">
