@@ -20,4 +20,10 @@
     <ProjectReference Include="..\Vega.Models\Vega.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Migration\001_MasterLibrary.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
