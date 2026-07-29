@@ -1,0 +1,187 @@
+<UserControl x:Class="Vega.UI.Views.ComponentLibraryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <Grid Margin="10">
+
+
+        <Grid.ColumnDefinitions>
+
+            <ColumnDefinition Width="*"/>
+
+            <ColumnDefinition Width="320"/>
+
+        </Grid.ColumnDefinitions>
+
+
+
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="Auto"/>
+
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
+
+
+
+        <StackPanel Grid.ColumnSpan="2">
+
+
+            <TextBlock
+                Text="Master Library - Components"
+                FontSize="22"
+                FontWeight="Bold"
+                Margin="0,0,0,10"/>
+
+
+            <TextBox
+                Height="30"
+                Width="350"
+                HorizontalAlignment="Left"
+                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                ToolTip="Search"/>
+
+
+        </StackPanel>
+
+
+
+        <DataGrid
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="0,15,10,0"
+            ItemsSource="{Binding Components}"
+            SelectedItem="{Binding SelectedComponent}"
+            AutoGenerateColumns="False"
+            IsReadOnly="True">
+
+
+            <DataGrid.Columns>
+
+
+                <DataGridTextColumn
+                    Header="Part Number"
+                    Binding="{Binding ManufacturerPartNumber}"
+                    Width="150"/>
+
+
+                <DataGridTextColumn
+                    Header="Manufacturer"
+                    Binding="{Binding Manufacturer}"
+                    Width="120"/>
+
+
+                <DataGridTextColumn
+                    Header="Type"
+                    Binding="{Binding ComponentType}"
+                    Width="100"/>
+
+
+                <DataGridTextColumn
+                    Header="Package"
+                    Binding="{Binding PackageName}"
+                    Width="100"/>
+
+
+            </DataGrid.Columns>
+
+
+        </DataGrid>
+
+
+
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="10,15,0,0"
+            BorderThickness="1"
+            BorderBrush="Gray"
+            Padding="10">
+
+
+            <StackPanel>
+
+
+                <TextBlock
+                    Text="Component Information"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Margin="0,0,0,10"/>
+
+
+
+                <TextBlock
+                    Text="Part Number:"/>
+
+                <TextBlock
+                    Text="{Binding SelectedComponent.ManufacturerPartNumber}"
+                    FontWeight="Bold"
+                    Margin="0,0,0,10"/>
+
+
+
+                <TextBlock
+                    Text="Manufacturer:"/>
+
+                <TextBlock
+                    Text="{Binding SelectedComponent.Manufacturer}"
+                    Margin="0,0,0,10"/>
+
+
+
+                <TextBlock
+                    Text="Type:"/>
+
+                <TextBlock
+                    Text="{Binding SelectedComponent.ComponentType}"
+                    Margin="0,0,0,10"/>
+
+
+
+                <TextBlock
+                    Text="Package:"/>
+
+                <TextBlock
+                    Text="{Binding SelectedComponent.PackageName}"
+                    Margin="0,0,0,10"/>
+
+
+
+                <TextBlock
+                    Text="Category:"/>
+
+                <TextBlock
+                    Text="{Binding SelectedComponent.PackageCategory}"
+                    Margin="0,0,0,10"/>
+
+
+
+                <TextBlock
+                    Text="Family:"/>
+
+                <TextBlock
+                    Text="{Binding SelectedComponent.PackageFamily}"
+                    Margin="0,0,0,10"/>
+
+
+
+                <TextBlock
+                    Text="Description:"/>
+
+                <TextBlock
+                    Text="{Binding SelectedComponent.Description}"
+                    TextWrapping="Wrap"/>
+
+
+            </StackPanel>
+
+
+        </Border>
+
+
+    </Grid>
+
+
+</UserControl>

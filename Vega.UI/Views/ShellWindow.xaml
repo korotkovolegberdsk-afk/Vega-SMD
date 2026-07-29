@@ -39,6 +39,11 @@
 
                 <MenuItem Header="Components"/>
 
+                <MenuItem Header="Master Library">
+                    <MenuItem Header="Components"
+                              Click="OpenComponentLibrary_Click"/>
+                </MenuItem>
+
             </MenuItem>
 
 
@@ -58,7 +63,13 @@
 
         <Grid>
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+
             <views:PackageLibraryView x:Name="PackageLibrary"/>
+
 
         </Grid>
 

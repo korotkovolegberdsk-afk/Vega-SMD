@@ -10,6 +10,7 @@
     <Folder Include="Context\" />
     <Folder Include="Import\" />
     <Folder Include="Export\" />
+    <Folder Include="MasterLibrary\Новая папка\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +23,14 @@
 
   <ItemGroup>
     <None Update="Migration\001_MasterLibrary.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+    <None Update="Migration\002_MasterLibrary_Packages.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+    <None Update="Migration\003_MasterLibrary_Components.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

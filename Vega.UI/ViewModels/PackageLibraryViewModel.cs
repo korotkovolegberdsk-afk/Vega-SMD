@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Vega.Models.Packages;
@@ -10,20 +10,15 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
 {
     private readonly PackageService _packageService;
 
-
     private List<PackageSearchResult> _allPackages = new();
-
 
 
     public ObservableCollection<PackageSearchResult> Packages { get; }
         = new();
 
 
-
     public ObservableCollection<PackageCategoryNode> Categories { get; }
         = new();
-
-
 
 
     private PackageSearchResult? _selectedPackage;
@@ -36,7 +31,8 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
         {
             if (value != null)
             {
-                var package = _packageService.GetPackageById(value.Id);
+                var package =
+                    _packageService.GetPackageById(value.Id);
 
                 if (package != null)
                 {
@@ -44,14 +40,11 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
                 }
             }
 
-
             _selectedPackage = value;
 
             OnPropertyChanged();
         }
     }
-
-
 
 
     private string _searchText = "";
@@ -69,9 +62,6 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
             FilterPackages();
         }
     }
-
-
-
 
 
     private PackageCategoryNode? _selectedCategory;
@@ -93,9 +83,6 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
     }
 
 
-
-
-
     public PackageLibraryViewModel()
     {
         _packageService = new PackageService();
@@ -104,52 +91,48 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
     }
 
 
-
-
-
     public void Reload()
     {
-        _allPackages = _packageService.GetPackages();
-
+        _allPackages =
+            _packageService.GetPackages();
 
         LoadCategories();
 
-
         FilterPackages();
     }
-
-
-
 
 
     private void LoadCategories()
     {
         Categories.Clear();
 
-
         foreach (var categoryGroup in _allPackages
-                     .Where(x => !string.IsNullOrWhiteSpace(x.Category))
+                     .Where(x =>
+                         !string.IsNullOrWhiteSpace(x.Category))
                      .GroupBy(x => x.Category.Trim())
                      .OrderBy(x => x.Key))
         {
-            var categoryNode = new PackageCategoryNode(
-                categoryGroup.Key,
-                categoryGroup.Key);
-
+            var categoryNode =
+                new PackageCategoryNode(
+                    categoryGroup.Key,
+                    categoryGroup.Key);
 
             foreach (var familyGroup in categoryGroup
-                         .Where(x => !string.IsNullOrWhiteSpace(x.Family))
+                         .Where(x =>
+                             !string.IsNullOrWhiteSpace(x.Family))
                          .GroupBy(x => x.Family.Trim())
                          .OrderBy(x => x.Key))
             {
-                var familyNode = new PackageCategoryNode(
-                    familyGroup.Key,
-                    categoryGroup.Key,
-                    familyGroup.Key);
-
+                var familyNode =
+                    new PackageCategoryNode(
+                        familyGroup.Key,
+                        categoryGroup.Key,
+                        familyGroup.Key);
 
                 foreach (var package in familyGroup
-                             .Where(x => !string.IsNullOrWhiteSpace(x.PackageName))
+                             .Where(x =>
+                                 !string.IsNullOrWhiteSpace(
+                                     x.PackageName))
                              .OrderBy(x => x.PackageName))
                 {
                     familyNode.Children.Add(
@@ -160,14 +143,14 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
                             package.PackageName));
                 }
 
-
                 categoryNode.Children.Add(familyNode);
             }
 
-
             foreach (var package in categoryGroup
-                         .Where(x => string.IsNullOrWhiteSpace(x.Family)
-                                     && !string.IsNullOrWhiteSpace(x.PackageName))
+                         .Where(x =>
+                             string.IsNullOrWhiteSpace(x.Family)
+                             && !string.IsNullOrWhiteSpace(
+                                 x.PackageName))
                          .OrderBy(x => x.PackageName))
             {
                 categoryNode.Children.Add(
@@ -177,54 +160,36 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
                         packageName: package.PackageName));
             }
 
-
             Categories.Add(categoryNode);
         }
     }
-
-
-
 
 
     private void FilterPackages()
     {
         Packages.Clear();
 
-
-        var text = SearchText.Trim();
-
-
+        var text =
+            SearchText.Trim();
 
         foreach (var package in _allPackages)
         {
-
             if (SelectedCategory != null
                 && !MatchesSelectedCategory(package))
             {
                 continue;
             }
 
-
-
-
             if (!string.IsNullOrEmpty(text))
             {
                 bool searchMatch =
                     Contains(package.PackageName, text)
-                    ||
-                    Contains(package.DisplayName, text)
-                    ||
-                    Contains(package.Category, text)
-                    ||
-                    Contains(package.Family, text)
-                    ||
-                    Contains(package.IPCName, text)
-                    ||
-                    Contains(package.YamahaName, text)
-                    ||
-                    Contains(package.MirtecName, text);
-
-
+                    || Contains(package.DisplayName, text)
+                    || Contains(package.Category, text)
+                    || Contains(package.Family, text)
+                    || Contains(package.IPCName, text)
+                    || Contains(package.YamahaName, text)
+                    || Contains(package.MirtecName, text);
 
                 if (!searchMatch)
                 {
@@ -232,21 +197,16 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
                 }
             }
 
-
-
             Packages.Add(package);
         }
-
 
         if (SelectedPackage != null
             && !Packages.Contains(SelectedPackage))
         {
-            SelectedPackage = Packages.FirstOrDefault();
+            SelectedPackage =
+                Packages.FirstOrDefault();
         }
     }
-
-
-
 
 
     private bool MatchesSelectedCategory(
@@ -257,26 +217,24 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
             return true;
         }
 
-
-        if (!string.IsNullOrWhiteSpace(SelectedCategory.PackageName))
+        if (!string.IsNullOrWhiteSpace(
+                SelectedCategory.PackageName))
         {
             return EqualsText(
                 package.PackageName,
                 SelectedCategory.PackageName);
         }
 
-
-        if (!string.IsNullOrWhiteSpace(SelectedCategory.Family))
+        if (!string.IsNullOrWhiteSpace(
+                SelectedCategory.Family))
         {
             return EqualsText(
                        package.Category,
                        SelectedCategory.Category)
-                   &&
-                   EqualsText(
+                   && EqualsText(
                        package.Family,
                        SelectedCategory.Family);
         }
-
 
         return EqualsText(
             package.Category,
@@ -284,26 +242,21 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
     }
 
 
-
-
-
     private void SelectPackageFromCategory()
     {
         if (SelectedCategory == null
-            || string.IsNullOrWhiteSpace(SelectedCategory.PackageName))
+            || string.IsNullOrWhiteSpace(
+                SelectedCategory.PackageName))
         {
             return;
         }
 
-
-        SelectedPackage = Packages.FirstOrDefault(
-            x => EqualsText(
-                x.PackageName,
-                SelectedCategory.PackageName));
+        SelectedPackage =
+            Packages.FirstOrDefault(
+                x => EqualsText(
+                    x.PackageName,
+                    SelectedCategory.PackageName));
     }
-
-
-
 
 
     private static void CopyPackage(
@@ -330,20 +283,23 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
         target.YamahaName = source.YamahaName;
         target.MirtecName = source.MirtecName;
 
-        target.StencilThickness = source.StencilThickness;
+        target.StencilThickness =
+            source.StencilThickness;
+
         target.AreaRatio = source.AreaRatio;
         target.AspectRatio = source.AspectRatio;
 
         target.ApertureType = source.ApertureType;
         target.TypicalDefects = source.TypicalDefects;
 
-        target.AOIRecommendations = source.AOIRecommendations;
-        target.SPIRecommendations = source.SPIRecommendations;
+        target.AOIRecommendations =
+            source.AOIRecommendations;
+
+        target.SPIRecommendations =
+            source.SPIRecommendations;
 
         target.Notes = source.Notes;
     }
-
-
 
 
     private static bool Contains(
@@ -357,9 +313,6 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
     }
 
 
-
-
-
     private static bool EqualsText(
         string? first,
         string? second)
@@ -371,11 +324,7 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
     }
 
 
-
-
-
     public event PropertyChangedEventHandler? PropertyChanged;
-
 
 
     private void OnPropertyChanged(
@@ -388,7 +337,6 @@ public class PackageLibraryViewModel : INotifyPropertyChanged
 }
 
 
-
 public class PackageCategoryNode
 {
     public PackageCategoryNode(
@@ -398,24 +346,17 @@ public class PackageCategoryNode
         string packageName = "")
     {
         Name = name;
-
         Category = category;
-
         Family = family;
-
         PackageName = packageName;
     }
 
 
-
     public string Name { get; }
-
 
     public string Category { get; }
 
-
     public string Family { get; }
-
 
     public string PackageName { get; }
 
@@ -423,4 +364,3 @@ public class PackageCategoryNode
     public ObservableCollection<PackageCategoryNode> Children { get; }
         = new();
 }
-
