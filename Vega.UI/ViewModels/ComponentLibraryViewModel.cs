@@ -14,10 +14,8 @@ public class ComponentLibraryViewModel : INotifyPropertyChanged
     private List<ComponentDefinitionView> _allComponents = new();
 
 
-
     public ObservableCollection<ComponentDefinitionView> Components { get; }
         = new();
-
 
 
     private ComponentDefinitionView? _selectedComponent;
@@ -33,7 +31,6 @@ public class ComponentLibraryViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-
 
 
     private string _searchText = "";
@@ -53,18 +50,16 @@ public class ComponentLibraryViewModel : INotifyPropertyChanged
     }
 
 
-
     public ComponentLibraryViewModel()
     {
         _repository =
             new ComponentDefinitionRepository();
 
-        LoadComponents();
+        Reload();
     }
 
 
-
-    private void LoadComponents()
+    public void Reload()
     {
         _allComponents =
             _repository.GetComponentViews();
@@ -73,31 +68,37 @@ public class ComponentLibraryViewModel : INotifyPropertyChanged
     }
 
 
-
     private void FilterComponents()
     {
         Components.Clear();
 
-
         var text =
             SearchText.Trim();
-
 
         foreach (var component in _allComponents)
         {
             if (!string.IsNullOrWhiteSpace(text))
             {
                 bool match =
-                    Contains(component.ManufacturerPartNumber, text)
+                    Contains(
+                        component.ManufacturerPartNumber,
+                        text)
                     ||
-                    Contains(component.Manufacturer, text)
+                    Contains(
+                        component.Manufacturer,
+                        text)
                     ||
-                    Contains(component.PackageName, text)
+                    Contains(
+                        component.PackageName,
+                        text)
                     ||
-                    Contains(component.PackageCategory, text)
+                    Contains(
+                        component.PackageCategory,
+                        text)
                     ||
-                    Contains(component.PackageFamily, text);
-
+                    Contains(
+                        component.PackageFamily,
+                        text);
 
                 if (!match)
                 {
@@ -105,10 +106,8 @@ public class ComponentLibraryViewModel : INotifyPropertyChanged
                 }
             }
 
-
             Components.Add(component);
         }
-
 
         if (SelectedComponent != null
             && !Components.Contains(SelectedComponent))
@@ -119,18 +118,15 @@ public class ComponentLibraryViewModel : INotifyPropertyChanged
     }
 
 
-
     private static bool Contains(
         string? value,
         string text)
     {
         return !string.IsNullOrEmpty(value)
-               &&
-               value.Contains(
+               && value.Contains(
                    text,
                    StringComparison.OrdinalIgnoreCase);
     }
-
 
 
     public event PropertyChangedEventHandler? PropertyChanged;

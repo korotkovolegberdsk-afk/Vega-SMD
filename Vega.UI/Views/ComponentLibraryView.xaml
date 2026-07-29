@@ -7,21 +7,14 @@
 
 
         <Grid.ColumnDefinitions>
-
             <ColumnDefinition Width="*"/>
-
             <ColumnDefinition Width="320"/>
-
         </Grid.ColumnDefinitions>
 
 
-
         <Grid.RowDefinitions>
-
             <RowDefinition Height="Auto"/>
-
             <RowDefinition Height="*"/>
-
         </Grid.RowDefinitions>
 
 
@@ -36,15 +29,30 @@
                 Margin="0,0,0,10"/>
 
 
-            <TextBox
-                Height="30"
-                Width="350"
-                HorizontalAlignment="Left"
-                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                ToolTip="Search"/>
+
+            <StackPanel Orientation="Horizontal">
+
+
+                <TextBox
+                    Height="30"
+                    Width="350"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="Search"/>
+
+
+                <Button
+                    Content="+ New Component"
+                    Width="150"
+                    Height="30"
+                    Margin="10,0,0,0"
+                    Click="NewComponent_Click"/>
+
+
+            </StackPanel>
 
 
         </StackPanel>
+
 
 
 
@@ -55,7 +63,8 @@
             ItemsSource="{Binding Components}"
             SelectedItem="{Binding SelectedComponent}"
             AutoGenerateColumns="False"
-            IsReadOnly="True">
+            IsReadOnly="True"
+            MouseDoubleClick="ComponentsGrid_MouseDoubleClick">
 
 
             <DataGrid.Columns>
@@ -92,6 +101,7 @@
 
 
 
+
         <Border
             Grid.Row="1"
             Grid.Column="1"
@@ -111,9 +121,7 @@
                     Margin="0,0,0,10"/>
 
 
-
-                <TextBlock
-                    Text="Part Number:"/>
+                <TextBlock Text="Part Number:"/>
 
                 <TextBlock
                     Text="{Binding SelectedComponent.ManufacturerPartNumber}"
@@ -121,54 +129,42 @@
                     Margin="0,0,0,10"/>
 
 
-
-                <TextBlock
-                    Text="Manufacturer:"/>
+                <TextBlock Text="Manufacturer:"/>
 
                 <TextBlock
                     Text="{Binding SelectedComponent.Manufacturer}"
                     Margin="0,0,0,10"/>
 
 
-
-                <TextBlock
-                    Text="Type:"/>
+                <TextBlock Text="Type:"/>
 
                 <TextBlock
                     Text="{Binding SelectedComponent.ComponentType}"
                     Margin="0,0,0,10"/>
 
 
-
-                <TextBlock
-                    Text="Package:"/>
+                <TextBlock Text="Package:"/>
 
                 <TextBlock
                     Text="{Binding SelectedComponent.PackageName}"
                     Margin="0,0,0,10"/>
 
 
-
-                <TextBlock
-                    Text="Category:"/>
+                <TextBlock Text="Category:"/>
 
                 <TextBlock
                     Text="{Binding SelectedComponent.PackageCategory}"
                     Margin="0,0,0,10"/>
 
 
-
-                <TextBlock
-                    Text="Family:"/>
+                <TextBlock Text="Family:"/>
 
                 <TextBlock
                     Text="{Binding SelectedComponent.PackageFamily}"
                     Margin="0,0,0,10"/>
 
 
-
-                <TextBlock
-                    Text="Description:"/>
+                <TextBlock Text="Description:"/>
 
                 <TextBlock
                     Text="{Binding SelectedComponent.Description}"

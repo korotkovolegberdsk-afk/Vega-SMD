@@ -1,0 +1,150 @@
+<Window x:Class="Vega.UI.Views.ComponentEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Component Editor"
+        Width="500"
+        Height="620"
+        WindowStartupLocation="CenterScreen">
+
+
+    <Grid Margin="15">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <TextBlock
+            Grid.Row="0"
+            Text="Manufacturer Part Number"/>
+
+
+        <TextBox
+            Grid.Row="1"
+            x:Name="PartNumberTextBox"
+            Height="30"
+            Margin="0,5,0,10"/>
+
+
+
+        <TextBlock
+            Grid.Row="2"
+            Text="Manufacturer"/>
+
+
+        <TextBox
+            Grid.Row="3"
+            x:Name="ManufacturerTextBox"
+            Height="30"
+            Margin="0,5,0,10"/>
+
+
+
+        <TextBlock
+            Grid.Row="4"
+            Text="Component Type"/>
+
+
+        <TextBox
+            Grid.Row="5"
+            x:Name="TypeTextBox"
+            Height="30"
+            Margin="0,5,0,10"/>
+
+
+
+        <TextBlock
+            Grid.Row="6"
+            Text="Package"/>
+
+
+        <ComboBox
+            Grid.Row="7"
+            x:Name="PackageComboBox"
+            Height="30"
+            Margin="0,5,0,10"
+            SelectedValuePath="Id">
+
+
+            <ComboBox.ItemTemplate>
+
+                <DataTemplate>
+
+                    <StackPanel Orientation="Horizontal">
+
+                        <TextBlock
+                            Text="{Binding PackageName}"/>
+
+                        <TextBlock
+                            Text=" - "/>
+
+                        <TextBlock
+                            Text="{Binding DisplayName}"/>
+
+                    </StackPanel>
+
+                </DataTemplate>
+
+            </ComboBox.ItemTemplate>
+
+
+        </ComboBox>
+
+
+
+
+        <TextBlock
+            Grid.Row="8"
+            Text="Description"/>
+
+
+
+        <TextBox
+            Grid.Row="9"
+            x:Name="DescriptionTextBox"
+            MinHeight="100"
+            Margin="0,5,0,10"
+            TextWrapping="Wrap"
+            AcceptsReturn="True"
+            VerticalScrollBarVisibility="Auto"/>
+
+
+
+
+        <StackPanel
+            Grid.Row="10"
+            Orientation="Horizontal"
+            HorizontalAlignment="Right">
+
+
+            <Button
+                Content="Save"
+                Width="100"
+                Margin="5"
+                Click="Save_Click"/>
+
+
+            <Button
+                Content="Cancel"
+                Width="100"
+                Margin="5"
+                Click="Cancel_Click"/>
+
+
+        </StackPanel>
+
+
+    </Grid>
+
+
+</Window>

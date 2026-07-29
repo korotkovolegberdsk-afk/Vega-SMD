@@ -1,4 +1,4 @@
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using Vega.Data.MasterLibrary.Database;
 using Vega.Models.MasterLibrary;
 
@@ -272,7 +272,7 @@ public class ComponentDefinitionRepository
         command.ExecuteNonQuery();
     }
 
-
+     
 
     public void Delete(int id)
     {

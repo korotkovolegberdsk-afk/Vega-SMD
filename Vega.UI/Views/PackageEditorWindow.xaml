@@ -1,203 +1,472 @@
 ﻿<Window x:Class="Vega.UI.Views.PackageEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Package Editor"
-        Width="650"
+        Title="Редактор корпуса"
+        Width="1000"
         Height="750"
         WindowStartupLocation="CenterScreen">
 
 
-    <Grid Margin="20">
+    <Grid Margin="10">
+
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
 
-        <ScrollViewer Grid.Row="0">
 
-            <StackPanel>
+        <TextBlock
+            Text="Редактор корпуса - R0603"
+            FontSize="22"
+            FontWeight="Bold"
+            Margin="0,0,0,10"/>
 
 
-                <TextBlock Text="Package Editor"
-                           FontSize="26"
-                           FontWeight="Bold"
-                           Margin="0,0,0,20"/>
 
+        <TabControl
+            Grid.Row="1">
 
-                <TextBlock Text="Package Name"
-                           FontWeight="Bold"/>
 
-                <TextBox Text="{Binding PackageName}"
-                         Height="30"/>
 
+            <!-- Общие данные -->
 
+            <TabItem Header="Общие">
 
-                <TextBlock Text="Description"
-                           FontWeight="Bold"
-                           Margin="0,15,0,0"/>
 
-                <TextBox Text="{Binding DisplayName}"
-                         Height="30"/>
+                <Grid Margin="10">
 
 
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <Separator Margin="0,20,0,10"/>
 
 
-                <TextBlock Text="Package Dimensions (mm)"
-                           FontSize="18"
-                           FontWeight="Bold"/>
+                    <Border
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        Margin="0,0,15,0">
 
 
-                <TextBlock Text="Length"/>
+                        <TextBlock
+                            Text="Изображение корпуса"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="18"/>
 
-                <TextBox Text="{Binding Length}"
-                         Height="30"/>
 
+                    </Border>
 
-                <TextBlock Text="Width"
-                           Margin="0,10,0,0"/>
 
-                <TextBox Text="{Binding Width}"
-                         Height="30"/>
 
+                    <StackPanel
+                        Grid.Column="1">
 
-                <TextBlock Text="Height"
-                           Margin="0,10,0,0"/>
 
-                <TextBox Text="{Binding Height}"
-                         Height="30"/>
+                        <TextBlock Text="Имя корпуса"/>
 
+                        <TextBox
+                            Text="R0603"
+                            Height="30"/>
 
 
-                <Separator Margin="0,20,0,10"/>
 
+                        <TextBlock
+                            Text="Отображаемое имя"
+                            Margin="0,15,0,0"/>
 
 
-                <TextBlock Text="Standards"
-                           FontSize="18"
-                           FontWeight="Bold"/>
+                        <TextBox
+                            Text="Чип резистор 0603"
+                            Height="30"/>
 
 
-                <TextBlock Text="IPC"/>
 
-                <TextBox Text="{Binding IPCName}"
-                         Height="30"/>
+                        <TextBlock
+                            Text="Стандарт"
+                            Margin="0,15,0,0"/>
 
 
+                        <TextBox
+                            Text="IPC-7351"
+                            Height="30"/>
 
 
-                <Separator Margin="0,20,0,10"/>
+                    </StackPanel>
 
-                <TextBlock Text="Library Information"
-                           FontSize="18"
-                           FontWeight="Bold"/>
 
-                <TextBlock Text="Category"/>
-                <TextBox Text="{Binding Category}"
-                         Height="30"/>
+                </Grid>
 
-                <TextBlock Text="Family"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding Family}"
-                         Height="30"/>
 
-                <TextBlock Text="JEDEC Name"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding JEDECName}"
-                         Height="30"/>
+            </TabItem>
 
-                <TextBlock Text="Yamaha Name"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding YamahaName}"
-                         Height="30"/>
 
-                <TextBlock Text="Mirtec Name"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding MirtecName}"
-                         Height="30"/>
 
-                <TextBlock Text="Pitch"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding Pitch}"
-                         Height="30"/>
 
-                <TextBlock Text="Leads"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding Leads}"
-                         Height="30"/>
+            <!-- Геометрия -->
 
-                <Separator Margin="0,20,0,10"/>
+            <TabItem Header="Геометрия">
 
-                <TextBlock Text="Stencil / SPI"
-                           FontSize="18"
-                           FontWeight="Bold"/>
 
-                <TextBlock Text="Stencil Thickness"/>
-                <TextBox Text="{Binding StencilThickness}"
-                         Height="30"/>
+                <Grid Margin="10">
 
-                <TextBlock Text="Area Ratio"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding AreaRatio}"
-                         Height="30"/>
 
-                <TextBlock Text="Aspect Ratio"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding AspectRatio}"
-                         Height="30"/>
+                    <Grid.ColumnDefinitions>
 
-                <TextBlock Text="Aperture"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding Aperture}"
-                         Height="30"/>
+                        <ColumnDefinition Width="500"/>
 
-                <TextBlock Text="SPI Recommendations"
-                           Margin="0,10,0,0"/>
-                <TextBox Text="{Binding SPIRecommendations}"
-                         Height="80"
-                         TextWrapping="Wrap"/>
+                        <ColumnDefinition Width="*"/>
 
+                    </Grid.ColumnDefinitions>
 
-                <Separator Margin="0,20,0,10"/>
 
 
+                    <!-- Чертеж -->
 
-                <TextBlock Text="AOI Recommendations"
-                           FontSize="18"
-                           FontWeight="Bold"/>
+                    <Border
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        Margin="0,0,15,0">
 
 
-                <TextBox Text="{Binding AOIRecommendations}"
-                         Height="80"
-                         TextWrapping="Wrap"/>
+                        <Canvas>
 
 
-            </StackPanel>
+                            <TextBlock
+                                Canvas.Left="170"
+                                Canvas.Top="20"
+                                Text="Чертеж R0603"
+                                FontSize="18"
+                                FontWeight="Bold"/>
 
-        </ScrollViewer>
 
 
+                            <!-- корпус -->
 
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,20,0,0">
+                            <Rectangle
+                                Canvas.Left="150"
+                                Canvas.Top="150"
+                                Width="180"
+                                Height="90"
+                                Stroke="Black"
+                                StrokeThickness="2"/>
 
 
-            <Button Content="Save"
-                    Width="120"
-                    Height="40"
-                    Margin="0,0,10,0"
-                    Click="Save_Click"/>
 
+                            <TextBlock
+                                Canvas.Left="210"
+                                Canvas.Top="185"
+                                Text="R0603"
+                                FontSize="20"/>
 
-            <Button Content="Cancel"
-                    Width="120"
-                    Height="40"
-                    Click="Cancel_Click"/>
+
+
+                            <!-- длина -->
+
+                            <Line
+                                X1="150"
+                                Y1="120"
+                                X2="330"
+                                Y2="120"
+                                Stroke="Black"/>
+
+
+                            <TextBlock
+                                Canvas.Left="170"
+                                Canvas.Top="90"
+                                Text="L = 1.60 mm"/>
+
+
+
+                            <!-- ширина -->
+
+                            <Line
+                                X1="370"
+                                Y1="150"
+                                X2="370"
+                                Y2="240"
+                                Stroke="Black"/>
+
+
+                            <TextBlock
+                                Canvas.Left="380"
+                                Canvas.Top="185"
+                                Text="W = 0.80 mm"/>
+
+
+
+                            <!-- высота -->
+
+                            <TextBlock
+                                Canvas.Left="170"
+                                Canvas.Top="270"
+                                Text="H = 0.45 mm"/>
+
+
+                        </Canvas>
+
+
+                    </Border>
+
+
+
+
+                    <!-- параметры -->
+
+                    <StackPanel
+                        Grid.Column="1">
+
+
+                        <TextBlock
+                            Text="Размеры корпуса"
+                            FontSize="18"
+                            FontWeight="Bold"/>
+
+
+
+                        <TextBlock
+                            Text="Длина корпуса"
+                            Margin="0,20,0,0"/>
+
+
+                        <TextBox
+                            Text="1.60 mm"
+                            ToolTip="Длина корпуса компонента. Используется при создании посадочного места PCB, настройке AOI и расчете трафарета." />
+
+
+
+                        <TextBlock
+                            Text="Ширина корпуса"
+                            Margin="0,15,0,0"/>
+
+
+                        <TextBox
+                            Text="0.80 mm"
+                            ToolTip="Ширина корпуса компонента." />
+
+
+
+                        <TextBlock
+                            Text="Высота корпуса"
+                            Margin="0,15,0,0"/>
+
+
+                        <TextBox
+                            Text="0.45 mm"
+                            ToolTip="Высота компонента над поверхностью платы." />
+
+
+
+                        <TextBlock
+                            Text="Количество выводов"
+                            Margin="0,15,0,0"/>
+
+
+                        <TextBox
+                            Text="2"
+                            ToolTip="Количество электрических контактов компонента." />
+
+
+                    </StackPanel>
+
+
+                </Grid>
+
+
+            </TabItem>
+
+
+
+
+
+            <!-- Трафарет -->
+
+            <TabItem Header="Трафарет">
+
+
+                <StackPanel Margin="10">
+
+
+                    <TextBlock
+                        Text="Рекомендации по трафарету"
+                        FontSize="18"
+                        FontWeight="Bold"/>
+
+
+
+                    <TextBlock
+                        Text="Толщина трафарета"
+                        Margin="0,15,0,0"/>
+
+
+                    <TextBox
+                        Text="120 um"
+                        ToolTip="Толщина металлического трафарета." />
+
+
+
+                    <TextBlock
+                        Text="Уменьшение апертуры"
+                        Margin="0,15,0,0"/>
+
+
+                    <TextBox
+                        Text="10 процентов"
+                        ToolTip="Уменьшение размера отверстия трафарета относительно площадки PCB." />
+
+
+
+                    <TextBlock
+                        Text="Area Ratio"
+                        Margin="0,15,0,0"/>
+
+
+                    <TextBox
+                        Text="0.72"
+                        ToolTip="Отношение площади отверстия трафарета к площади стенки апертуры." />
+
+
+                </StackPanel>
+
+
+            </TabItem>
+
+
+
+
+
+            <!-- AOI -->
+
+            <TabItem Header="AOI Mirtec">
+
+
+                <StackPanel Margin="10">
+
+
+                    <TextBlock
+                        Text="Профиль AOI"
+                        FontSize="18"
+                        FontWeight="Bold"/>
+
+
+                    <TextBox
+                        Text="CHIP Rectangle"/>
+
+
+                    <CheckBox
+                        Content="Проверка отсутствия"
+                        IsChecked="True"/>
+
+
+                    <CheckBox
+                        Content="Проверка поворота"
+                        IsChecked="True"/>
+
+
+                    <CheckBox
+                        Content="Проверка Tombstone"
+                        IsChecked="True"/>
+
+
+                </StackPanel>
+
+
+            </TabItem>
+
+
+
+
+
+            <!-- Yamaha -->
+
+            <TabItem Header="Yamaha YS12">
+
+
+                <StackPanel Margin="10">
+
+
+                    <TextBlock
+                        Text="Профиль Yamaha"
+                        FontSize="18"
+                        FontWeight="Bold"/>
+
+
+                    <TextBlock Text="Имя библиотеки"/>
+
+
+                    <TextBox Text="R0603"/>
+
+
+
+                    <TextBlock
+                        Text="Сопло"
+                        Margin="0,15,0,0"/>
+
+
+                    <TextBox Text="201"/>
+
+
+                </StackPanel>
+
+
+            </TabItem>
+
+
+
+
+
+            <!-- Изображения -->
+
+            <TabItem Header="Изображения">
+
+
+                <Border
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Margin="10">
+
+
+                    <TextBlock
+                        Text="Фото корпуса / Чертеж / Footprint / 3D модель"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="18"/>
+
+
+                </Border>
+
+
+            </TabItem>
+
+
+        </TabControl>
+
+
+
+
+
+        <StackPanel
+            Grid.Row="2"
+            Orientation="Horizontal"
+            HorizontalAlignment="Right">
+
+
+            <Button
+                Content="Сохранить"
+                Width="100"
+                Margin="5"/>
+
+
+
+            <Button
+                Content="Отмена"
+                Width="100"
+                Margin="5"
+                Click="Cancel_Click"/>
 
 
         </StackPanel>
