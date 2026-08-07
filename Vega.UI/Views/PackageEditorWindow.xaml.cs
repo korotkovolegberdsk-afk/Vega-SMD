@@ -31,13 +31,18 @@ public partial class PackageEditorWindow : Window
         DisplayNameTextBox.Text = _viewModel.DisplayName;
         DescriptionTextBox.Text = _viewModel.Description;
         StandardTextBox.Text = _viewModel.IPCName;
-        LengthTextBox.Text = FormatNumber(_viewModel.Length);
-        WidthTextBox.Text = FormatNumber(_viewModel.Width);
-        HeightTextBox.Text = FormatNumber(_viewModel.Height);
-        PitchTextBox.Text = FormatNumber(_viewModel.Pitch);
-        LeadCountTextBox.Text = _viewModel.LeadCount.ToString(CultureInfo.CurrentCulture);
-        PadCountTextBox.Text = _viewModel.PadCount.ToString(CultureInfo.CurrentCulture);
-        ThermalPadCountTextBox.Text = _viewModel.ThermalPadCount.ToString(CultureInfo.CurrentCulture);
+        BodyLengthTextBox.Text = FormatNumber(_viewModel.Geometry.BodyLength);
+        BodyWidthTextBox.Text = FormatNumber(_viewModel.Geometry.BodyWidth);
+        BodyHeightTextBox.Text = FormatNumber(_viewModel.Geometry.BodyHeight);
+        CenterXTextBox.Text = FormatNumber(_viewModel.Geometry.CenterX);
+        CenterYTextBox.Text = FormatNumber(_viewModel.Geometry.CenterY);
+        LeadLengthTextBox.Text = FormatNumber(_viewModel.Geometry.LeadLength);
+        LeadWidthTextBox.Text = FormatNumber(_viewModel.Geometry.LeadWidth);
+        LeadPitchTextBox.Text = FormatNumber(_viewModel.Geometry.LeadPitch);
+        GeometryLeadCountTextBox.Text = _viewModel.Geometry.LeadCount.ToString(CultureInfo.CurrentCulture);
+        PadLengthTextBox.Text = FormatNumber(_viewModel.Geometry.PadLength);
+        PadWidthTextBox.Text = FormatNumber(_viewModel.Geometry.PadWidth);
+        PadPitchTextBox.Text = FormatNumber(_viewModel.Geometry.PadPitch);
         IPCNameTextBox.Text = _viewModel.IPCName;
         JEDECNameTextBox.Text = _viewModel.JEDECName;
         LandPatternNameTextBox.Text = _viewModel.LandPatternName;
@@ -60,14 +65,18 @@ public partial class PackageEditorWindow : Window
             return;
         }
 
-        if (!TryReadDouble(LengthTextBox, "длину корпуса", out var length)
-            || !TryReadDouble(WidthTextBox, "ширину корпуса", out var width)
-            || !TryReadDouble(HeightTextBox, "высоту корпуса", out var height)
-            || !TryReadDouble(PitchTextBox, "шаг выводов", out var pitch)
-            || !TryReadInt(LeadCountTextBox, "количество выводов", out var leadCount)
-            || !TryReadInt(PadCountTextBox, "количество площадок", out var padCount)
-            || !TryReadInt(ThermalPadCountTextBox, "количество тепловых площадок", out var thermalPadCount)
-            || !TryReadDouble(StencilThicknessTextBox, "толщину трафарета", out var stencilThickness)
+        if (!TryReadDouble(BodyLengthTextBox, "длину корпуса", out var bodyLength)
+            || !TryReadDouble(BodyWidthTextBox, "ширину корпуса", out var bodyWidth)
+            || !TryReadDouble(BodyHeightTextBox, "высоту корпуса", out var bodyHeight)
+            || !TryReadDouble(CenterXTextBox, "координату центра X", out var centerX)
+            || !TryReadDouble(CenterYTextBox, "координату центра Y", out var centerY)
+            || !TryReadDouble(LeadLengthTextBox, "длину вывода", out var leadLength)
+            || !TryReadDouble(LeadWidthTextBox, "ширину вывода", out var leadWidth)
+            || !TryReadDouble(LeadPitchTextBox, "шаг выводов", out var leadPitch)
+            || !TryReadInt(GeometryLeadCountTextBox, "количество выводов", out var geometryLeadCount)
+            || !TryReadDouble(PadLengthTextBox, "длину площадки", out var padLength)
+            || !TryReadDouble(PadWidthTextBox, "ширину площадки", out var padWidth)
+            || !TryReadDouble(PadPitchTextBox, "шаг площадок", out var padPitch)            || !TryReadDouble(StencilThicknessTextBox, "толщину трафарета", out var stencilThickness)
             || !TryReadDouble(AreaRatioTextBox, "Area Ratio", out var areaRatio)
             || !TryReadDouble(AspectRatioTextBox, "Aspect Ratio", out var aspectRatio))
         {
@@ -77,13 +86,18 @@ public partial class PackageEditorWindow : Window
         _viewModel.PackageName = PackageNameTextBox.Text.Trim();
         _viewModel.DisplayName = DisplayNameTextBox.Text.Trim();
         _viewModel.Description = DescriptionTextBox.Text.Trim();
-        _viewModel.Length = length;
-        _viewModel.Width = width;
-        _viewModel.Height = height;
-        _viewModel.Pitch = pitch;
-        _viewModel.LeadCount = leadCount;
-        _viewModel.PadCount = padCount;
-        _viewModel.ThermalPadCount = thermalPadCount;
+        _viewModel.Geometry.BodyLength = bodyLength;
+        _viewModel.Geometry.BodyWidth = bodyWidth;
+        _viewModel.Geometry.BodyHeight = bodyHeight;
+        _viewModel.Geometry.CenterX = centerX;
+        _viewModel.Geometry.CenterY = centerY;
+        _viewModel.Geometry.LeadLength = leadLength;
+        _viewModel.Geometry.LeadWidth = leadWidth;
+        _viewModel.Geometry.LeadPitch = leadPitch;
+        _viewModel.Geometry.LeadCount = geometryLeadCount;
+        _viewModel.Geometry.PadLength = padLength;
+        _viewModel.Geometry.PadWidth = padWidth;
+        _viewModel.Geometry.PadPitch = padPitch;
         _viewModel.IPCName = string.IsNullOrWhiteSpace(IPCNameTextBox.Text)
             ? StandardTextBox.Text.Trim()
             : IPCNameTextBox.Text.Trim();

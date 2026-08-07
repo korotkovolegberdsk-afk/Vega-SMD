@@ -8,12 +8,14 @@ public class PackageDefinitionService
     private readonly PackageDefinitionRepository _repository;
     private readonly PackageProcessProfileRepository _processProfileRepository;
     private readonly EquipmentAliasRepository _equipmentAliasRepository;
+    private readonly PackageGeometryRepository _geometryRepository;
 
     public PackageDefinitionService()
     {
         _repository = new PackageDefinitionRepository();
         _processProfileRepository = new PackageProcessProfileRepository();
         _equipmentAliasRepository = new EquipmentAliasRepository();
+        _geometryRepository = new PackageGeometryRepository();
     }
 
     public List<PackageCategory> GetCategories() => _repository.GetCategories();
@@ -35,6 +37,29 @@ public class PackageDefinitionService
         return packageId <= 0
             ? new List<EquipmentAlias>()
             : _equipmentAliasRepository.GetByPackageId(packageId);
+    }
+    public PackageGeometry? GetGeometry(int packageId)
+    {
+        return packageId <= 0
+            ? null
+            : _geometryRepository.GetByPackageId(packageId);
+    }
+
+    public void AddGeometry(PackageGeometry geometry)
+    {
+        ValidateGeometry(geometry);
+        _geometryRepository.Add(geometry);
+    }
+
+    public void UpdateGeometry(PackageGeometry geometry)
+    {
+        if (geometry.Id <= 0)
+        {
+            throw new ArgumentException("Id геометрии должен быть указан.");
+        }
+
+        ValidateGeometry(geometry);
+        _geometryRepository.Update(geometry);
     }
 
     public void AddEquipmentAlias(EquipmentAlias alias)
@@ -84,6 +109,27 @@ public class PackageDefinitionService
         _processProfileRepository.Upsert(processProfile);
     }
 
+
+    public void Save(
+        PackageDefinition package,
+        PackageProcessProfile processProfile,
+        PackageGeometry geometry)
+    {
+        Save(package, processProfile);
+
+        geometry.PackageId = package.Id;
+
+        if (geometry.Id == 0)
+        {
+            _geometryRepository.Add(geometry);
+        }
+        else
+        {
+            _geometryRepository.Update(geometry);
+        }
+    }
+
+
     public List<PackageDefinition> GetAll() => _repository.GetAll();
 
     public PackageDefinition? GetById(int id) => _repository.GetById(id);
@@ -114,7 +160,18 @@ public class PackageDefinitionService
 
         _repository.SetActive(id, false);
     }
+    private static void ValidateGeometry(PackageGeometry geometry)
+    {
+        if (geometry.PackageId <= 0)
+        {
+            throw new ArgumentException("PackageId геометрии должен быть указан.");
+        }
 
+        if (geometry.LeadCount < 0)
+        {
+            throw new ArgumentException("Количество выводов не может быть отрицательным.");
+        }
+    }
     private static void ValidateEquipmentAlias(EquipmentAlias alias)
     {
         if (alias.PackageId <= 0)

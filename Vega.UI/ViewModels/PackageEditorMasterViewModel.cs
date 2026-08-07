@@ -33,6 +33,7 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
     private bool _isActive = true;
     private int _version;
     private PackageProcessProfile _processProfile = new();
+    private PackageGeometry _geometry = new();
     private double _stencilThickness;
     private string _apertureType = string.Empty;
     private string _apertureReduction = string.Empty;
@@ -203,6 +204,8 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
 
     public PackageProcessProfile ProcessProfile => _processProfile;
 
+    public PackageGeometry Geometry => _geometry;
+
     public double StencilThickness
     {
         get => _stencilThickness;
@@ -275,6 +278,7 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
             _packageService.GetProcessProfile(package.Id)
             ?? new PackageProcessProfile { PackageId = package.Id });
         LoadAliases(package.Id);
+        ApplyGeometry(_packageService.GetGeometry(package.Id) ?? new PackageGeometry { PackageId = package.Id });
     }
 
     public void Update()
@@ -292,8 +296,9 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
     {
         var package = CreatePackageDefinition();
         var processProfile = CreateProcessProfile();
+        var geometry = Geometry;
 
-        _packageService.Save(package, processProfile);
+        _packageService.Save(package, processProfile, geometry);
 
         var savedPackage = _packageService.GetAll()
             .Single(x => x.PackageName == package.PackageName);
@@ -304,6 +309,7 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
             _packageService.GetProcessProfile(savedPackage.Id)
             ?? new PackageProcessProfile { PackageId = savedPackage.Id });
         LoadAliases(savedPackage.Id);
+        ApplyGeometry(_packageService.GetGeometry(savedPackage.Id) ?? new PackageGeometry { PackageId = savedPackage.Id });
     }
     public void Deactivate()
     {
@@ -448,6 +454,11 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
         TypicalDefects = profile.TypicalDefects;
         RecommendedProfile = profile.ReflowRecommendations;
         OnPropertyChanged(nameof(ProcessProfile));
+    }
+    private void ApplyGeometry(PackageGeometry geometry)
+    {
+        _geometry = geometry;
+        OnPropertyChanged(nameof(Geometry));
     }
     private void Apply(PackageDefinition package)
     {

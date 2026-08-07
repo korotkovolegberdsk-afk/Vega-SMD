@@ -213,85 +213,40 @@
 
 
                     <!-- Параметры -->
+                    <ScrollViewer Grid.Column="1"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="Корпус" FontSize="18" FontWeight="Bold"/>
+                            <TextBlock Text="Длина" Margin="0,12,0,0"/>
+                            <TextBox x:Name="BodyLengthTextBox" Height="30"/>
+                            <TextBlock Text="Ширина" Margin="0,12,0,0"/>
+                            <TextBox x:Name="BodyWidthTextBox" Height="30"/>
+                            <TextBlock Text="Высота" Margin="0,12,0,0"/>
+                            <TextBox x:Name="BodyHeightTextBox" Height="30"/>
+                            <TextBlock Text="Центр X" Margin="0,12,0,0"/>
+                            <TextBox x:Name="CenterXTextBox" Height="30"/>
+                            <TextBlock Text="Центр Y" Margin="0,12,0,0"/>
+                            <TextBox x:Name="CenterYTextBox" Height="30"/>
 
-                    <StackPanel Grid.Column="1">
+                            <TextBlock Text="Выводы" FontSize="18" FontWeight="Bold" Margin="0,22,0,0"/>
+                            <TextBlock Text="Длина вывода" Margin="0,12,0,0"/>
+                            <TextBox x:Name="LeadLengthTextBox" Height="30"/>
+                            <TextBlock Text="Ширина вывода" Margin="0,12,0,0"/>
+                            <TextBox x:Name="LeadWidthTextBox" Height="30"/>
+                            <TextBlock Text="Шаг выводов" Margin="0,12,0,0"/>
+                            <TextBox x:Name="LeadPitchTextBox" Height="30"/>
+                            <TextBlock Text="Количество выводов" Margin="0,12,0,0"/>
+                            <TextBox x:Name="GeometryLeadCountTextBox" Height="30"/>
 
-
-                        <TextBlock
-                            Text="Размеры корпуса"
-                            FontSize="18"
-                            FontWeight="Bold"/>
-
-
-
-                        <TextBlock Text="Длина корпуса"
-                                   Margin="0,20,0,0"/>
-
-                        <TextBox
-                            x:Name="LengthTextBox"
-                            Height="30"
-                            ToolTip="Длина корпуса компонента"/>
-
-
-
-                        <TextBlock Text="Ширина корпуса"
-                                   Margin="0,15,0,0"/>
-
-                        <TextBox
-                            x:Name="WidthTextBox"
-                            Height="30"
-                            ToolTip="Ширина корпуса компонента"/>
-
-
-
-                        <TextBlock Text="Высота корпуса"
-                                   Margin="0,15,0,0"/>
-
-                        <TextBox
-                            x:Name="HeightTextBox"
-                            Height="30"
-                            ToolTip="Высота компонента"/>
-
-
-
-                        <TextBlock Text="Шаг выводов"
-                                   Margin="0,15,0,0"/>
-
-                        <TextBox
-                            x:Name="PitchTextBox"
-                            Height="30"
-                            ToolTip="Расстояние между выводами"/>
-
-
-
-                        <TextBlock Text="Количество выводов"
-                                   Margin="0,15,0,0"/>
-
-                        <TextBox
-                            x:Name="LeadCountTextBox"
-                            Height="30"/>
-
-
-
-                        <TextBlock Text="Количество площадок"
-                                   Margin="0,15,0,0"/>
-
-                        <TextBox
-                            x:Name="PadCountTextBox"
-                            Height="30"/>
-
-
-
-                        <TextBlock Text="Тепловые площадки"
-                                   Margin="0,15,0,0"/>
-
-                        <TextBox
-                            x:Name="ThermalPadCountTextBox"
-                            Height="30"/>
-
-
-                    </StackPanel>
-
+                            <TextBlock Text="Площадки" FontSize="18" FontWeight="Bold" Margin="0,22,0,0"/>
+                            <TextBlock Text="Длина площадки" Margin="0,12,0,0"/>
+                            <TextBox x:Name="PadLengthTextBox" Height="30"/>
+                            <TextBlock Text="Ширина площадки" Margin="0,12,0,0"/>
+                            <TextBox x:Name="PadWidthTextBox" Height="30"/>
+                            <TextBlock Text="Шаг площадок" Margin="0,12,0,0"/>
+                            <TextBox x:Name="PadPitchTextBox" Height="30"/>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
 
             </TabItem>

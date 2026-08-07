@@ -33,6 +33,10 @@
     <None Update="Migration\003_MasterLibrary_Components.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+
+    <None Update="Migration\004_MasterLibrary_PackageGeometry.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

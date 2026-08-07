@@ -86,7 +86,8 @@ public sealed class PackageDefinitionMasterLibraryTestDatabase : IDisposable
                  {
                      "ComponentDefinition",
                      "EquipmentAlias",
-                     "PackageProcessProfile"
+                     "PackageProcessProfile",
+                     "PackageGeometry"
                  })
         {
             using var command = connection.CreateCommand();
