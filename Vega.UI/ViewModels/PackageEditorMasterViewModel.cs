@@ -34,6 +34,7 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
     private int _version;
     private PackageProcessProfile _processProfile = new();
     private PackageGeometry _geometry = new();
+    private PackageFootprint _footprint = new();
     private double _stencilThickness;
     private string _apertureType = string.Empty;
     private string _apertureReduction = string.Empty;
@@ -206,6 +207,8 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
 
     public PackageGeometry Geometry => _geometry;
 
+    public PackageFootprint Footprint => _footprint;
+
     public double StencilThickness
     {
         get => _stencilThickness;
@@ -279,6 +282,7 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
             ?? new PackageProcessProfile { PackageId = package.Id });
         LoadAliases(package.Id);
         ApplyGeometry(_packageService.GetGeometry(package.Id) ?? new PackageGeometry { PackageId = package.Id });
+        ApplyFootprint(_packageService.GetFootprint(package.Id) ?? new PackageFootprint { PackageId = package.Id });
     }
 
     public void Update()
@@ -297,8 +301,9 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
         var package = CreatePackageDefinition();
         var processProfile = CreateProcessProfile();
         var geometry = Geometry;
+        var footprint = Footprint;
 
-        _packageService.Save(package, processProfile, geometry);
+        _packageService.Save(package, processProfile, geometry, footprint);
 
         var savedPackage = _packageService.GetAll()
             .Single(x => x.PackageName == package.PackageName);
@@ -310,6 +315,7 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
             ?? new PackageProcessProfile { PackageId = savedPackage.Id });
         LoadAliases(savedPackage.Id);
         ApplyGeometry(_packageService.GetGeometry(savedPackage.Id) ?? new PackageGeometry { PackageId = savedPackage.Id });
+        ApplyFootprint(_packageService.GetFootprint(savedPackage.Id) ?? new PackageFootprint { PackageId = savedPackage.Id });
     }
     public void Deactivate()
     {
@@ -455,6 +461,13 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
         RecommendedProfile = profile.ReflowRecommendations;
         OnPropertyChanged(nameof(ProcessProfile));
     }
+
+    private void ApplyFootprint(PackageFootprint footprint)
+    {
+        _footprint = footprint;
+        OnPropertyChanged(nameof(Footprint));
+    }
+
     private void ApplyGeometry(PackageGeometry geometry)
     {
         _geometry = geometry;

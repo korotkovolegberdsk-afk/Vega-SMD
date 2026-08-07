@@ -37,6 +37,9 @@
     <None Update="Migration\004_MasterLibrary_PackageGeometry.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Migration\005_MasterLibrary_PackageFootprint.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -55,6 +55,18 @@ public partial class PackageEditorWindow : Window
         AOIRecommendationsTextBox.Text = _viewModel.AOIRecommendations;
         TypicalDefectsTextBox.Text = _viewModel.TypicalDefects;
         RecommendedProfileTextBox.Text = _viewModel.RecommendedProfile;
+        PatternNameTextBox.Text = _viewModel.Footprint.PatternName;
+        FootprintStandardNameTextBox.Text = _viewModel.Footprint.StandardName;
+        FootprintDescriptionTextBox.Text = _viewModel.Footprint.Description;
+        FootprintPadCountTextBox.Text = _viewModel.Footprint.PadCount.ToString(CultureInfo.CurrentCulture);
+        FootprintPadLengthTextBox.Text = FormatNumber(_viewModel.Footprint.PadLength);
+        FootprintPadWidthTextBox.Text = FormatNumber(_viewModel.Footprint.PadWidth);
+        FootprintPadPitchTextBox.Text = FormatNumber(_viewModel.Footprint.PadPitch);
+        Pin1OffsetTextBox.Text = FormatNumber(_viewModel.Footprint.Pin1Offset);
+        RowCountTextBox.Text = _viewModel.Footprint.RowCount.ToString(CultureInfo.CurrentCulture);
+        ColumnCountTextBox.Text = _viewModel.Footprint.ColumnCount.ToString(CultureInfo.CurrentCulture);
+        PasteReductionTextBox.Text = FormatNumber(_viewModel.Footprint.PasteReduction);
+        FootprintApertureTypeTextBox.Text = _viewModel.Footprint.ApertureType;
     }
 
     private void Save_Click(object sender, RoutedEventArgs e)
@@ -78,7 +90,14 @@ public partial class PackageEditorWindow : Window
             || !TryReadDouble(PadWidthTextBox, "ширину площадки", out var padWidth)
             || !TryReadDouble(PadPitchTextBox, "шаг площадок", out var padPitch)            || !TryReadDouble(StencilThicknessTextBox, "толщину трафарета", out var stencilThickness)
             || !TryReadDouble(AreaRatioTextBox, "Area Ratio", out var areaRatio)
-            || !TryReadDouble(AspectRatioTextBox, "Aspect Ratio", out var aspectRatio))
+            || !TryReadDouble(AspectRatioTextBox, "Aspect Ratio", out var aspectRatio)            || !TryReadInt(FootprintPadCountTextBox, "количество площадок", out var footprintPadCount)
+            || !TryReadDouble(FootprintPadLengthTextBox, "длину площадки", out var footprintPadLength)
+            || !TryReadDouble(FootprintPadWidthTextBox, "ширину площадки", out var footprintPadWidth)
+            || !TryReadDouble(FootprintPadPitchTextBox, "шаг площадок", out var footprintPadPitch)
+            || !TryReadDouble(Pin1OffsetTextBox, "смещение вывода 1", out var pin1Offset)
+            || !TryReadInt(RowCountTextBox, "количество рядов", out var rowCount)
+            || !TryReadInt(ColumnCountTextBox, "количество колонок", out var columnCount)
+            || !TryReadDouble(PasteReductionTextBox, "уменьшение пасты", out var pasteReduction))
         {
             return;
         }
@@ -112,6 +131,18 @@ public partial class PackageEditorWindow : Window
         _viewModel.AOIRecommendations = AOIRecommendationsTextBox.Text.Trim();
         _viewModel.TypicalDefects = TypicalDefectsTextBox.Text.Trim();
         _viewModel.RecommendedProfile = RecommendedProfileTextBox.Text.Trim();
+        _viewModel.Footprint.PatternName = PatternNameTextBox.Text.Trim();
+        _viewModel.Footprint.StandardName = FootprintStandardNameTextBox.Text.Trim();
+        _viewModel.Footprint.Description = FootprintDescriptionTextBox.Text.Trim();
+        _viewModel.Footprint.PadCount = footprintPadCount;
+        _viewModel.Footprint.PadLength = footprintPadLength;
+        _viewModel.Footprint.PadWidth = footprintPadWidth;
+        _viewModel.Footprint.PadPitch = footprintPadPitch;
+        _viewModel.Footprint.Pin1Offset = pin1Offset;
+        _viewModel.Footprint.RowCount = rowCount;
+        _viewModel.Footprint.ColumnCount = columnCount;
+        _viewModel.Footprint.PasteReduction = pasteReduction;
+        _viewModel.Footprint.ApertureType = FootprintApertureTypeTextBox.Text.Trim();
 
         try
         {

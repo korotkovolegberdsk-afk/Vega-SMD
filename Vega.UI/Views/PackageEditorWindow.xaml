@@ -441,6 +441,43 @@
                 </Grid>
             </TabItem>
 
+            <TabItem Header="Посадочное место">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Стандарт" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="Имя паттерна" Margin="0,12,0,0"/>
+                        <TextBox x:Name="PatternNameTextBox" Height="30"/>
+                        <TextBlock Text="Стандартное имя" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintStandardNameTextBox" Height="30"/>
+                        <TextBlock Text="Описание" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintDescriptionTextBox" Height="70" TextWrapping="Wrap" AcceptsReturn="True"/>
+
+                        <TextBlock Text="Площадки" FontSize="18" FontWeight="Bold" Margin="0,22,0,0"/>
+                        <TextBlock Text="Количество площадок" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintPadCountTextBox" Height="30"/>
+                        <TextBlock Text="Длина площадки" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintPadLengthTextBox" Height="30"/>
+                        <TextBlock Text="Ширина площадки" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintPadWidthTextBox" Height="30"/>
+                        <TextBlock Text="Шаг площадок" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintPadPitchTextBox" Height="30"/>
+
+                        <TextBlock Text="Выводы" FontSize="18" FontWeight="Bold" Margin="0,22,0,0"/>
+                        <TextBlock Text="Смещение вывода 1" Margin="0,12,0,0"/>
+                        <TextBox x:Name="Pin1OffsetTextBox" Height="30"/>
+                        <TextBlock Text="Количество рядов" Margin="0,12,0,0"/>
+                        <TextBox x:Name="RowCountTextBox" Height="30"/>
+                        <TextBlock Text="Количество колонок" Margin="0,12,0,0"/>
+                        <TextBox x:Name="ColumnCountTextBox" Height="30"/>
+
+                        <TextBlock Text="Трафарет" FontSize="18" FontWeight="Bold" Margin="0,22,0,0"/>
+                        <TextBlock Text="Уменьшение пасты" Margin="0,12,0,0"/>
+                        <TextBox x:Name="PasteReductionTextBox" Height="30"/>
+                        <TextBlock Text="Тип апертуры" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintApertureTypeTextBox" Height="30"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
             <!-- AOI -->
 
             <TabItem Header="AOI Mirtec">
