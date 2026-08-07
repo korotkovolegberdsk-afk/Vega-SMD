@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\Vega.Services\Vega.Services.csproj" />
+  </ItemGroup>
+</Project>
