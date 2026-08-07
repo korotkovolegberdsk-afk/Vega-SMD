@@ -1,4 +1,4 @@
-﻿<Window x:Class="Vega.UI.Views.PackageEditorWindow"
+<Window x:Class="Vega.UI.Views.PackageEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Редактор корпуса"
@@ -6,9 +6,7 @@
         Height="750"
         WindowStartupLocation="CenterScreen">
 
-
     <Grid Margin="10">
-
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,27 +15,22 @@
         </Grid.RowDefinitions>
 
 
-
         <TextBlock
-            Text="Редактор корпуса - R0603"
+            Text="Редактор корпуса"
             FontSize="22"
             FontWeight="Bold"
             Margin="0,0,0,10"/>
 
 
 
-        <TabControl
-            Grid.Row="1">
-
+        <TabControl Grid.Row="1">
 
 
             <!-- Общие данные -->
 
             <TabItem Header="Общие">
 
-
                 <Grid Margin="10">
-
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300"/>
@@ -45,12 +38,10 @@
                     </Grid.ColumnDefinitions>
 
 
-
                     <Border
                         BorderBrush="Gray"
                         BorderThickness="1"
                         Margin="0,0,15,0">
-
 
                         <TextBlock
                             Text="Изображение корпуса"
@@ -58,19 +49,17 @@
                             VerticalAlignment="Center"
                             FontSize="18"/>
 
-
                     </Border>
 
 
 
-                    <StackPanel
-                        Grid.Column="1">
+                    <StackPanel Grid.Column="1">
 
 
                         <TextBlock Text="Имя корпуса"/>
 
                         <TextBox
-                            Text="R0603"
+                            x:Name="PackageNameTextBox"
                             Height="30"/>
 
 
@@ -81,8 +70,21 @@
 
 
                         <TextBox
-                            Text="Чип резистор 0603"
+                            x:Name="DisplayNameTextBox"
                             Height="30"/>
+
+
+
+                        <TextBlock
+                            Text="Описание"
+                            Margin="0,15,0,0"/>
+
+
+                        <TextBox
+                            x:Name="DescriptionTextBox"
+                            Height="80"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"/>
 
 
 
@@ -92,35 +94,24 @@
 
 
                         <TextBox
-                            Text="IPC-7351"
+                            x:Name="StandardTextBox"
                             Height="30"/>
 
 
                     </StackPanel>
 
-
                 </Grid>
 
-
             </TabItem>
-
-
-
-
             <!-- Геометрия -->
 
             <TabItem Header="Геометрия">
 
-
                 <Grid Margin="10">
 
-
                     <Grid.ColumnDefinitions>
-
                         <ColumnDefinition Width="500"/>
-
                         <ColumnDefinition Width="*"/>
-
                     </Grid.ColumnDefinitions>
 
 
@@ -132,20 +123,16 @@
                         BorderThickness="1"
                         Margin="0,0,15,0">
 
-
                         <Canvas>
 
 
                             <TextBlock
                                 Canvas.Left="170"
                                 Canvas.Top="20"
-                                Text="Чертеж R0603"
+                                Text="Чертеж корпуса"
                                 FontSize="18"
                                 FontWeight="Bold"/>
 
-
-
-                            <!-- корпус -->
 
                             <Rectangle
                                 Canvas.Left="150"
@@ -156,16 +143,12 @@
                                 StrokeThickness="2"/>
 
 
-
                             <TextBlock
-                                Canvas.Left="210"
+                                Canvas.Left="205"
                                 Canvas.Top="185"
                                 Text="R0603"
                                 FontSize="20"/>
 
-
-
-                            <!-- длина -->
 
                             <Line
                                 X1="150"
@@ -176,13 +159,10 @@
 
 
                             <TextBlock
-                                Canvas.Left="170"
+                                Canvas.Left="175"
                                 Canvas.Top="90"
-                                Text="L = 1.60 mm"/>
+                                Text="L"/>
 
-
-
-                            <!-- ширина -->
 
                             <Line
                                 X1="370"
@@ -195,30 +175,25 @@
                             <TextBlock
                                 Canvas.Left="380"
                                 Canvas.Top="185"
-                                Text="W = 0.80 mm"/>
+                                Text="W"/>
 
-
-
-                            <!-- высота -->
 
                             <TextBlock
                                 Canvas.Left="170"
                                 Canvas.Top="270"
-                                Text="H = 0.45 mm"/>
+                                Text="H"/>
 
 
                         </Canvas>
-
 
                     </Border>
 
 
 
 
-                    <!-- параметры -->
+                    <!-- Параметры -->
 
-                    <StackPanel
-                        Grid.Column="1">
+                    <StackPanel Grid.Column="1">
 
 
                         <TextBlock
@@ -228,57 +203,119 @@
 
 
 
-                        <TextBlock
-                            Text="Длина корпуса"
-                            Margin="0,20,0,0"/>
-
+                        <TextBlock Text="Длина корпуса"
+                                   Margin="0,20,0,0"/>
 
                         <TextBox
-                            Text="1.60 mm"
-                            ToolTip="Длина корпуса компонента. Используется при создании посадочного места PCB, настройке AOI и расчете трафарета." />
+                            x:Name="LengthTextBox"
+                            Height="30"
+                            ToolTip="Длина корпуса компонента"/>
 
 
 
-                        <TextBlock
-                            Text="Ширина корпуса"
-                            Margin="0,15,0,0"/>
-
-
-                        <TextBox
-                            Text="0.80 mm"
-                            ToolTip="Ширина корпуса компонента." />
-
-
-
-                        <TextBlock
-                            Text="Высота корпуса"
-                            Margin="0,15,0,0"/>
-
+                        <TextBlock Text="Ширина корпуса"
+                                   Margin="0,15,0,0"/>
 
                         <TextBox
-                            Text="0.45 mm"
-                            ToolTip="Высота компонента над поверхностью платы." />
+                            x:Name="WidthTextBox"
+                            Height="30"
+                            ToolTip="Ширина корпуса компонента"/>
 
 
 
-                        <TextBlock
-                            Text="Количество выводов"
-                            Margin="0,15,0,0"/>
-
+                        <TextBlock Text="Высота корпуса"
+                                   Margin="0,15,0,0"/>
 
                         <TextBox
-                            Text="2"
-                            ToolTip="Количество электрических контактов компонента." />
+                            x:Name="HeightTextBox"
+                            Height="30"
+                            ToolTip="Высота компонента"/>
+
+
+
+                        <TextBlock Text="Шаг выводов"
+                                   Margin="0,15,0,0"/>
+
+                        <TextBox
+                            x:Name="PitchTextBox"
+                            Height="30"
+                            ToolTip="Расстояние между выводами"/>
+
+
+
+                        <TextBlock Text="Количество выводов"
+                                   Margin="0,15,0,0"/>
+
+                        <TextBox
+                            x:Name="LeadCountTextBox"
+                            Height="30"/>
+
+
+
+                        <TextBlock Text="Количество площадок"
+                                   Margin="0,15,0,0"/>
+
+                        <TextBox
+                            x:Name="PadCountTextBox"
+                            Height="30"/>
+
+
+
+                        <TextBlock Text="Тепловые площадки"
+                                   Margin="0,15,0,0"/>
+
+                        <TextBox
+                            x:Name="ThermalPadCountTextBox"
+                            Height="30"/>
 
 
                     </StackPanel>
 
-
                 </Grid>
-
 
             </TabItem>
 
+
+
+
+
+            <!-- Стандарты -->
+
+            <TabItem Header="Стандарты">
+
+                <StackPanel Margin="10">
+
+
+                    <TextBlock Text="IPC Name"/>
+
+                    <TextBox
+                        x:Name="IPCNameTextBox"
+                        Height="30"/>
+
+
+
+                    <TextBlock
+                        Text="JEDEC Name"
+                        Margin="0,15,0,0"/>
+
+                    <TextBox
+                        x:Name="JEDECNameTextBox"
+                        Height="30"/>
+
+
+
+                    <TextBlock
+                        Text="Land Pattern"
+                        Margin="0,15,0,0"/>
+
+                    <TextBox
+                        x:Name="LandPatternNameTextBox"
+                        Height="30"/>
+
+
+                </StackPanel>
+
+            </TabItem>
 
 
 
@@ -287,51 +324,34 @@
 
             <TabItem Header="Трафарет">
 
-
                 <StackPanel Margin="10">
-
 
                     <TextBlock
                         Text="Рекомендации по трафарету"
                         FontSize="18"
                         FontWeight="Bold"/>
 
-
-
                     <TextBlock
                         Text="Толщина трафарета"
-                        Margin="0,15,0,0"/>
+                        Margin="0,20,0,0"/>
 
-
-                    <TextBox
-                        Text="120 um"
-                        ToolTip="Толщина металлического трафарета." />
-
+                    <TextBox Text="120 um"/>
 
 
                     <TextBlock
                         Text="Уменьшение апертуры"
                         Margin="0,15,0,0"/>
 
-
-                    <TextBox
-                        Text="10 процентов"
-                        ToolTip="Уменьшение размера отверстия трафарета относительно площадки PCB." />
-
+                    <TextBox Text="10 процентов"/>
 
 
                     <TextBlock
                         Text="Area Ratio"
                         Margin="0,15,0,0"/>
 
-
-                    <TextBox
-                        Text="0.72"
-                        ToolTip="Отношение площади отверстия трафарета к площади стенки апертуры." />
-
+                    <TextBox Text="0.72"/>
 
                 </StackPanel>
-
 
             </TabItem>
 
@@ -343,37 +363,23 @@
 
             <TabItem Header="AOI Mirtec">
 
-
                 <StackPanel Margin="10">
-
 
                     <TextBlock
                         Text="Профиль AOI"
                         FontSize="18"
                         FontWeight="Bold"/>
 
+                    <CheckBox Content="Missing Check"
+                              IsChecked="True"/>
 
-                    <TextBox
-                        Text="CHIP Rectangle"/>
+                    <CheckBox Content="Rotation Check"
+                              IsChecked="True"/>
 
-
-                    <CheckBox
-                        Content="Проверка отсутствия"
-                        IsChecked="True"/>
-
-
-                    <CheckBox
-                        Content="Проверка поворота"
-                        IsChecked="True"/>
-
-
-                    <CheckBox
-                        Content="Проверка Tombstone"
-                        IsChecked="True"/>
-
+                    <CheckBox Content="Tombstone Check"
+                              IsChecked="True"/>
 
                 </StackPanel>
-
 
             </TabItem>
 
@@ -385,33 +391,21 @@
 
             <TabItem Header="Yamaha YS12">
 
-
                 <StackPanel Margin="10">
 
-
                     <TextBlock
-                        Text="Профиль Yamaha"
-                        FontSize="18"
-                        FontWeight="Bold"/>
-
-
-                    <TextBlock Text="Имя библиотеки"/>
-
+                        Text="Имя библиотеки Yamaha"/>
 
                     <TextBox Text="R0603"/>
-
 
 
                     <TextBlock
                         Text="Сопло"
                         Margin="0,15,0,0"/>
 
-
                     <TextBox Text="201"/>
 
-
                 </StackPanel>
-
 
             </TabItem>
 
@@ -423,28 +417,22 @@
 
             <TabItem Header="Изображения">
 
-
                 <Border
                     BorderBrush="Gray"
                     BorderThickness="1"
                     Margin="10">
 
-
                     <TextBlock
-                        Text="Фото корпуса / Чертеж / Footprint / 3D модель"
+                        Text="Фото / Чертеж / Footprint / 3D"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="18"/>
-
+                        VerticalAlignment="Center"/>
 
                 </Border>
-
 
             </TabItem>
 
 
         </TabControl>
-
 
 
 
@@ -458,8 +446,8 @@
             <Button
                 Content="Сохранить"
                 Width="100"
-                Margin="5"/>
-
+                Margin="5"
+                Click="Save_Click"/>
 
 
             <Button
