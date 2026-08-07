@@ -1,4 +1,4 @@
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using Vega.Data.MasterLibrary.Database;
 using Vega.Models.MasterLibrary;
 
@@ -81,30 +81,62 @@ public sealed class PackageDefinitionMasterLibraryTestDatabase : IDisposable
     public void Dispose()
     {
         using var connection = MasterLibraryConnection.Create();
-        using var command = connection.CreateCommand();
 
-        command.CommandText =
-        """
-        DELETE FROM PackageDefinition
-        WHERE PackageName IN
-        (
-            SELECT value
-            FROM json_each($packageNames)
-        );
+        foreach (var tableName in new[]
+                 {
+                     "ComponentDefinition",
+                     "EquipmentAlias",
+                     "PackageProcessProfile"
+                 })
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                $"""
+                DELETE FROM {tableName}
+                WHERE PackageId IN
+                (
+                    SELECT Id
+                    FROM PackageDefinition
+                    WHERE PackageName IN
+                    (
+                        SELECT value
+                        FROM json_each($packageNames)
+                    )
+                );
+                """;
+            command.Parameters.AddWithValue(
+                "$packageNames",
+                System.Text.Json.JsonSerializer.Serialize(_packageNames));
+            command.ExecuteNonQuery();
+        }
 
-        DELETE FROM PackageFamily
-        WHERE Id = $familyId;
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText =
+            """
+            DELETE FROM PackageDefinition
+            WHERE PackageName IN
+            (
+                SELECT value
+                FROM json_each($packageNames)
+            );
+            """;
+            command.Parameters.AddWithValue(
+                "$packageNames",
+                System.Text.Json.JsonSerializer.Serialize(_packageNames));
+            command.ExecuteNonQuery();
+        }
 
-        DELETE FROM PackageCategory
-        WHERE Id = $categoryId;
-        """;
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM PackageFamily WHERE Id = $familyId;";
+            command.Parameters.AddWithValue("$familyId", FamilyId);
+            command.ExecuteNonQuery();
+        }
 
-        command.Parameters.AddWithValue(
-            "$packageNames",
-            System.Text.Json.JsonSerializer.Serialize(_packageNames));
-        command.Parameters.AddWithValue("$familyId", FamilyId);
-        command.Parameters.AddWithValue("$categoryId", CategoryId);
-
-        command.ExecuteNonQuery();
+        using var categoryCommand = connection.CreateCommand();
+        categoryCommand.CommandText = "DELETE FROM PackageCategory WHERE Id = $categoryId;";
+        categoryCommand.Parameters.AddWithValue("$categoryId", CategoryId);
+        categoryCommand.ExecuteNonQuery();
     }
 }

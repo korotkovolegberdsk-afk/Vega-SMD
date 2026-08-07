@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.Data.Sqlite;
 using Vega.Data.MasterLibrary.Database;
 using Vega.Models.MasterLibrary;
@@ -7,6 +7,90 @@ namespace Vega.Data.MasterLibrary.Repository;
 
 public class PackageDefinitionRepository
 {
+    public List<PackageCategory> GetCategories()
+    {
+        var categories = new List<PackageCategory>();
+
+        using var connection = MasterLibraryConnection.Create();
+        using var command = connection.CreateCommand();
+
+        command.CommandText =
+        """
+        SELECT
+            Id,
+            Code,
+            Name,
+            Description,
+            SortOrder,
+            IsActive
+        FROM PackageCategory
+        WHERE IsActive = 1
+        ORDER BY SortOrder, Name;
+        """;
+
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            categories.Add(
+                new PackageCategory
+                {
+                    Id = ReadInt32(reader, "Id"),
+                    Code = ReadString(reader, "Code"),
+                    Name = ReadString(reader, "Name"),
+                    Description = ReadString(reader, "Description"),
+                    SortOrder = ReadInt32(reader, "SortOrder"),
+                    IsActive = ReadInt32(reader, "IsActive") != 0
+                });
+        }
+
+        return categories;
+    }
+
+    public List<PackageFamily> GetFamilies(int categoryId)
+    {
+        var families = new List<PackageFamily>();
+
+        using var connection = MasterLibraryConnection.Create();
+        using var command = connection.CreateCommand();
+
+        command.CommandText =
+        """
+        SELECT
+            Id,
+            CategoryId,
+            Code,
+            Name,
+            Description,
+            SortOrder,
+            IsActive
+        FROM PackageFamily
+        WHERE CategoryId = $categoryId
+          AND IsActive = 1
+        ORDER BY SortOrder, Name;
+        """;
+
+        command.Parameters.AddWithValue("$categoryId", categoryId);
+
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            families.Add(
+                new PackageFamily
+                {
+                    Id = ReadInt32(reader, "Id"),
+                    CategoryId = ReadInt32(reader, "CategoryId"),
+                    Code = ReadString(reader, "Code"),
+                    Name = ReadString(reader, "Name"),
+                    Description = ReadString(reader, "Description"),
+                    SortOrder = ReadInt32(reader, "SortOrder"),
+                    IsActive = ReadInt32(reader, "IsActive") != 0
+                });
+        }
+
+        return families;
+    }
     public List<PackageDefinition> GetAll()
     {
         var packages = new List<PackageDefinition>();

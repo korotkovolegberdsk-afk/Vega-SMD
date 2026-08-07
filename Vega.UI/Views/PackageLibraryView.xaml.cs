@@ -39,7 +39,12 @@ public partial class PackageLibraryView : UserControl
         object sender,
         RoutedEventArgs e)
     {
-        ShowEditorMigrationMessage();
+        var editor = new PackageEditorWindow();
+
+        if (editor.ShowDialog() == true)
+        {
+            Reload();
+        }
     }
 
     private void EditPackage_Click(
@@ -51,7 +56,12 @@ public partial class PackageLibraryView : UserControl
             return;
         }
 
-        ShowEditorMigrationMessage();
+        var editor = new PackageEditorWindow(_viewModel.SelectedPackage.Id);
+
+        if (editor.ShowDialog() == true)
+        {
+            Reload();
+        }
     }
 
     private void DeletePackage_Click(
@@ -87,15 +97,11 @@ public partial class PackageLibraryView : UserControl
             return;
         }
 
-        ShowEditorMigrationMessage();
-    }
+        var editor = new PackageEditorWindow(_viewModel.SelectedPackage.Id);
 
-    private void ShowEditorMigrationMessage()
-    {
-        MessageBox.Show(
-            "Редактор корпусов будет подключён к MasterLibrary в следующей задаче.",
-            "Vega-SMD",
-            MessageBoxButton.OK,
-            MessageBoxImage.Information);
+        if (editor.ShowDialog() == true)
+        {
+            Reload();
+        }
     }
 }

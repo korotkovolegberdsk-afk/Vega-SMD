@@ -1,3 +1,4 @@
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Vega.Models.MasterLibrary;
@@ -11,8 +12,8 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
     private string _packageName = string.Empty;
     private string _displayName = string.Empty;
     private string _description = string.Empty;
-    private int _categoryId;
-    private int _familyId;
+    private int _selectedCategoryId;
+    private int _selectedFamilyId;
     private double _length;
     private double _width;
     private double _height;
@@ -31,6 +32,16 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
     private string _changeComment = string.Empty;
     private bool _isActive = true;
     private int _version;
+    private PackageProcessProfile _processProfile = new();
+    private double _stencilThickness;
+    private string _apertureType = string.Empty;
+    private string _apertureReduction = string.Empty;
+    private double _areaRatio;
+    private double _aspectRatio;
+    private string _spiRecommendations = string.Empty;
+    private string _aoiRecommendations = string.Empty;
+    private string _typicalDefects = string.Empty;
+    private string _recommendedProfile = string.Empty;
 
     public PackageEditorMasterViewModel(
         PackageDefinitionService? packageService = null)
@@ -38,12 +49,67 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
         _packageService = packageService
             ?? new PackageDefinitionService();
 
+        LoadCategories();
         CreateNew();
     }
+
+    public ObservableCollection<PackageCategory> Categories { get; }
+        = new();
+
+    public ObservableCollection<PackageFamily> Families { get; }
+        = new();
+
+    public ObservableCollection<EquipmentAlias> Aliases { get; }
+        = new();
 
     public int Id { get; private set; }
 
     public bool IsNew => Id == 0;
+
+    public int SelectedCategoryId
+    {
+        get => _selectedCategoryId;
+        set
+        {
+            if (_selectedCategoryId == value)
+            {
+                return;
+            }
+
+            _selectedCategoryId = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(CategoryId));
+            LoadFamilies();
+        }
+    }
+
+    public int SelectedFamilyId
+    {
+        get => _selectedFamilyId;
+        set
+        {
+            if (_selectedFamilyId == value)
+            {
+                return;
+            }
+
+            _selectedFamilyId = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(FamilyId));
+        }
+    }
+
+    public int CategoryId
+    {
+        get => SelectedCategoryId;
+        set => SelectedCategoryId = value;
+    }
+
+    public int FamilyId
+    {
+        get => SelectedFamilyId;
+        set => SelectedFamilyId = value;
+    }
 
     public string PackageName
     {
@@ -61,18 +127,6 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
     {
         get => _description;
         set => SetField(ref _description, value);
-    }
-
-    public int CategoryId
-    {
-        get => _categoryId;
-        set => SetField(ref _categoryId, value);
-    }
-
-    public int FamilyId
-    {
-        get => _familyId;
-        set => SetField(ref _familyId, value);
     }
 
     public double Length
@@ -147,11 +201,67 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
         set => SetField(ref _notes, value);
     }
 
+    public PackageProcessProfile ProcessProfile => _processProfile;
+
+    public double StencilThickness
+    {
+        get => _stencilThickness;
+        set => SetField(ref _stencilThickness, value);
+    }
+
+    public string ApertureType
+    {
+        get => _apertureType;
+        set => SetField(ref _apertureType, value);
+    }
+
+    public string ApertureReduction
+    {
+        get => _apertureReduction;
+        set => SetField(ref _apertureReduction, value);
+    }
+
+    public double AreaRatio
+    {
+        get => _areaRatio;
+        set => SetField(ref _areaRatio, value);
+    }
+
+    public double AspectRatio
+    {
+        get => _aspectRatio;
+        set => SetField(ref _aspectRatio, value);
+    }
+
+    public string SPIRecommendations
+    {
+        get => _spiRecommendations;
+        set => SetField(ref _spiRecommendations, value);
+    }
+
+    public string AOIRecommendations
+    {
+        get => _aoiRecommendations;
+        set => SetField(ref _aoiRecommendations, value);
+    }
+
+    public string TypicalDefects
+    {
+        get => _typicalDefects;
+        set => SetField(ref _typicalDefects, value);
+    }
+
+    public string RecommendedProfile
+    {
+        get => _recommendedProfile;
+        set => SetField(ref _recommendedProfile, value);
+    }
     public void CreateNew()
     {
         Apply(new PackageDefinition());
+        ApplyProcessProfile(new PackageProcessProfile());
+        Aliases.Clear();
         _isActive = true;
-        OnPropertyChanged(nameof(IsNew));
     }
 
     public void Load(int id)
@@ -161,7 +271,10 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
                 $"Корпус с Id {id} не найден.");
 
         Apply(package);
-        OnPropertyChanged(nameof(IsNew));
+        ApplyProcessProfile(
+            _packageService.GetProcessProfile(package.Id)
+            ?? new PackageProcessProfile { PackageId = package.Id });
+        LoadAliases(package.Id);
     }
 
     public void Update()
@@ -172,27 +285,26 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
                 "Новый корпус необходимо сохранить через Save.");
         }
 
-        _packageService.Update(CreatePackageDefinition());
-        _version++;
+        Save();
     }
 
     public void Save()
     {
-        if (IsNew)
-        {
-            _packageService.Add(CreatePackageDefinition());
+        var package = CreatePackageDefinition();
+        var processProfile = CreateProcessProfile();
 
-            var package = _packageService.GetAll()
-                .Single(x => x.PackageName == PackageName);
+        _packageService.Save(package, processProfile);
 
-            Apply(package);
-            OnPropertyChanged(nameof(IsNew));
-            return;
-        }
+        var savedPackage = _packageService.GetAll()
+            .Single(x => x.PackageName == package.PackageName);
 
-        Update();
+        SaveAliases(savedPackage.Id);
+        Apply(savedPackage);
+        ApplyProcessProfile(
+            _packageService.GetProcessProfile(savedPackage.Id)
+            ?? new PackageProcessProfile { PackageId = savedPackage.Id });
+        LoadAliases(savedPackage.Id);
     }
-
     public void Deactivate()
     {
         if (IsNew)
@@ -205,6 +317,75 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
         _isActive = false;
         _version++;
     }
+    public void AddAlias()
+    {
+        Aliases.Add(new EquipmentAlias { IsActive = true });
+    }
+
+    public void RemoveAlias(EquipmentAlias alias)
+    {
+        if (alias.Id > 0)
+        {
+            _packageService.DeleteEquipmentAlias(alias.Id);
+        }
+
+        Aliases.Remove(alias);
+    }
+
+    private void LoadAliases(int packageId)
+    {
+        Aliases.Clear();
+
+        foreach (var alias in _packageService.GetEquipmentAliases(packageId))
+        {
+            Aliases.Add(alias);
+        }
+    }
+
+    private void SaveAliases(int packageId)
+    {
+        foreach (var alias in Aliases)
+        {
+            alias.PackageId = packageId;
+            alias.Vendor = alias.Vendor.Trim();
+            alias.Alias = alias.Alias.Trim();
+            alias.Notes = alias.Notes.Trim();
+
+            if (alias.Id == 0)
+            {
+                _packageService.AddEquipmentAlias(alias);
+            }
+            else
+            {
+                _packageService.UpdateEquipmentAlias(alias);
+            }
+        }
+    }
+    private void LoadCategories()
+    {
+        Categories.Clear();
+
+        foreach (var category in _packageService.GetCategories())
+        {
+            Categories.Add(category);
+        }
+    }
+
+    private void LoadFamilies()
+    {
+        var selectedFamilyId = _selectedFamilyId;
+
+        Families.Clear();
+
+        foreach (var family in _packageService.GetFamilies(SelectedCategoryId))
+        {
+            Families.Add(family);
+        }
+
+        SelectedFamilyId = Families.Any(x => x.Id == selectedFamilyId)
+            ? selectedFamilyId
+            : 0;
+    }
 
     private PackageDefinition CreatePackageDefinition()
     {
@@ -214,8 +395,8 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
             PackageName = PackageName.Trim(),
             DisplayName = DisplayName.Trim(),
             Description = Description.Trim(),
-            CategoryId = CategoryId,
-            FamilyId = FamilyId,
+            CategoryId = SelectedCategoryId,
+            FamilyId = SelectedFamilyId,
             Length = Length,
             Width = Width,
             Height = Height,
@@ -237,14 +418,45 @@ public class PackageEditorMasterViewModel : INotifyPropertyChanged
         };
     }
 
+    private PackageProcessProfile CreateProcessProfile()
+    {
+        _processProfile.PackageId = Id;
+        _processProfile.StencilThickness = StencilThickness;
+        _processProfile.ApertureType = ApertureType.Trim();
+        _processProfile.AreaRatio = AreaRatio;
+        _processProfile.AspectRatio = AspectRatio;
+        _processProfile.SPIRecommendations = SPIRecommendations.Trim();
+        _processProfile.AOIRecommendations = AOIRecommendations.Trim();
+        _processProfile.TypicalDefects = TypicalDefects.Trim();
+        _processProfile.ReflowRecommendations = RecommendedProfile.Trim();
+        _processProfile.Notes = ApertureReduction.Trim();
+        _processProfile.IsActive = _isActive;
+
+        return _processProfile;
+    }
+
+    private void ApplyProcessProfile(PackageProcessProfile profile)
+    {
+        _processProfile = profile;
+        StencilThickness = profile.StencilThickness;
+        ApertureType = profile.ApertureType;
+        ApertureReduction = profile.Notes;
+        AreaRatio = profile.AreaRatio;
+        AspectRatio = profile.AspectRatio;
+        SPIRecommendations = profile.SPIRecommendations;
+        AOIRecommendations = profile.AOIRecommendations ?? string.Empty;
+        TypicalDefects = profile.TypicalDefects;
+        RecommendedProfile = profile.ReflowRecommendations;
+        OnPropertyChanged(nameof(ProcessProfile));
+    }
     private void Apply(PackageDefinition package)
     {
         Id = package.Id;
         PackageName = package.PackageName;
         DisplayName = package.DisplayName;
         Description = package.Description;
-        CategoryId = package.CategoryId;
-        FamilyId = package.FamilyId;
+        SelectedCategoryId = package.CategoryId;
+        SelectedFamilyId = package.FamilyId;
         Length = package.Length;
         Width = package.Width;
         Height = package.Height;
