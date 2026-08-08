@@ -46,6 +46,20 @@
     <None Update="Migration\007_MasterLibrary_StencilTechnologyRules.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Migration\009_MasterLibrary_PackageDocuments.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Migration\010_MasterLibrary_PackageRecognitionRules.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Migration\011_MasterLibrary_TechnologySources.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Migration\012_MasterLibrary_TechnologyRecommendations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

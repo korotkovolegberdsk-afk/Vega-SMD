@@ -21,6 +21,11 @@ public class StencilTechnicalReport
     public int WindowPaneCount { get; init; }
     public int HomePlateCount { get; init; }
     public int SnubnoseCount { get; init; }
+    public ReflowProfileReportItem? ReflowProfile { get; init; }
+    public ProductionLotReportItem? ProductionLot { get; init; }
+    public QualityAnalysisReportItem? QualityAnalysis { get; init; }
+    public EngineeringSummaryReportItem? EngineeringSummary { get; init; }
+    public IReadOnlyList<DefectReportItem> Defects { get; init; } = Array.Empty<DefectReportItem>();
     public IReadOnlyList<string> Warnings { get; init; } = Array.Empty<string>();
     public IReadOnlyList<string> Errors { get; init; } = Array.Empty<string>();
     public IReadOnlyList<ApertureChangeReport> ApertureChanges { get; init; } = Array.Empty<ApertureChangeReport>();

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vega.Models\Vega.Models.csproj" />
+    <ProjectReference Include="..\Vega.Data\Vega.Data.csproj" />
+    <ProjectReference Include="..\Vega.ProcessLearning\Vega.ProcessLearning.csproj" />
+    <ProjectReference Include="..\Vega.DefectDictionary\Vega.DefectDictionary.csproj" />
+    <ProjectReference Include="..\Vega.Report\Vega.Report.csproj" />
+  </ItemGroup>
+</Project>

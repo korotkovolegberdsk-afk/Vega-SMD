@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vega.Models\Vega.Models.csproj" />
+    <ProjectReference Include="..\Vega.StencilHistory\Vega.StencilHistory.csproj" />
+    <ProjectReference Include="..\Vega.StencilCAM\Vega.StencilCAM.csproj" />
+    <ProjectReference Include="..\Vega.TechnologyDecision\Vega.TechnologyDecision.csproj" />
+    <ProjectReference Include="..\Vega.ProcessLearning\Vega.ProcessLearning.csproj" />
+    <ProjectReference Include="..\Vega.ProductionTracking\Vega.ProductionTracking.csproj" />
+    <ProjectReference Include="..\Vega.QualityAnalytics\Vega.QualityAnalytics.csproj" />
+    <ProjectReference Include="..\Vega.Report\Vega.Report.csproj" />
+  </ItemGroup>
+</Project>

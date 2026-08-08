@@ -21,8 +21,8 @@ public class StencilHistoryRepository
         using var connection = Open();
         using var command = connection.CreateCommand();
         command.CommandText =
-            "INSERT INTO StencilProjects (ProjectName, CustomerName, BoardName, CreatedDate, ModifiedDate, Status, InputSource, SourceFiles, FrameName, PasteSide, Operator, Notes) " +
-            "VALUES ($projectName, $customerName, $boardName, $createdDate, $modifiedDate, $status, $inputSource, $sourceFiles, $frameName, $pasteSide, $operator, $notes); SELECT last_insert_rowid();";
+            "INSERT INTO StencilProjects (ProjectName, CustomerName, BoardName, CreatedDate, ModifiedDate, Status, InputSource, SourceFiles, FrameName, PasteSide, Operator, Notes, ReflowProfileId) " +
+            "VALUES ($projectName, $customerName, $boardName, $createdDate, $modifiedDate, $status, $inputSource, $sourceFiles, $frameName, $pasteSide, $operator, $notes, $reflowProfileId); SELECT last_insert_rowid();";
         AddProjectParameters(command, project);
         return Convert.ToInt32(command.ExecuteScalar());
     }
@@ -121,6 +121,17 @@ public class StencilHistoryRepository
         using var command = connection.CreateCommand();
         command.CommandText = Schema;
         command.ExecuteNonQuery();
+        using var columns = connection.CreateCommand();
+        columns.CommandText = "PRAGMA table_info(StencilProjects);";
+        using var reader = columns.ExecuteReader();
+        var hasReflowProfileId = false;
+        while (reader.Read()) hasReflowProfileId |= reader.GetString(1).Equals("ReflowProfileId", StringComparison.OrdinalIgnoreCase);
+        if (!hasReflowProfileId)
+        {
+            using var alter = connection.CreateCommand();
+            alter.CommandText = "ALTER TABLE StencilProjects ADD COLUMN ReflowProfileId INTEGER NULL;";
+            alter.ExecuteNonQuery();
+        }
     }
 
     private static List<StencilProjectRecord> ReadProjects(SqliteCommand command)
@@ -132,7 +143,7 @@ public class StencilHistoryRepository
             Id = reader.GetInt32(0), ProjectName = reader.GetString(1), CustomerName = reader.GetString(2), BoardName = reader.GetString(3),
             CreatedDate = DateTime.Parse(reader.GetString(4)), ModifiedDate = DateTime.Parse(reader.GetString(5)), Status = (StencilWorkflowStatus)reader.GetInt32(6),
             InputSource = reader.GetString(7), SourceFiles = JsonSerializer.Deserialize<List<string>>(reader.GetString(8)) ?? [], FrameName = reader.GetString(9),
-            PasteSide = reader.GetString(10), Operator = reader.GetString(11), Notes = reader.GetString(12)
+            PasteSide = reader.GetString(10), Operator = reader.GetString(11), Notes = reader.GetString(12), ReflowProfileId = reader.IsDBNull(13) ? null : reader.GetInt32(13)
         });
         return records;
     }
@@ -157,7 +168,7 @@ public class StencilHistoryRepository
         command.Parameters.AddWithValue("$modifiedDate", project.ModifiedDate.ToString("O")); command.Parameters.AddWithValue("$status", (int)project.Status);
         command.Parameters.AddWithValue("$inputSource", project.InputSource); command.Parameters.AddWithValue("$sourceFiles", JsonSerializer.Serialize(project.SourceFiles));
         command.Parameters.AddWithValue("$frameName", project.FrameName); command.Parameters.AddWithValue("$pasteSide", project.PasteSide);
-        command.Parameters.AddWithValue("$operator", project.Operator); command.Parameters.AddWithValue("$notes", project.Notes);
+        command.Parameters.AddWithValue("$operator", project.Operator); command.Parameters.AddWithValue("$notes", project.Notes); command.Parameters.AddWithValue("$reflowProfileId", project.ReflowProfileId is null ? DBNull.Value : project.ReflowProfileId.Value);
     }
 
     private static void AddRevisionParameters(SqliteCommand command, StencilRevision revision)
@@ -169,13 +180,13 @@ public class StencilHistoryRepository
         command.Parameters.AddWithValue("$changesCount", revision.ChangesCount); command.Parameters.AddWithValue("$warningsCount", revision.WarningsCount); command.Parameters.AddWithValue("$frameName", revision.FrameName);
     }
 
-    private const string ProjectColumns = "Id, ProjectName, CustomerName, BoardName, CreatedDate, ModifiedDate, Status, InputSource, SourceFiles, FrameName, PasteSide, Operator, Notes";
+    private const string ProjectColumns = "Id, ProjectName, CustomerName, BoardName, CreatedDate, ModifiedDate, Status, InputSource, SourceFiles, FrameName, PasteSide, Operator, Notes, ReflowProfileId";
     private const string RevisionColumns = "Id, ProjectId, Revision, CreatedDate, Description, OriginalPasteFile, CorrectedPasteFile, MarkingFile, ReportFile, ChangesCount, WarningsCount, FrameName";
     private const string Schema = """
         CREATE TABLE IF NOT EXISTS StencilProjects (
             Id INTEGER PRIMARY KEY AUTOINCREMENT, ProjectName TEXT NOT NULL, CustomerName TEXT NOT NULL, BoardName TEXT NOT NULL,
             CreatedDate TEXT NOT NULL, ModifiedDate TEXT NOT NULL, Status INTEGER NOT NULL, InputSource TEXT NOT NULL,
-            SourceFiles TEXT NOT NULL, FrameName TEXT NOT NULL, PasteSide TEXT NOT NULL, Operator TEXT NOT NULL, Notes TEXT NOT NULL);
+            SourceFiles TEXT NOT NULL, FrameName TEXT NOT NULL, PasteSide TEXT NOT NULL, Operator TEXT NOT NULL, Notes TEXT NOT NULL, ReflowProfileId INTEGER NULL);
         CREATE TABLE IF NOT EXISTS StencilRevisions (
             Id INTEGER PRIMARY KEY AUTOINCREMENT, ProjectId INTEGER NOT NULL, Revision TEXT NOT NULL, CreatedDate TEXT NOT NULL,
             Description TEXT NOT NULL, OriginalPasteFile TEXT NOT NULL, CorrectedPasteFile TEXT NOT NULL, MarkingFile TEXT NOT NULL,

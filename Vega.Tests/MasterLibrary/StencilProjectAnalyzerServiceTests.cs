@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using Vega.Data.MasterLibrary.Database;
 using Vega.Models;
 using Vega.Models.MasterLibrary;
@@ -60,8 +60,20 @@ public class StencilProjectAnalyzerServiceTests : IDisposable
             command.CommandText =
             """
             DELETE FROM PackageFootprint
-            WHERE PackageId IN (SELECT Id FROM PackageDefinition WHERE PackageName IN ('R0603', 'QFN-32', 'QFP-0.5'));
-            DELETE FROM PackageDefinition WHERE PackageName IN ('R0603', 'QFN-32', 'QFP-0.5');
+            WHERE PatternName IN ('R0603', 'QFN-32', 'QFP-0.5');
+            DELETE FROM ComponentDefinition
+            WHERE PackageId IN (SELECT Id FROM PackageDefinition WHERE PackageName IN ('QFN-32', 'QFP-0.5'));
+            DELETE FROM EquipmentAlias
+            WHERE PackageId IN (SELECT Id FROM PackageDefinition WHERE PackageName IN ('QFN-32', 'QFP-0.5'));
+            DELETE FROM PackageProcessProfile
+            WHERE PackageId IN (SELECT Id FROM PackageDefinition WHERE PackageName IN ('QFN-32', 'QFP-0.5'));
+            DELETE FROM PackageGeometry
+            WHERE PackageId IN (SELECT Id FROM PackageDefinition WHERE PackageName IN ('QFN-32', 'QFP-0.5'));
+            DELETE FROM MasterLibrary_PackageDocuments
+            WHERE PackageId IN (SELECT Id FROM PackageDefinition WHERE PackageName IN ('QFN-32', 'QFP-0.5'));
+            DELETE FROM MasterLibrary_PackageRecognitionRules
+            WHERE PackageId IN (SELECT Id FROM PackageDefinition WHERE PackageName IN ('QFN-32', 'QFP-0.5'));
+            DELETE FROM PackageDefinition WHERE PackageName IN ('QFN-32', 'QFP-0.5');
             """;
             command.ExecuteNonQuery();
         }
@@ -70,15 +82,19 @@ public class StencilProjectAnalyzerServiceTests : IDisposable
 
     private void AddPackage(string packageName, double pitch, int thermalPads, double padLength, double padWidth)
     {
-        var package = _database.CreatePackage("PROJECT");
-        package.PackageName = packageName;
-        package.DisplayName = packageName;
-        package.Pitch = pitch;
-        package.PadCount = 1;
-        package.ThermalPadCount = thermalPads;
-        _packageService.Add(package);
+        var saved = _packageService.GetAll().SingleOrDefault(item => item.PackageName == packageName);
+        if (saved is null)
+        {
+            var package = _database.CreatePackage("PROJECT");
+            package.PackageName = packageName;
+            package.DisplayName = packageName;
+            package.Pitch = pitch;
+            package.PadCount = 1;
+            package.ThermalPadCount = thermalPads;
+            _packageService.Add(package);
+            saved = _packageService.GetAll().Single(item => item.PackageName == packageName);
+        }
 
-        var saved = _packageService.GetAll().Single(item => item.PackageName == packageName);
         _packageService.AddFootprint(new PackageFootprint
         {
             PackageId = saved.Id,

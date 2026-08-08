@@ -10,15 +10,24 @@ public class StencilTechnologyRule
     public string PreferredShape { get; set; } = "";
     public string AlternativeShape { get; set; } = "";
     public double RecommendedThickness { get; set; }
+    public double StencilThicknessMin { get; set; }
+    public double StencilThicknessMax { get; set; }
     public double ReductionX { get; set; }
     public double ReductionY { get; set; }
+    public double PreferredReductionX { get; set; }
+    public double PreferredReductionY { get; set; }
     public double MinAreaRatio { get; set; }
     public double MinAspectRatio { get; set; }
     public double Coverage { get; set; }
     public string Source { get; set; } = "";
     public string Manufacturer { get; set; } = "";
     public string DocumentReference { get; set; } = "";
-    public string TechnologyReason { get; set; } = "";
+    public string SourceReference { get; set; } = "";
+    public int? TechnologySourceId { get; set; }
+    public double ConfidenceLevel { get; set; }
+    public string ApplicationCondition { get; set; } = "";
+    public string RecommendedBy { get; set; } = "";
+    public string ProcessGoal { get; set; } = "";    public string TechnologyReason { get; set; } = "";
     public string Notes { get; set; } = "";
     public int Priority { get; set; }
     public bool IsActive { get; set; } = true;

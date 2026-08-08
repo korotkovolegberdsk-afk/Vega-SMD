@@ -14,6 +14,7 @@ public class StencilProjectRecord
     public string InputSource { get; set; } = "";
     public IReadOnlyList<string> SourceFiles { get; set; } = Array.Empty<string>();
     public string FrameName { get; set; } = "";
+    public int? ReflowProfileId { get; set; }
     public string PasteSide { get; set; } = "";
     public string Operator { get; set; } = "";
     public string Notes { get; set; } = "";

@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using Vega.Data.MasterLibrary.Database;
 using Vega.Models.MasterLibrary;
 
@@ -88,7 +88,8 @@ public sealed class PackageDefinitionMasterLibraryTestDatabase : IDisposable
                      "EquipmentAlias",
                      "PackageProcessProfile",
                      "PackageGeometry",
-                     "PackageFootprint"
+                     "PackageFootprint",
+                     "MasterLibrary_PackageDocuments"
                  })
         {
             using var command = connection.CreateCommand();

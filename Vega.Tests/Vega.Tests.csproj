@@ -36,6 +36,19 @@
     <ProjectReference Include="..\Vega.Data\Vega.Data.csproj" />
     <ProjectReference Include="..\Vega.Gerber\Vega.Gerber.csproj" />
     <ProjectReference Include="..\Vega.PnP\Vega.PnP.csproj" />
+    <ProjectReference Include="..\Vega.PackageRecognition\Vega.PackageRecognition.csproj" />
+    <ProjectReference Include="..\Vega.TechnologyKnowledge\Vega.TechnologyKnowledge.csproj" />
+    <ProjectReference Include="..\Vega.TechnologyDecision\Vega.TechnologyDecision.csproj" />
+    <ProjectReference Include="..\Vega.ProcessLearning\Vega.ProcessLearning.csproj" />
+    <ProjectReference Include="..\Vega.ReflowProfile\Vega.ReflowProfile.csproj" />
+    <ProjectReference Include="..\Vega.ProductionTracking\Vega.ProductionTracking.csproj" />
+    <ProjectReference Include="..\Vega.QualityAnalytics\Vega.QualityAnalytics.csproj" />
+    <ProjectReference Include="..\Vega.EngineeringDashboard\Vega.EngineeringDashboard.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Vega.DefectDictionary\Migration\013_DefectDictionary.sql" Link="Migration\013_DefectDictionary.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Update="TestData\paste-top.gtp">

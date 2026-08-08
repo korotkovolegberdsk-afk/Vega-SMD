@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Microsoft.Data.Sqlite;
 using Vega.Data.MasterLibrary.Database;
 using Vega.Models.MasterLibrary;
@@ -104,6 +104,11 @@ public class PackageDefinitionRepository
             Id,
             PackageName,
             DisplayName,
+            StandardName,
+            PackageFamily,
+            ComponentType,
+            Manufacturer,
+            ManufacturerPartNumber,
             Description,
             CategoryId,
             FamilyId,
@@ -119,6 +124,8 @@ public class PackageDefinitionRepository
             LandPatternName,
             PolarityMark,
             DatasheetUrl,
+            DrawingFile,
+            Model3DFile,
             Notes,
             IsActive,
             CreatedAt,
@@ -152,6 +159,11 @@ public class PackageDefinitionRepository
             Id,
             PackageName,
             DisplayName,
+            StandardName,
+            PackageFamily,
+            ComponentType,
+            Manufacturer,
+            ManufacturerPartNumber,
             Description,
             CategoryId,
             FamilyId,
@@ -167,6 +179,8 @@ public class PackageDefinitionRepository
             LandPatternName,
             PolarityMark,
             DatasheetUrl,
+            DrawingFile,
+            Model3DFile,
             Notes,
             IsActive,
             CreatedAt,
@@ -210,6 +224,11 @@ public class PackageDefinitionRepository
         (
             PackageName,
             DisplayName,
+            StandardName,
+            PackageFamily,
+            ComponentType,
+            Manufacturer,
+            ManufacturerPartNumber,
             Description,
             CategoryId,
             FamilyId,
@@ -225,6 +244,8 @@ public class PackageDefinitionRepository
             LandPatternName,
             PolarityMark,
             DatasheetUrl,
+            DrawingFile,
+            Model3DFile,
             Notes,
             IsActive,
             CreatedAt,
@@ -238,6 +259,11 @@ public class PackageDefinitionRepository
         (
             $packageName,
             $displayName,
+            $standardName,
+            $packageFamily,
+            $componentType,
+            $manufacturer,
+            $manufacturerPartNumber,
             $description,
             $categoryId,
             $familyId,
@@ -253,6 +279,8 @@ public class PackageDefinitionRepository
             $landPatternName,
             $polarityMark,
             $datasheetUrl,
+            $drawingFile,
+            $model3DFile,
             $notes,
             $isActive,
             $createdAt,
@@ -282,8 +310,8 @@ public class PackageDefinitionRepository
         UPDATE PackageDefinition
         SET
             PackageName = $packageName,
-            DisplayName = $displayName,
-            Description = $description,
+            DisplayName = $displayName, StandardName = $standardName, PackageFamily = $packageFamily, ComponentType = $componentType,
+            Manufacturer = $manufacturer, ManufacturerPartNumber = $manufacturerPartNumber, Description = $description,
             CategoryId = $categoryId,
             FamilyId = $familyId,
             Length = $length,
@@ -297,8 +325,7 @@ public class PackageDefinitionRepository
             JEDECName = $jedecName,
             LandPatternName = $landPatternName,
             PolarityMark = $polarityMark,
-            DatasheetUrl = $datasheetUrl,
-            Notes = $notes,
+            DatasheetUrl = $datasheetUrl, DrawingFile = $drawingFile, Model3DFile = $model3DFile, Notes = $notes,
             IsActive = $isActive,
             UpdatedAt = $updatedAt,
             UpdatedBy = $updatedBy,
@@ -341,7 +368,7 @@ public class PackageDefinitionRepository
         PackageDefinition package)
     {
         command.Parameters.AddWithValue("$packageName", package.PackageName);
-        command.Parameters.AddWithValue("$displayName", package.DisplayName);
+        command.Parameters.AddWithValue("$displayName", package.DisplayName); command.Parameters.AddWithValue("$standardName", package.StandardName); command.Parameters.AddWithValue("$packageFamily", package.PackageFamily); command.Parameters.AddWithValue("$componentType", package.ComponentType); command.Parameters.AddWithValue("$manufacturer", package.Manufacturer); command.Parameters.AddWithValue("$manufacturerPartNumber", package.ManufacturerPartNumber);
         command.Parameters.AddWithValue("$description", package.Description);
         command.Parameters.AddWithValue("$categoryId", package.CategoryId);
         command.Parameters.AddWithValue("$familyId", package.FamilyId);
@@ -356,7 +383,7 @@ public class PackageDefinitionRepository
         command.Parameters.AddWithValue("$jedecName", package.JEDECName);
         command.Parameters.AddWithValue("$landPatternName", package.LandPatternName);
         command.Parameters.AddWithValue("$polarityMark", package.PolarityMark);
-        command.Parameters.AddWithValue("$datasheetUrl", package.DatasheetUrl);
+        command.Parameters.AddWithValue("$datasheetUrl", package.DatasheetUrl); command.Parameters.AddWithValue("$drawingFile", package.DrawingFile); command.Parameters.AddWithValue("$model3DFile", package.Model3DFile);
         command.Parameters.AddWithValue("$notes", package.Notes);
         command.Parameters.AddWithValue("$isActive", package.IsActive);
         command.Parameters.AddWithValue("$createdBy", package.CreatedBy);
@@ -370,7 +397,7 @@ public class PackageDefinitionRepository
         {
             Id = ReadInt32(reader, "Id"),
             PackageName = ReadString(reader, "PackageName"),
-            DisplayName = ReadString(reader, "DisplayName"),
+            DisplayName = ReadString(reader, "DisplayName"), StandardName = ReadString(reader, "StandardName"), PackageFamily = ReadString(reader, "PackageFamily"), ComponentType = ReadString(reader, "ComponentType"), Manufacturer = ReadString(reader, "Manufacturer"), ManufacturerPartNumber = ReadString(reader, "ManufacturerPartNumber"),
             Description = ReadString(reader, "Description"),
             CategoryId = ReadInt32(reader, "CategoryId"),
             FamilyId = ReadInt32(reader, "FamilyId"),
@@ -385,7 +412,7 @@ public class PackageDefinitionRepository
             JEDECName = ReadString(reader, "JEDECName"),
             LandPatternName = ReadString(reader, "LandPatternName"),
             PolarityMark = ReadString(reader, "PolarityMark"),
-            DatasheetUrl = ReadString(reader, "DatasheetUrl"),
+            DatasheetUrl = ReadString(reader, "DatasheetUrl"), DrawingFile = ReadString(reader, "DrawingFile"), Model3DFile = ReadString(reader, "Model3DFile"),
             Notes = ReadString(reader, "Notes"),
             IsActive = ReadInt32(reader, "IsActive") != 0,
             CreatedAt = ReadDateTime(reader, "CreatedAt"),

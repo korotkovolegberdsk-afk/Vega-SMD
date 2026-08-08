@@ -7,6 +7,15 @@
   <Project Path="Vega.Infrastructure/Vega.Infrastructure.csproj" Id="d4e6b3f9-f225-4e73-81c4-ad9ae7905a61" />
   <Project Path="Vega.Models/Vega.Models.csproj" Id="1c0adcd8-9427-4750-9e49-d4e748f7719b" />
   <Project Path="Vega.PnP/Vega.PnP.csproj" />
+  <Project Path="Vega.PackageRecognition/Vega.PackageRecognition.csproj" />
+  <Project Path="Vega.TechnologyKnowledge/Vega.TechnologyKnowledge.csproj" />
+  <Project Path="Vega.TechnologyDecision/Vega.TechnologyDecision.csproj" />
+  <Project Path="Vega.ProcessLearning/Vega.ProcessLearning.csproj" />
+  <Project Path="Vega.DefectDictionary/Vega.DefectDictionary.csproj" />
+  <Project Path="Vega.ReflowProfile/Vega.ReflowProfile.csproj" />
+  <Project Path="Vega.ProductionTracking/Vega.ProductionTracking.csproj" />
+  <Project Path="Vega.QualityAnalytics/Vega.QualityAnalytics.csproj" />
+  <Project Path="Vega.EngineeringDashboard/Vega.EngineeringDashboard.csproj" />
   <Project Path="Vega.Services/Vega.Services.csproj" Id="b8f781e8-f992-48b9-a50b-b874d6fc5fde" />
   <Project Path="Vega.StencilCAM/Vega.StencilCAM.csproj" />
   <Project Path="Vega.StencilInput/Vega.StencilInput.csproj" />
