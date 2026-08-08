@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vega.CAD\Vega.CAD.csproj" />
+    <ProjectReference Include="..\Vega.Gerber\Vega.Gerber.csproj" />
+    <ProjectReference Include="..\Vega.StencilCAM\Vega.StencilCAM.csproj" />
+    <ProjectReference Include="..\Vega.StencilInput\Vega.StencilInput.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,7 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -23,7 +24,46 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Vega.Altium\Vega.Altium.csproj" />
+    <ProjectReference Include="..\Vega.CAD\Vega.CAD.csproj" />
+    <ProjectReference Include="..\Vega.StencilCAM\Vega.StencilCAM.csproj" />
+    <ProjectReference Include="..\Vega.StencilInput\Vega.StencilInput.csproj" />
+    <ProjectReference Include="..\Vega.StencilViewer\Vega.StencilViewer.csproj" />
+    <ProjectReference Include="..\Vega.StencilWorkflow\Vega.StencilWorkflow.csproj" />
+    <ProjectReference Include="..\Vega.StencilHistory\Vega.StencilHistory.csproj" />
+    <ProjectReference Include="..\Vega.Report\Vega.Report.csproj" />
+    <ProjectReference Include="..\Vega.StencilUI\Vega.StencilUI.csproj" />
     <ProjectReference Include="..\Vega.Data\Vega.Data.csproj" />
+    <ProjectReference Include="..\Vega.Gerber\Vega.Gerber.csproj" />
+    <ProjectReference Include="..\Vega.PnP\Vega.PnP.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="TestData\paste-top.gtp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\paste-bottom.gbs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="TestData\test-pnp.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\test-paste.gtp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\test-project.gtp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\test-project.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\bin_s_0_1a.PcbDoc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Vega.StencilCAM\Data\008_StencilFrameLibrary.sql" Link="Data\008_StencilFrameLibrary.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -1,16 +1,16 @@
-namespace Vega.Models.MasterLibrary;
+п»їnamespace Vega.Models.MasterLibrary;
 
 public class PackageProcessProfile
 {
     public int Id { get; set; }
 
 
-    // Связь с корпусом
+    // РЎРІСЏР·СЊ СЃ РєРѕСЂРїСѓСЃРѕРј
 
     public int PackageId { get; set; }
 
 
-    // Трафарет
+    // РўСЂР°С„Р°СЂРµС‚
 
     public double StencilThickness { get; set; }
 
@@ -28,25 +28,25 @@ public class PackageProcessProfile
 
     // AOI
 
-    public string AOIRecommendations { get; set; }
+    public string AOIRecommendations { get; set; } = "";
 
 
-    // Типичные дефекты
+    // РўРёРїРёС‡РЅС‹Рµ РґРµС„РµРєС‚С‹
 
     public string TypicalDefects { get; set; } = "";
 
 
-    // Установка компонента
+    // РЈСЃС‚Р°РЅРѕРІРєР° РєРѕРјРїРѕРЅРµРЅС‚Р°
 
     public string PlacementRecommendations { get; set; } = "";
 
 
-    // Оплавление
+    // РћРїР»Р°РІР»РµРЅРёРµ
 
     public string ReflowRecommendations { get; set; } = "";
 
 
-    // Приоритет контроля
+    // РџСЂРёРѕСЂРёС‚РµС‚ РєРѕРЅС‚СЂРѕР»СЏ
 
     public string InspectionPriority { get; set; } = "";
 
@@ -57,7 +57,7 @@ public class PackageProcessProfile
     public bool IsActive { get; set; } = true;
 
 
-    // Аудит
+    // РђСѓРґРёС‚
 
     public DateTime CreatedAt { get; set; }
 

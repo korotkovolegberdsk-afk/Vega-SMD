@@ -17,16 +17,20 @@ public class ComponentDefinitionRepository
         command.CommandText =
         """
         SELECT
-            Id,
-            ManufacturerPartNumber,
-            Description,
-            PackageId,
-            ComponentType,
-            Manufacturer,
-            Version,
-            CreatedAt,
-            UpdatedAt
-        FROM ComponentDefinition;
+            c.Id,
+            c.ManufacturerPartNumber,
+            c.Description,
+            c.PackageId,
+            c.ComponentType,
+            c.Manufacturer,
+            c.Version,
+            c.CreatedAt,
+            c.UpdatedAt,
+            p.PackageName,
+            p.DisplayName
+        FROM ComponentDefinition c
+        INNER JOIN PackageDefinition p
+            ON p.Id = c.PackageId;
         """;
 
 
@@ -137,17 +141,21 @@ public class ComponentDefinitionRepository
         command.CommandText =
         """
         SELECT
-            Id,
-            ManufacturerPartNumber,
-            Description,
-            PackageId,
-            ComponentType,
-            Manufacturer,
-            Version,
-            CreatedAt,
-            UpdatedAt
-        FROM ComponentDefinition
-        WHERE Id = $id;
+            c.Id,
+            c.ManufacturerPartNumber,
+            c.Description,
+            c.PackageId,
+            c.ComponentType,
+            c.Manufacturer,
+            c.Version,
+            c.CreatedAt,
+            c.UpdatedAt,
+            p.PackageName,
+            p.DisplayName
+        FROM ComponentDefinition c
+        INNER JOIN PackageDefinition p
+            ON p.Id = c.PackageId
+        WHERE c.Id = $id;
         """;
 
 
@@ -326,7 +334,14 @@ public class ComponentDefinitionRepository
                     : reader.GetString(5),
 
             Version =
-                reader.GetInt32(6)
+                reader.GetInt32(6),
+
+            Package = new PackageDefinition
+            {
+                Id = reader.GetInt32(3),
+                PackageName = reader.IsDBNull(9) ? "" : reader.GetString(9),
+                DisplayName = reader.IsDBNull(10) ? "" : reader.GetString(10)
+            }
         };
     }
 }

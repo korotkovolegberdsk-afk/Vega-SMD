@@ -1,0 +1,4 @@
+RefDes,PartNumber,PackageName,X,Y,Rotation,Side
+R1,RES-1K,R0603,1.0,1.0,0,Top
+U1,IC-QFN,QFN-32,10.0,10.0,0,Top
+U2,IC-QFP,QFP-0.5,20.0,20.0,0,Top

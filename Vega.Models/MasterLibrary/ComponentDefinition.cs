@@ -1,11 +1,11 @@
-namespace Vega.Models.MasterLibrary;
+п»їnamespace Vega.Models.MasterLibrary;
 
 public class ComponentDefinition
 {
     public int Id { get; set; }
 
 
-    // Идентификация компонента
+    // РРґРµРЅС‚РёС„РёРєР°С†РёСЏ РєРѕРјРїРѕРЅРµРЅС‚Р°
 
     public string ManufacturerPartNumber { get; set; } = "";
 
@@ -14,7 +14,7 @@ public class ComponentDefinition
     public string Description { get; set; } = "";
 
 
-    // Тип компонента
+    // РўРёРї РєРѕРјРїРѕРЅРµРЅС‚Р°
 
     public string ComponentType { get; set; } = "";
 
@@ -27,12 +27,14 @@ public class ComponentDefinition
     public string PowerRating { get; set; } = "";
 
 
-    // Связь с корпусом
+    // РЎРІСЏР·СЊ СЃ РєРѕСЂРїСѓСЃРѕРј
 
     public int PackageId { get; set; }
 
+    public PackageDefinition? Package { get; set; }
 
-    // Состояние компонента
+
+    // РЎРѕСЃС‚РѕСЏРЅРёРµ РєРѕРјРїРѕРЅРµРЅС‚Р°
 
     public string LifecycleStatus { get; set; } = "";
 
@@ -46,7 +48,7 @@ public class ComponentDefinition
     public bool IsActive { get; set; } = true;
 
 
-    // Аудит
+    // РђСѓРґРёС‚
 
     public DateTime CreatedAt { get; set; }
 

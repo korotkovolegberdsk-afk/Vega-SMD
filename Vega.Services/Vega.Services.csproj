@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vega.Data\Vega.Data.csproj" />
+    <ProjectReference Include="..\Vega.PnP\Vega.PnP.csproj" />
   </ItemGroup>
 
 </Project>

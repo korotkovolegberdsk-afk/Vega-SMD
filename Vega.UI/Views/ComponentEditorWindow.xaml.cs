@@ -1,13 +1,14 @@
-using System.Windows;
-using Vega.Data.MasterLibrary.Database;
+﻿using System.Windows;
 using Vega.Data.MasterLibrary.Repository;
 using Vega.Models.MasterLibrary;
+using Vega.Services.MasterLibrary;
 
 namespace Vega.UI.Views;
 
 public partial class ComponentEditorWindow : Window
 {
     private readonly ComponentDefinitionRepository _repository;
+    private readonly PackageDefinitionService _packageService;
 
     private readonly ComponentDefinition? _editingComponent;
 
@@ -19,6 +20,7 @@ public partial class ComponentEditorWindow : Window
 
         _repository =
             new ComponentDefinitionRepository();
+        _packageService = new PackageDefinitionService();
 
         LoadPackages();
     }
@@ -38,59 +40,18 @@ public partial class ComponentEditorWindow : Window
 
     private void LoadPackages()
     {
-        var packages =
-            new List<PackageDefinition>();
+        var packages = _packageService
+            .GetAll()
+            .Where(x => x.IsActive)
+            .ToList();
 
-        using var connection =
-            MasterLibraryConnection.Create();
-
-        using var command =
-            connection.CreateCommand();
-
-        command.CommandText =
-        """
-        SELECT
-            Id,
-            PackageName,
-            DisplayName
-        FROM PackageDefinition
-        WHERE IsActive = 1
-        ORDER BY PackageName;
-        """;
-
-
-        using var reader =
-            command.ExecuteReader();
-
-
-        while (reader.Read())
-        {
-            packages.Add(
-                new PackageDefinition
-                {
-                    Id =
-                        reader.GetInt32(0),
-
-                    PackageName =
-                        reader.GetString(1),
-
-                    DisplayName =
-                        reader.GetString(2)
-                });
-        }
-
-
-        PackageComboBox.ItemsSource =
-            packages;
-
+        PackageComboBox.ItemsSource = packages;
 
         if (packages.Count > 0)
         {
             PackageComboBox.SelectedIndex = 0;
         }
     }
-
-
 
     private void LoadComponent(
         ComponentDefinition component)

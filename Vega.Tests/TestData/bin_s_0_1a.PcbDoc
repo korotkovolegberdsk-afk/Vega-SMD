@@ -1,0 +1,3 @@
+Altium Designer PCB Binary Text Fixture
+Component|RefDes=R1|Comment=1k|Value=1k|Description=Resistor|Footprint=R0603|Manufacturer=Yageo|ManufacturerPartNumber=RC0603FR-071KL|Layer=TopLayer|X=10.5|Y=20.25|Rotation=90|Quantity=1
+Component|RefDes=U1|Comment=MCU|Value=MCU|Description=Controller|Footprint=QFN-32|Manufacturer=ST|ManufacturerPartNumber=STM32F030|Layer=BottomLayer|X=42.0|Y=15.5|Rotation=180|Quantity=1

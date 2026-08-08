@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="QuestPDF" Version="2025.12.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vega.StencilHistory\Vega.StencilHistory.csproj" />
+    <ProjectReference Include="..\Vega.StencilWorkflow\Vega.StencilWorkflow.csproj" />
+    <ProjectReference Include="..\Vega.StencilViewer\Vega.StencilViewer.csproj" />
+    <ProjectReference Include="..\Vega.StencilCAM\Vega.StencilCAM.csproj" />
+    <ProjectReference Include="..\Vega.CAD\Vega.CAD.csproj" />
+  </ItemGroup>
+</Project>
