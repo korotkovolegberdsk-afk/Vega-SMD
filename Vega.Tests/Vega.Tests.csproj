@@ -81,4 +81,5 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup><ProjectReference Include="..\Vega.Mirtec\Vega.Mirtec.csproj" /></ItemGroup>
 </Project>
