@@ -82,4 +82,5 @@
   </ItemGroup>
 
   <ItemGroup><ProjectReference Include="..\Vega.Mirtec\Vega.Mirtec.csproj" /></ItemGroup>
+<ItemGroup><None Update="TestData\Mirtec\ATMEGA_3000_14_V3.mmd"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></None></ItemGroup>
 </Project>

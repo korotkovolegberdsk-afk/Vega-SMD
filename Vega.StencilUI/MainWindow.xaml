@@ -30,6 +30,10 @@
                 <MenuItem Header="{DynamicResource Settings}"
                           Style="{StaticResource ThemedMenuItem}"
                           Click="Settings_Click" />
+                <Separator />
+                <MenuItem Header="Библиотека корпусов"
+                          Style="{StaticResource ThemedMenuItem}"
+                          Click="MasterLibrary_Click" />
             </MenuItem>
             <MenuItem Header="{DynamicResource HelpMenu}"
                       Style="{StaticResource ThemedMenuItem}" />
