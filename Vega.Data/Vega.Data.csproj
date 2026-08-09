@@ -71,4 +71,5 @@
     <None Update="Migration\019_MasterLibrary_Seed_CHIP_Complete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Migration\020_MasterLibrary_Seed_Discrete_Complete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Migration\021_MasterLibrary_Seed_IC_Complete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\022_MasterLibrary_Seed_BGA_CSP.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
   </ItemGroup></Project>

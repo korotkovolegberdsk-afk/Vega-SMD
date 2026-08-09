@@ -147,14 +147,15 @@ public class PackageDefinitionService
     public void AddAlias(PackageAlias alias) { if (alias.PackageId <= 0 || string.IsNullOrWhiteSpace(alias.Alias)) throw new ArgumentException("Укажите корпус и alias."); _packageAliasRepository.Add(alias); }
     public void UpdateAlias(PackageAlias alias) { if (alias.Id <= 0 || alias.PackageId <= 0 || string.IsNullOrWhiteSpace(alias.Alias)) throw new ArgumentException("Некорректный alias."); _packageAliasRepository.Update(alias); }
 
-    public List<PackageDefinition> FindByGeometry(string packageFamily, double pitch = 0, double bodyLength = 0, double bodyWidth = 0, double ballPitch = 0, double tolerance = 0.05)
+    public List<PackageDefinition> FindByGeometry(string packageFamily, double pitch = 0, double bodyLength = 0, double bodyWidth = 0, double ballPitch = 0, double tolerance = 0.05, int padCount = 0)
     {
         return _repository.GetAll().Where(package =>
             (string.IsNullOrWhiteSpace(packageFamily) || package.PackageFamily.Equals(packageFamily, StringComparison.OrdinalIgnoreCase)) &&
             (pitch <= 0 || Math.Abs(package.Pitch - pitch) <= tolerance) &&
             (bodyLength <= 0 || Math.Abs((package.BodyLength > 0 ? package.BodyLength : package.Length) - bodyLength) <= tolerance) &&
             (bodyWidth <= 0 || Math.Abs((package.BodyWidth > 0 ? package.BodyWidth : package.Width) - bodyWidth) <= tolerance) &&
-            (ballPitch <= 0 || Math.Abs(package.BallPitch - ballPitch) <= tolerance)).ToList();
+            (ballPitch <= 0 || Math.Abs(package.BallPitch - ballPitch) <= tolerance) &&
+            (padCount <= 0 || package.PadCount == padCount)).ToList();
     }
     public List<PackageDefinition> GetAll() => _repository.GetAll();
     public PackageDefinition? GetById(int id) => _repository.GetById(id);
