@@ -125,7 +125,23 @@ public class PackageDefinitionService
         SaveFootprint(package.Id, footprint);
     }
 
-    public List<PackageAlias> GetAliases(int packageId) => packageId <= 0 ? [] : _packageAliasRepository.GetByPackageId(packageId);
+    public PackageValidationResult ValidatePackage(PackageDefinition package)
+    {
+        var result = new PackageValidationResult(); package.PackageName = package.PackageName?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(package.PackageName)) result.Errors.Add("PackageName is required.");
+        if (package.Id == 0 && !string.IsNullOrWhiteSpace(package.PackageName) && !_repository.IsPackageNameUnique(package.PackageName)) result.Errors.Add("PackageName already exists.");
+        if (package.Id > 0 && !_repository.IsPackageNameUnique(package.PackageName, package.Id)) result.Errors.Add("PackageName already exists.");
+        var families = _repository.GetAll().Select(p => p.PackageFamily).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase); if (!families.Contains(package.PackageFamily, StringComparer.OrdinalIgnoreCase)) result.Errors.Add("PackageFamily does not exist.");
+        var types = new[]{"Resistor","Capacitor","Inductor","Diode","Transistor","MOSFET","IC","Connector","LED","Crystal","Oscillator","Transformer","Relay","Other"}; if (!types.Contains(package.ComponentType, StringComparer.OrdinalIgnoreCase)) result.Errors.Add("Unknown ComponentType.");
+        if (new[]{package.Length,package.Width,package.Height,package.BodyLength,package.BodyWidth,package.Pitch,package.LeadLength,package.LeadWidth,package.ThermalPadLength,package.ThermalPadWidth,package.BallDiameter,package.BallPitch}.Any(x=>x<0) || package.LeadCount<0 || package.PadCount<0) result.Errors.Add("Numeric values must be non-negative."); return result;
+    }
+    public PackageDefinition CreatePackage(PackageDefinition package) { var validation=ValidatePackage(package); if(!validation.IsValid) throw new ArgumentException(string.Join(" ",validation.Errors)); return _repository.CreatePackage(package); }
+    public PackageDefinition ClonePackage(int id) { var source=_repository.GetById(id) ?? throw new ArgumentException("Package not found."); return _repository.ClonePackage(source); }
+    public PackageDeleteResult DeletePackage(int id) => _repository.DeletePackage(id);
+    public bool IsPackageNameUnique(string name,int excludeId=0) => !string.IsNullOrWhiteSpace(name)&&_repository.IsPackageNameUnique(name,excludeId);
+    public PackageDefinition? GetPackageByName(string name) => _repository.GetPackageByName(name);
+    public PackageAlias CreateAlias(PackageAlias alias) { alias.Alias=alias.Alias?.Trim() ?? string.Empty; if(alias.PackageId<=0||string.IsNullOrWhiteSpace(alias.Alias))throw new ArgumentException("Alias is required."); return _packageAliasRepository.CreateAlias(alias); }
+    public void DeleteAlias(int id) => _packageAliasRepository.DeleteAlias(id);    public List<PackageAlias> GetAliases(int packageId) => packageId <= 0 ? [] : _packageAliasRepository.GetByPackageId(packageId);
     public List<PackageDefinition> Search(string query) => _packageAliasRepository.Search(query);
     public void AddAlias(PackageAlias alias) { if (alias.PackageId <= 0 || string.IsNullOrWhiteSpace(alias.Alias)) throw new ArgumentException("Укажите корпус и alias."); _packageAliasRepository.Add(alias); }
     public void UpdateAlias(PackageAlias alias) { if (alias.Id <= 0 || alias.PackageId <= 0 || string.IsNullOrWhiteSpace(alias.Alias)) throw new ArgumentException("Некорректный alias."); _packageAliasRepository.Update(alias); }

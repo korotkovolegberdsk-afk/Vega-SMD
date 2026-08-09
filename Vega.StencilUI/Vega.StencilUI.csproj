@@ -19,6 +19,8 @@
     <ProjectReference Include="..\Vega.Localization\Vega.Localization.csproj" />
     <ProjectReference Include="..\Vega.TechnologyDecision\Vega.TechnologyDecision.csproj" />
     <ProjectReference Include="..\Vega.StencilHistory\Vega.StencilHistory.csproj" />
+    <ProjectReference Include="..\Vega.Services\Vega.Services.csproj" />
+    <ProjectReference Include="..\Vega.Models\Vega.Models.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Vega-SMD-Logo.jpg" />

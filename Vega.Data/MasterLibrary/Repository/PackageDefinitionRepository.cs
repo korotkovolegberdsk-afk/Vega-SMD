@@ -119,8 +119,18 @@ public class PackageDefinitionRepository
             LeadCount,
             PadCount,
             ThermalPadCount,
+            BodyLength,
+            BodyWidth,
+            LeadLength,
+            LeadWidth,
+            ThermalPadLength,
+            ThermalPadWidth,
+            BallDiameter,
+            BallPitch,
             IPCName,
             JEDECName,
+            YamahaName,
+            MirtecAoiClass,
             LandPatternName,
             PolarityMark,
             DatasheetUrl,
@@ -174,8 +184,18 @@ public class PackageDefinitionRepository
             LeadCount,
             PadCount,
             ThermalPadCount,
+            BodyLength,
+            BodyWidth,
+            LeadLength,
+            LeadWidth,
+            ThermalPadLength,
+            ThermalPadWidth,
+            BallDiameter,
+            BallPitch,
             IPCName,
             JEDECName,
+            YamahaName,
+            MirtecAoiClass,
             LandPatternName,
             PolarityMark,
             DatasheetUrl,
@@ -239,8 +259,18 @@ public class PackageDefinitionRepository
             LeadCount,
             PadCount,
             ThermalPadCount,
+            BodyLength,
+            BodyWidth,
+            LeadLength,
+            LeadWidth,
+            ThermalPadLength,
+            ThermalPadWidth,
+            BallDiameter,
+            BallPitch,
             IPCName,
             JEDECName,
+            YamahaName,
+            MirtecAoiClass,
             LandPatternName,
             PolarityMark,
             DatasheetUrl,
@@ -274,8 +304,10 @@ public class PackageDefinitionRepository
             $leadCount,
             $padCount,
             $thermalPadCount,
+            $bodyLength, $bodyWidth, $leadLength, $leadWidth,
+            $thermalPadLength, $thermalPadWidth, $ballDiameter, $ballPitch,
             $ipcName,
-            $jedecName,
+            $jedecName, $yamahaName, $mirtecAoiClass,
             $landPatternName,
             $polarityMark,
             $datasheetUrl,
@@ -321,6 +353,8 @@ public class PackageDefinitionRepository
             LeadCount = $leadCount,
             PadCount = $padCount,
             ThermalPadCount = $thermalPadCount,
+            BodyLength = $bodyLength, BodyWidth = $bodyWidth, LeadLength = $leadLength, LeadWidth = $leadWidth,
+            ThermalPadLength = $thermalPadLength, ThermalPadWidth = $thermalPadWidth, BallDiameter = $ballDiameter, BallPitch = $ballPitch,
             IPCName = $ipcName,
             JEDECName = $jedecName,
             LandPatternName = $landPatternName,
@@ -363,7 +397,27 @@ public class PackageDefinitionRepository
         command.ExecuteNonQuery();
     }
 
-    private static void AddParameters(
+    public PackageDefinition? GetPackageById(int id) => GetById(id);
+    public PackageDefinition? GetPackageByName(string packageName) => GetAll().FirstOrDefault(p => p.PackageName.Equals(packageName.Trim(), StringComparison.OrdinalIgnoreCase));
+    public bool IsPackageNameUnique(string packageName, int excludeId = 0) => !GetAll().Any(p => p.Id != excludeId && p.PackageName.Equals(packageName.Trim(), StringComparison.OrdinalIgnoreCase));
+    public PackageDefinition CreatePackage(PackageDefinition package) { Add(package); return GetPackageByName(package.PackageName)!; }
+    public PackageDefinition ClonePackage(PackageDefinition source)
+    {
+        var clone = new PackageDefinition(); foreach (var property in typeof(PackageDefinition).GetProperties().Where(p => p.CanRead && p.CanWrite && p.Name != nameof(PackageDefinition.Id))) property.SetValue(clone, property.GetValue(source));
+        var baseName = source.PackageName.Trim() + "_COPY"; var name = baseName; var number = 2; while (!IsPackageNameUnique(name)) name = $"{baseName}_{number++}"; clone.PackageName = name; clone.DisplayName = string.IsNullOrWhiteSpace(source.DisplayName) ? name : source.DisplayName + " Copy"; clone.Id = 0; return clone;
+    }
+    public PackageDeleteResult CheckDelete(int id)
+    {
+        using var connection=MasterLibraryConnection.Create();
+        foreach(var table in new[]{"ComponentDefinition","EquipmentAlias","PackageProcessProfile","PackageGeometry","PackageFootprint","MasterLibrary_PackageDocuments","MasterLibrary_PackageRecognitionRules"})
+        { using var command=connection.CreateCommand(); command.CommandText=$"SELECT COUNT(*) FROM {table} WHERE PackageId=$id;"; command.Parameters.AddWithValue("$id",id); if(Convert.ToInt32(command.ExecuteScalar())>0) return new PackageDeleteResult{CanDelete=false,Reason="Package is in use"}; }
+        using(var command=connection.CreateCommand()){command.CommandText="SELECT COUNT(*) FROM StencilTechnologyRule WHERE PackageName=(SELECT PackageName FROM PackageDefinition WHERE Id=$id);";command.Parameters.AddWithValue("$id",id);if(Convert.ToInt32(command.ExecuteScalar())>0)return new PackageDeleteResult{CanDelete=false,Reason="Package is in use"};}
+        return new PackageDeleteResult{CanDelete=true};
+    }
+    public PackageDeleteResult DeletePackage(int id)
+    {
+        var result=CheckDelete(id); if(!result.CanDelete)return result; using var connection=MasterLibraryConnection.Create();using var transaction=connection.BeginTransaction();using var aliases=connection.CreateCommand();aliases.Transaction=transaction;aliases.CommandText="DELETE FROM MasterLibrary_PackageAliases WHERE PackageId=$id;";aliases.Parameters.AddWithValue("$id",id);aliases.ExecuteNonQuery();using var package=connection.CreateCommand();package.Transaction=transaction;package.CommandText="DELETE FROM PackageDefinition WHERE Id=$id;";package.Parameters.AddWithValue("$id",id);package.ExecuteNonQuery();transaction.Commit();return new PackageDeleteResult{CanDelete=true};
+    }    private static void AddParameters(
         SqliteCommand command,
         PackageDefinition package)
     {

@@ -46,6 +46,10 @@ public sealed class PackageAliasRepository
         return packages;
     }
 
+    public bool IsAliasUnique(int packageId, string alias, int excludeId = 0) => !GetByPackageId(packageId).Any(a => a.Id != excludeId && a.Alias.Equals(alias.Trim(), StringComparison.OrdinalIgnoreCase));
+    public PackageAlias CreateAlias(PackageAlias alias) { alias.Alias = alias.Alias.Trim(); if (!IsAliasUnique(alias.PackageId, alias.Alias)) throw new InvalidOperationException("Duplicate alias."); Add(alias); return GetByPackageId(alias.PackageId).Single(a => a.Alias.Equals(alias.Alias, StringComparison.OrdinalIgnoreCase)); }
+    public void DeleteAlias(int id) { using var connection=MasterLibraryConnection.Create(); using var command=connection.CreateCommand(); command.CommandText="DELETE FROM MasterLibrary_PackageAliases WHERE Id=$id;"; command.Parameters.AddWithValue("$id",id); command.ExecuteNonQuery(); }
+
     public void Add(PackageAlias alias)
     {
         using var connection = MasterLibraryConnection.Create();
@@ -58,7 +62,7 @@ public sealed class PackageAliasRepository
     {
         using var connection = MasterLibraryConnection.Create(); using var command = connection.CreateCommand();
         command.CommandText = "UPDATE MasterLibrary_PackageAliases SET Alias=$alias, AliasType=$aliasType, Source=$source, IsActive=$isActive WHERE Id=$id;";
-        AddParameters(command, alias); command.Parameters.AddWithValue("$id", alias.Id); command.ExecuteNonQuery();
+        alias.Alias = alias.Alias.Trim(); if (!IsAliasUnique(alias.PackageId, alias.Alias, alias.Id)) throw new InvalidOperationException("Duplicate alias."); AddParameters(command, alias); command.Parameters.AddWithValue("$id", alias.Id); command.ExecuteNonQuery();
     }
 
     private static void AddParameters(SqliteCommand command, PackageAlias alias)
