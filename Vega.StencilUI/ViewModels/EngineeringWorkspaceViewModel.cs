@@ -109,6 +109,9 @@ public class EngineeringWorkspaceViewModel : INotifyPropertyChanged
     public ImageSource? ProductionPreviewImage { get => _productionPreviewImage; private set => SetField(ref _productionPreviewImage, value); }
     public string PreviewSummary { get => _previewSummary; private set => SetField(ref _previewSummary, value); }
     public StencilViewDocument? PreviewDocument => _stencilProjectSession?.PreviewData;
+    public string? ProjectArchiveSourceDirectory => _stencilProjectSession?.Project.InputFiles
+        .Select(input => Path.GetDirectoryName(input.Path))
+        .FirstOrDefault(directory => !string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory));
     public double PreviewZoom { get => _previewZoom; private set => SetField(ref _previewZoom, value); }
     public IReadOnlyList<string> PreviewItems => _stencilProjectSession?.PreviewData is null ? Array.Empty<string>() : ["Original", "Corrected", "Overlay", "Production"];
     public ObservableCollection<DashboardWarning> WarningList { get; } = new();

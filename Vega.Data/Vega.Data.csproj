@@ -73,4 +73,5 @@
     <None Update="Migration\021_MasterLibrary_Seed_IC_Complete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Migration\022_MasterLibrary_Seed_BGA_CSP.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Migration\023_MasterLibrary_Seed_Special_Passives.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\024_MasterLibrary_PackageTechnologyRules.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
   </ItemGroup></Project>

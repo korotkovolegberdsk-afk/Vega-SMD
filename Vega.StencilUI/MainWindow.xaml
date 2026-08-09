@@ -22,7 +22,11 @@
               Background="{DynamicResource MenuBackgroundBrush}"
               Foreground="{DynamicResource MenuForegroundBrush}">
             <MenuItem Header="{DynamicResource FileMenu}"
-                      Style="{StaticResource ThemedMenuItem}" />
+                      Style="{StaticResource ThemedMenuItem}">
+                <MenuItem Header="{DynamicResource CreateProjectArchive}"
+                          Style="{StaticResource ThemedMenuItem}"
+                          Click="CreateProjectArchive_Click" />
+            </MenuItem>
             <MenuItem Header="{DynamicResource ProjectMenu}"
                       Style="{StaticResource ThemedMenuItem}" />
             <MenuItem Header="{DynamicResource Tools}"
