@@ -28,11 +28,13 @@ public sealed class MasterLibraryViewModel : INotifyPropertyChanged
     public PackageDefinition? SelectedPackage
     {
         get => _selectedPackage;
-        set { if (Set(ref _selectedPackage, value)) LoadAliases(); }
+        set { if (Set(ref _selectedPackage, value)) { LoadAliases(); Raise(nameof(HasSelectedPackage)); } }
     }
+    public bool HasSelectedPackage => SelectedPackage is not null;
     public string StatusText => $"Family: {SelectedFamily ?? "All"}   Packages: {Packages.Count}   Selected: {SelectedPackage?.PackageName ?? "None"}";
 
     public void ShowAllPackages() { SelectedFamily = null; SearchText = string.Empty; }
+    public void RefreshAndSelect(string? packageName) { LoadPackages(); SelectedPackage = Packages.FirstOrDefault(p => p.PackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase)) ?? Packages.FirstOrDefault(); }
     public void SelectFamily(string? family) => SelectedFamily = family;
     public void Load()
     {

@@ -1,0 +1,8 @@
+namespace Vega.Models;
+public enum ProjectComponentRecognitionStatus { Matched, Ambiguous, NotFound, Manual }
+public enum ProjectComponentRecognitionMethod { Footprint, Alias, MPN, Geometry, YGX, Manual }
+public sealed class ProjectComponent
+{
+ public int Id {get;set;} public int ProjectId {get;set;} public string RefDes {get;set;}=""; public string PartNumber {get;set;}=""; public string Value {get;set;}=""; public string Comment {get;set;}=""; public string SourceFootprint {get;set;}=""; public string NormalizedFootprint {get;set;}=""; public double X {get;set;} public double Y {get;set;} public double Rotation {get;set;} public string Side {get;set;}="Top"; public string BOMSource {get;set;}=""; public string PnPSource {get;set;}=""; public string YGXSource {get;set;}=""; public int? PackageDefinitionId {get;set;} public ProjectComponentRecognitionMethod RecognitionMethod {get;set;} public double RecognitionConfidence {get;set;} public ProjectComponentRecognitionStatus RecognitionStatus {get;set;}=ProjectComponentRecognitionStatus.NotFound; public bool ManualOverride {get;set;}
+}
+public sealed class ProjectComponentInput { public string RefDes {get;set;}=""; public string PartNumber {get;set;}=""; public string Value {get;set;}=""; public string Comment {get;set;}=""; public string Footprint {get;set;}=""; public double? X {get;set;} public double? Y {get;set;} public double? Rotation {get;set;} public string Side {get;set;}=""; public string Source {get;set;}=""; public string SourceKind {get;set;}=""; }

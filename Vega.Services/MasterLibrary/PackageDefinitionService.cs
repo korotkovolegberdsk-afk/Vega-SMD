@@ -137,6 +137,7 @@ public class PackageDefinitionService
     }
     public PackageDefinition CreatePackage(PackageDefinition package) { var validation=ValidatePackage(package); if(!validation.IsValid) throw new ArgumentException(string.Join(" ",validation.Errors)); return _repository.CreatePackage(package); }
     public PackageDefinition ClonePackage(int id) { var source=_repository.GetById(id) ?? throw new ArgumentException("Package not found."); return _repository.ClonePackage(source); }
+    public PackageDeleteResult CheckDeletePackage(int id) => _repository.CheckDelete(id);
     public PackageDeleteResult DeletePackage(int id) => _repository.DeletePackage(id);
     public bool IsPackageNameUnique(string name,int excludeId=0) => !string.IsNullOrWhiteSpace(name)&&_repository.IsPackageNameUnique(name,excludeId);
     public PackageDefinition? GetPackageByName(string name) => _repository.GetPackageByName(name);
