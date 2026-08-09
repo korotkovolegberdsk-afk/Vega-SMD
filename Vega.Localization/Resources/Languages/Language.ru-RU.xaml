@@ -101,4 +101,5 @@
     <sys:String x:Key="ThermalPadWidthToolTip">Ширина центральной exposed/thermal площадки, мм</sys:String>
     <sys:String x:Key="BallDiameterToolTip">Диаметр шара BGA, мм</sys:String>
     <sys:String x:Key="BallPitchToolTip">Шаг между центрами шаров BGA, мм</sys:String>    <sys:String x:Key="CreateProjectArchive">Создать архив проекта</sys:String>
+    <sys:String x:Key="CreateProgramArchive">Создать архив программы</sys:String>
 </ResourceDictionary>

@@ -101,4 +101,5 @@
     <sys:String x:Key="ThermalPadWidthToolTip">Central exposed/thermal pad width, mm</sys:String>
     <sys:String x:Key="BallDiameterToolTip">BGA ball diameter, mm</sys:String>
     <sys:String x:Key="BallPitchToolTip">Pitch between BGA ball centres, mm</sys:String>    <sys:String x:Key="CreateProjectArchive">Create Project Archive</sys:String>
+    <sys:String x:Key="CreateProgramArchive">Create Program Archive</sys:String>
 </ResourceDictionary>

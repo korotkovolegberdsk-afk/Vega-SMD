@@ -26,6 +26,9 @@
                 <MenuItem Header="{DynamicResource CreateProjectArchive}"
                           Style="{StaticResource ThemedMenuItem}"
                           Click="CreateProjectArchive_Click" />
+                <MenuItem Header="{DynamicResource CreateProgramArchive}"
+                          Style="{StaticResource ThemedMenuItem}"
+                          Click="CreateProgramArchive_Click" />
             </MenuItem>
             <MenuItem Header="{DynamicResource ProjectMenu}"
                       Style="{StaticResource ThemedMenuItem}" />

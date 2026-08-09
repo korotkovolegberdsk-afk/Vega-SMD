@@ -2,103 +2,103 @@ using System.IO.Compression;
 
 namespace Vega.Infrastructure.Tools.ProjectArchive;
 
+public sealed record ProjectArchiveResult(string ArchivePath, int FileCount, long SizeBytes);
+
 public class ProjectArchiveService
 {
-    public string CreateArchive(
-        string projectFolder,
-        string outputFolder)
+    public string CreateArchive(string projectFolder, string outputFolder)
     {
         if (!Directory.Exists(projectFolder))
             throw new DirectoryNotFoundException(projectFolder);
 
-
         Directory.CreateDirectory(outputFolder);
-
-
         var projectName = new DirectoryInfo(projectFolder).Name;
-
         var date = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+        var archivePath = Path.Combine(outputFolder, $"{projectName}_{date}.zip");
 
-
-        var archivePath = Path.Combine(
-            outputFolder,
-            $"{projectName}_{date}.zip");
-
-
-        if (File.Exists(archivePath))
-            File.Delete(archivePath);
-
-
-        using var archive = ZipFile.Open(
-            archivePath,
-            ZipArchiveMode.Create);
-
-
-        foreach (var file in Directory.GetFiles(
-                     projectFolder,
-                     "*",
-                     SearchOption.AllDirectories))
-        {
-            var relativePath = Path.GetRelativePath(
-                projectFolder,
-                file);
-
-
-            if (ShouldSkip(relativePath))
-                continue;
-
-
-            archive.CreateEntryFromFile(
-                file,
-                relativePath);
-        }
-
-
-        return archivePath;
+        return CreateArchiveToFile(projectFolder, archivePath, includeSourceOnlyExclusions: false).ArchivePath;
     }
 
-
-
-    private bool ShouldSkip(string relativePath)
+    public ProjectArchiveResult CreateSourceArchive(string sourceRoot, string archivePath)
     {
-        var parts = relativePath.Split(
-            Path.DirectorySeparatorChar,
-            Path.AltDirectorySeparatorChar);
+        if (!Directory.Exists(sourceRoot))
+            throw new DirectoryNotFoundException(sourceRoot);
+        if (string.IsNullOrWhiteSpace(archivePath))
+            throw new ArgumentException("Archive path is required.", nameof(archivePath));
 
+        return CreateArchiveToFile(sourceRoot, archivePath, includeSourceOnlyExclusions: true);
+    }
 
+    private ProjectArchiveResult CreateArchiveToFile(string sourceRoot, string archivePath, bool includeSourceOnlyExclusions)
+    {
+        var fullArchivePath = Path.GetFullPath(archivePath);
+        var outputDirectory = Path.GetDirectoryName(fullArchivePath)
+            ?? throw new InvalidOperationException("Archive output directory is invalid.");
+        Directory.CreateDirectory(outputDirectory);
+
+        var temporaryArchivePath = fullArchivePath + ".partial";
+        if (File.Exists(temporaryArchivePath))
+            File.Delete(temporaryArchivePath);
+
+        var fileCount = 0;
+        try
+        {
+            using (var archive = ZipFile.Open(temporaryArchivePath, ZipArchiveMode.Create))
+            {
+                foreach (var file in Directory.GetFiles(sourceRoot, "*", SearchOption.AllDirectories))
+                {
+                    var relativePath = Path.GetRelativePath(sourceRoot, file);
+                    if (ShouldSkip(relativePath, includeSourceOnlyExclusions))
+                        continue;
+
+                    try
+                    {
+                        archive.CreateEntryFromFile(file, relativePath);
+                        fileCount++;
+                    }
+                    catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+                    {
+                        throw new IOException($"Unable to add source file '{relativePath}' to the archive.", exception);
+                    }
+                }
+            }
+
+            if (File.Exists(fullArchivePath))
+                File.Delete(fullArchivePath);
+            File.Move(temporaryArchivePath, fullArchivePath);
+            return new ProjectArchiveResult(fullArchivePath, fileCount, new FileInfo(fullArchivePath).Length);
+        }
+        catch
+        {
+            if (File.Exists(temporaryArchivePath))
+                File.Delete(temporaryArchivePath);
+            throw;
+        }
+    }
+
+    private static bool ShouldSkip(string relativePath, bool includeSourceOnlyExclusions)
+    {
+        var parts = relativePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         foreach (var part in parts)
         {
-            if (part.Equals(".vs",
-                StringComparison.OrdinalIgnoreCase))
+            if (part.Equals(".vs", StringComparison.OrdinalIgnoreCase)
+                || part.Equals("bin", StringComparison.OrdinalIgnoreCase)
+                || part.Equals("obj", StringComparison.OrdinalIgnoreCase)
+                || part.Equals(".git", StringComparison.OrdinalIgnoreCase)
+                || part.Equals("Archives", StringComparison.OrdinalIgnoreCase))
                 return true;
 
-
-            if (part.Equals("bin",
-                StringComparison.OrdinalIgnoreCase))
-                return true;
-
-
-            if (part.Equals("obj",
-                StringComparison.OrdinalIgnoreCase))
-                return true;
-
-
-            if (part.Equals(".git",
-                StringComparison.OrdinalIgnoreCase))
-                return true;
-
-
-            if (part.Equals("Archives",
-                StringComparison.OrdinalIgnoreCase))
+            if (includeSourceOnlyExclusions && (part.Equals("TestResults", StringComparison.OrdinalIgnoreCase)
+                || part.Equals("_PackTemp", StringComparison.OrdinalIgnoreCase)))
                 return true;
         }
 
-
-        if (relativePath.EndsWith(".zip",
-            StringComparison.OrdinalIgnoreCase))
+        if (relativePath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
             return true;
 
-
-        return false;
+        return includeSourceOnlyExclusions && (relativePath.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase)
+            || relativePath.EndsWith(".cache", StringComparison.OrdinalIgnoreCase)
+            || relativePath.EndsWith(".suo", StringComparison.OrdinalIgnoreCase)
+            || relativePath.EndsWith(".user", StringComparison.OrdinalIgnoreCase));
     }
 }
