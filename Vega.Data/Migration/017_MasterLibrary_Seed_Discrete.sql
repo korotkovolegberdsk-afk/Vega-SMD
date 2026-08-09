@@ -1,0 +1,7 @@
+WITH seed(PackageName, PackageFamily, ComponentType, Length, Width, Height, Pitch, LeadCount, PadCount) AS (VALUES
+('SOT23','SOT','Transistor',2.90,1.60,1.10,0.95,3,3),('SOT223','SOT','MOSFET',6.50,3.50,1.80,2.30,4,4),('SOD123','SOD','Diode',3.70,1.80,1.35,0,2,2),('SOD323','SOD','Diode',1.70,1.25,0.95,0,2,2),('MELF1206','MELF','Diode',3.20,1.60,1.60,0,2,2),('DPAK','DPAK','MOSFET',6.60,6.20,2.30,2.30,3,3))
+INSERT OR IGNORE INTO PackageDefinition(PackageName,DisplayName,StandardName,PackageFamily,ComponentType,CategoryId,FamilyId,Length,Width,Height,Pitch,LeadCount,PadCount,Description,PolarityMark,MirtecAoiClass,IsActive,CreatedAt,UpdatedAt)
+SELECT s.PackageName,s.PackageName,s.PackageName,s.PackageFamily,s.ComponentType,c.Id,f.Id,s.Length,s.Width,s.Height,s.Pitch,s.LeadCount,s.PadCount,'Standard discrete semiconductor package','Cathode / Pin 1 marking','DISCRETE',1,datetime('now'),datetime('now') FROM seed s JOIN PackageFamily f ON f.Code=s.PackageFamily JOIN PackageCategory c ON c.Id=f.CategoryId;
+INSERT OR IGNORE INTO MasterLibrary_PackageAliases(PackageId,Alias,AliasType,Source) SELECT Id,'SOT-23','Footprint','Vega seed' FROM PackageDefinition WHERE PackageName='SOT23';
+INSERT OR IGNORE INTO MasterLibrary_PackageAliases(PackageId,Alias,AliasType,Source) SELECT Id,'SOT-23-3','Footprint','Vega seed' FROM PackageDefinition WHERE PackageName='SOT23';
+INSERT OR IGNORE INTO MasterLibrary_PackageAliases(PackageId,Alias,AliasType,Source) SELECT Id,'SOD-123','Footprint','Vega seed' FROM PackageDefinition WHERE PackageName='SOD123';

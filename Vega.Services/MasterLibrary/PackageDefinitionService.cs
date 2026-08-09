@@ -1,4 +1,4 @@
-﻿using Vega.Data.MasterLibrary.Repository;
+using Vega.Data.MasterLibrary.Repository;
 using Vega.Models.MasterLibrary;
 
 namespace Vega.Services.MasterLibrary;
@@ -8,6 +8,7 @@ public class PackageDefinitionService
     private readonly PackageDefinitionRepository _repository;
     private readonly PackageProcessProfileRepository _processProfileRepository;
     private readonly EquipmentAliasRepository _equipmentAliasRepository;
+    private readonly PackageAliasRepository _packageAliasRepository;
     private readonly PackageGeometryRepository _geometryRepository;
     private readonly PackageFootprintRepository _footprintRepository;
 
@@ -16,6 +17,7 @@ public class PackageDefinitionService
         _repository = new PackageDefinitionRepository();
         _processProfileRepository = new PackageProcessProfileRepository();
         _equipmentAliasRepository = new EquipmentAliasRepository();
+        _packageAliasRepository = new PackageAliasRepository();
         _geometryRepository = new PackageGeometryRepository();
         _footprintRepository = new PackageFootprintRepository();
     }
@@ -123,6 +125,20 @@ public class PackageDefinitionService
         SaveFootprint(package.Id, footprint);
     }
 
+    public List<PackageAlias> GetAliases(int packageId) => packageId <= 0 ? [] : _packageAliasRepository.GetByPackageId(packageId);
+    public List<PackageDefinition> Search(string query) => _packageAliasRepository.Search(query);
+    public void AddAlias(PackageAlias alias) { if (alias.PackageId <= 0 || string.IsNullOrWhiteSpace(alias.Alias)) throw new ArgumentException("Укажите корпус и alias."); _packageAliasRepository.Add(alias); }
+    public void UpdateAlias(PackageAlias alias) { if (alias.Id <= 0 || alias.PackageId <= 0 || string.IsNullOrWhiteSpace(alias.Alias)) throw new ArgumentException("Некорректный alias."); _packageAliasRepository.Update(alias); }
+
+    public List<PackageDefinition> FindByGeometry(string packageFamily, double pitch = 0, double bodyLength = 0, double bodyWidth = 0, double ballPitch = 0, double tolerance = 0.05)
+    {
+        return _repository.GetAll().Where(package =>
+            (string.IsNullOrWhiteSpace(packageFamily) || package.PackageFamily.Equals(packageFamily, StringComparison.OrdinalIgnoreCase)) &&
+            (pitch <= 0 || Math.Abs(package.Pitch - pitch) <= tolerance) &&
+            (bodyLength <= 0 || Math.Abs((package.BodyLength > 0 ? package.BodyLength : package.Length) - bodyLength) <= tolerance) &&
+            (bodyWidth <= 0 || Math.Abs((package.BodyWidth > 0 ? package.BodyWidth : package.Width) - bodyWidth) <= tolerance) &&
+            (ballPitch <= 0 || Math.Abs(package.BallPitch - ballPitch) <= tolerance)).ToList();
+    }
     public List<PackageDefinition> GetAll() => _repository.GetAll();
     public PackageDefinition? GetById(int id) => _repository.GetById(id);
 

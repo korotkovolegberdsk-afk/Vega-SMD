@@ -62,4 +62,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-</Project>
+  <ItemGroup>
+    <None Update="Migration\014_MasterLibrary_PackageLibrarySchema.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\015_MasterLibrary_PackageFamilies.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\016_MasterLibrary_Seed_CHIP.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\017_MasterLibrary_Seed_Discrete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\018_MasterLibrary_Seed_IC.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+  </ItemGroup></Project>

@@ -379,8 +379,12 @@ public class PackageDefinitionRepository
         command.Parameters.AddWithValue("$leadCount", package.LeadCount);
         command.Parameters.AddWithValue("$padCount", package.PadCount);
         command.Parameters.AddWithValue("$thermalPadCount", package.ThermalPadCount);
+        command.Parameters.AddWithValue("$bodyLength", package.BodyLength); command.Parameters.AddWithValue("$bodyWidth", package.BodyWidth);
+        command.Parameters.AddWithValue("$leadLength", package.LeadLength); command.Parameters.AddWithValue("$leadWidth", package.LeadWidth);
+        command.Parameters.AddWithValue("$thermalPadLength", package.ThermalPadLength); command.Parameters.AddWithValue("$thermalPadWidth", package.ThermalPadWidth);
+        command.Parameters.AddWithValue("$ballDiameter", package.BallDiameter); command.Parameters.AddWithValue("$ballPitch", package.BallPitch);
         command.Parameters.AddWithValue("$ipcName", package.IPCName);
-        command.Parameters.AddWithValue("$jedecName", package.JEDECName);
+        command.Parameters.AddWithValue("$jedecName", package.JEDECName); command.Parameters.AddWithValue("$yamahaName", package.YamahaName); command.Parameters.AddWithValue("$mirtecAoiClass", package.MirtecAoiClass);
         command.Parameters.AddWithValue("$landPatternName", package.LandPatternName);
         command.Parameters.AddWithValue("$polarityMark", package.PolarityMark);
         command.Parameters.AddWithValue("$datasheetUrl", package.DatasheetUrl); command.Parameters.AddWithValue("$drawingFile", package.DrawingFile); command.Parameters.AddWithValue("$model3DFile", package.Model3DFile);
@@ -408,8 +412,10 @@ public class PackageDefinitionRepository
             LeadCount = ReadInt32(reader, "LeadCount"),
             PadCount = ReadInt32(reader, "PadCount"),
             ThermalPadCount = ReadInt32(reader, "ThermalPadCount"),
+            BodyLength = ReadDouble(reader, "BodyLength"), BodyWidth = ReadDouble(reader, "BodyWidth"), LeadLength = ReadDouble(reader, "LeadLength"), LeadWidth = ReadDouble(reader, "LeadWidth"),
+            ThermalPadLength = ReadDouble(reader, "ThermalPadLength"), ThermalPadWidth = ReadDouble(reader, "ThermalPadWidth"), BallDiameter = ReadDouble(reader, "BallDiameter"), BallPitch = ReadDouble(reader, "BallPitch"),
             IPCName = ReadString(reader, "IPCName"),
-            JEDECName = ReadString(reader, "JEDECName"),
+            JEDECName = ReadString(reader, "JEDECName"), YamahaName = ReadString(reader, "YamahaName"), MirtecAoiClass = ReadString(reader, "MirtecAoiClass"),
             LandPatternName = ReadString(reader, "LandPatternName"),
             PolarityMark = ReadString(reader, "PolarityMark"),
             DatasheetUrl = ReadString(reader, "DatasheetUrl"), DrawingFile = ReadString(reader, "DrawingFile"), Model3DFile = ReadString(reader, "Model3DFile"),

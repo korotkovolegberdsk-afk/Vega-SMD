@@ -20,8 +20,18 @@ public class PackageDefinition
     public int LeadCount { get; set; }
     public int PadCount { get; set; }
     public int ThermalPadCount { get; set; }
+    public double BodyLength { get; set; }
+    public double BodyWidth { get; set; }
+    public double LeadLength { get; set; }
+    public double LeadWidth { get; set; }
+    public double ThermalPadLength { get; set; }
+    public double ThermalPadWidth { get; set; }
+    public double BallDiameter { get; set; }
+    public double BallPitch { get; set; }
     public string IPCName { get; set; } = "";
     public string JEDECName { get; set; } = "";
+    public string YamahaName { get; set; } = "";
+    public string MirtecAoiClass { get; set; } = "";
     public string LandPatternName { get; set; } = "";
     public string PolarityMark { get; set; } = "";
     public string DatasheetUrl { get; set; } = "";

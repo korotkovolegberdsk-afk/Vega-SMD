@@ -30,6 +30,7 @@
     <ProjectReference Include="..\Vega.StencilInput\Vega.StencilInput.csproj" />
     <ProjectReference Include="..\Vega.StencilViewer\Vega.StencilViewer.csproj" />
     <ProjectReference Include="..\Vega.StencilWorkflow\Vega.StencilWorkflow.csproj" />
+    <ProjectReference Include="..\Vega.StencilProject\Vega.StencilProject.csproj" />
     <ProjectReference Include="..\Vega.StencilHistory\Vega.StencilHistory.csproj" />
     <ProjectReference Include="..\Vega.Report\Vega.Report.csproj" />
     <ProjectReference Include="..\Vega.StencilUI\Vega.StencilUI.csproj" />
@@ -44,6 +45,7 @@
     <ProjectReference Include="..\Vega.ProductionTracking\Vega.ProductionTracking.csproj" />
     <ProjectReference Include="..\Vega.QualityAnalytics\Vega.QualityAnalytics.csproj" />
     <ProjectReference Include="..\Vega.EngineeringDashboard\Vega.EngineeringDashboard.csproj" />
+    <ProjectReference Include="..\Vega.Localization\Vega.Localization.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Vega.DefectDictionary\Migration\013_DefectDictionary.sql" Link="Migration\013_DefectDictionary.sql">

@@ -15,11 +15,11 @@ public class GerberPasteParserService
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private static readonly Regex ApertureSelectRegex = new(
-        @"^D(?<id>\d+)\*$",
+        @"^(?:G54)?D(?<id>[1-9]\d+)\*$",
         RegexOptions.Compiled);
 
-    private static readonly Regex FlashRegex = new(
-        @"^(?:X(?<x>[+-]?\d+))?(?:Y(?<y>[+-]?\d+))?D03\*$",
+    private static readonly Regex OperationRegex = new(
+        @"^(?:X(?<x>[+-]?\d+))?(?:Y(?<y>[+-]?\d+))?D(?<operation>01|03)\*$",
         RegexOptions.Compiled);
 
     private string? _fileName;
@@ -53,6 +53,8 @@ public class GerberPasteParserService
         var selectedApertureId = 0;
         var currentX = 0d;
         var currentY = 0d;
+        var flashPrimitiveCount = 0;
+        var drawPrimitiveCount = 0;
 
         foreach (var rawLine in _lines)
         {
@@ -84,25 +86,39 @@ public class GerberPasteParserService
                 continue;
             }
 
-            var flashMatch = FlashRegex.Match(line);
-            if (!flashMatch.Success || !apertures.TryGetValue(selectedApertureId, out var selectedAperture))
+            var operationMatch = OperationRegex.Match(line);
+            if (!operationMatch.Success || !apertures.TryGetValue(selectedApertureId, out var selectedAperture))
             {
                 continue;
             }
 
-            if (flashMatch.Groups["x"].Success)
+            // D01 without a coordinate only selects interpolation mode; it is not geometry.
+            if (operationMatch.Groups["operation"].Value == "01" && !operationMatch.Groups["x"].Success && !operationMatch.Groups["y"].Success)
             {
-                currentX = ParseCoordinate(flashMatch.Groups["x"].Value, coordinateFormat.XDecimal);
+                continue;
             }
 
-            if (flashMatch.Groups["y"].Success)
+            if (operationMatch.Groups["x"].Success)
             {
-                currentY = ParseCoordinate(flashMatch.Groups["y"].Value, coordinateFormat.YDecimal);
+                currentX = ParseCoordinate(operationMatch.Groups["x"].Value, coordinateFormat.XDecimal);
+            }
+
+            if (operationMatch.Groups["y"].Success)
+            {
+                currentY = ParseCoordinate(operationMatch.Groups["y"].Value, coordinateFormat.YDecimal);
             }
 
             layer.Primitives.Add(CreatePrimitive(currentX, currentY, selectedAperture));
+            if (operationMatch.Groups["operation"].Value == "03") flashPrimitiveCount++;
+            else drawPrimitiveCount++;
         }
 
+        System.Diagnostics.Debug.WriteLine("=== GERBER PARSE RESULT ===");
+        System.Diagnostics.Debug.WriteLine($"File: {Path.GetFileName(_fileName)}; Extension: {Path.GetExtension(_fileName).TrimStart('.').ToUpperInvariant()}; Detected side: {layer.Side.ToUpperInvariant()}");
+        System.Diagnostics.Debug.WriteLine($"Apertures: {layer.Apertures.Count}");
+        System.Diagnostics.Debug.WriteLine($"Flash primitives (D03): {flashPrimitiveCount}");
+        System.Diagnostics.Debug.WriteLine($"Draw primitives (D01): {drawPrimitiveCount}");
+        System.Diagnostics.Debug.WriteLine($"PastePrimitives: {layer.Primitives.Count}");
         return layer;
     }
 
@@ -195,7 +211,7 @@ public class GerberPasteParserService
     private static string GetSide(string fileName)
     {
         var extension = Path.GetExtension(fileName);
-        return extension.Equals(".gbs", StringComparison.OrdinalIgnoreCase)
+        return extension.Equals(".gbs", StringComparison.OrdinalIgnoreCase) || extension.Equals(".gbp", StringComparison.OrdinalIgnoreCase)
             || fileName.Contains("bottom", StringComparison.OrdinalIgnoreCase)
             ? "Bottom"
             : "Top";
