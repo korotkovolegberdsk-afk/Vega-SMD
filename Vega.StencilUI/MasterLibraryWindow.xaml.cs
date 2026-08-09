@@ -2,6 +2,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Win32;
+using Vega.Services.MasterLibrary.Import;
 using Vega.Models.MasterLibrary;
 using Vega.Services.MasterLibrary;
 using Vega.StencilUI.ViewModels;
@@ -17,6 +19,15 @@ public partial class MasterLibraryWindow : Window
 
     private void AllPackages_Click(object sender, RoutedEventArgs e) => Vm.ShowAllPackages();
     private void AddPackage_Click(object sender, RoutedEventArgs e) => OpenEditor(PackageEditorMode.Create, null);
+    private void ImportPackages_Click(object sender, RoutedEventArgs e) => new PackageImportWindow { Owner = this }.ShowDialog();
+
+    private void ExportImportTemplate_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog { Filter = "Excel workbook|*.xlsx", FileName = "MasterLibrary_Package_Template.xlsx" };
+        if (dialog.ShowDialog() == true)
+            new PackageImportService().ExportTemplate(dialog.FileName);
+    }
+
     private void EditPackage_Click(object sender, RoutedEventArgs e) => EditSelectedPackage();
 
     private void PackagesGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
