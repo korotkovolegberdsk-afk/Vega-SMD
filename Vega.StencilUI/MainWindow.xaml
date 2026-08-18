@@ -38,7 +38,7 @@
                           Style="{StaticResource ThemedMenuItem}"
                           Click="Settings_Click" />
                 <Separator />
-                <MenuItem Header="Библиотека корпусов"
+                <MenuItem Header="Библиотека корпусов и компонентов"
                           Style="{StaticResource ThemedMenuItem}"
                           Click="MasterLibrary_Click" />
             </MenuItem>

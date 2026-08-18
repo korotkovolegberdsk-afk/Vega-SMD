@@ -1,0 +1,241 @@
+<UserControl x:Class="Vega.StencilUI.Components.ComponentCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Vega.StencilUI.Controls"
+             xmlns:tape="clr-namespace:Vega.StencilUI.TapeReelDrawing"
+             x:Name="Root"
+             MinWidth="640" MinHeight="560">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Padding="12" BorderBrush="{DynamicResource GridBorderBrush}" BorderThickness="1" CornerRadius="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="MANUFACTURER" FontSize="11" FontWeight="SemiBold" Opacity=".65" />
+                    <TextBlock Text="{Binding Component.Manufacturer, ElementName=Root, TargetNullValue=—}" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="MPN" FontSize="11" FontWeight="SemiBold" Opacity=".65" />
+                    <TextBlock Text="{Binding Component.ManufacturerPartNumber, ElementName=Root, TargetNullValue=—}" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="PACKAGE" FontSize="11" FontWeight="SemiBold" Opacity=".65" />
+                    <TextBlock Text="{Binding Package.PackageName, ElementName=Root, TargetNullValue=—}" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="3">
+                    <TextBlock Text="VERIFICATION" FontSize="11" FontWeight="SemiBold" Opacity=".65" />
+                    <TextBlock Text="{Binding TapeProfile.VerificationStatus, ElementName=Root, TargetNullValue=—}" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="ЧЕРТЁЖ КОРПУСА" Padding="8" Margin="0,0,10,0">
+                <controls:PackageDrawingPreview Package="{Binding Package, ElementName=Root}" Geometry="{Binding Geometry, ElementName=Root}" ShowEngineeringViews="True" />
+            </GroupBox>
+
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <GroupBox Header="АПЕРТУРЫ ТРАФАРЕТА" Padding="10" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel>
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StencilRule, ElementName=Root}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <TextBlock Text="Форма" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding StencilRule.PreferredShape, ElementName=Root}" Margin="0,2,0,6" />
+                                <TextBlock Text="Уменьшение X / Y" FontWeight="SemiBold" />
+                                <TextBlock Margin="0,2,0,6">
+                                    <Run Text="{Binding StencilRule.PreferredReductionX, ElementName=Root, StringFormat={}{0:0.###}%}" />
+                                    <Run Text=" / " />
+                                    <Run Text="{Binding StencilRule.PreferredReductionY, ElementName=Root, StringFormat={}{0:0.###}%}" />
+                                </TextBlock>
+                                <TextBlock Text="Толщина трафарета" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding StencilRule.RecommendedThickness, ElementName=Root, StringFormat={}{0:0.###} мм}" Margin="0,2,0,6" />
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding StencilRule.SourceReference, ElementName=Root}" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <TextBlock Text="Источник" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding StencilRule.SourceReference, ElementName=Root}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                                </StackPanel>
+                                <Border Height="130" Margin="0,8,0,0" BorderBrush="{DynamicResource GridBorderBrush}" BorderThickness="1" Background="White">
+                                    <controls:StencilAperturePreview Package="{Binding Package, ElementName=Root}" Rule="{Binding StencilRule, ElementName=Root}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="Правило трафарета отсутствует" FontStyle="Italic" Opacity=".65" Margin="0,4">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StencilRule, ElementName=Root}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="ЛЕНТА" Padding="8" Margin="0,0,0,10">
+                        <StackPanel>
+                            <tape:TapeReelPreview Height="220" Component="{Binding Component, ElementName=Root}" Geometry="{Binding TapeProfile, ElementName=Root}">
+                                <tape:TapeReelPreview.Style>
+                                    <Style TargetType="tape:TapeReelPreview">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TapeProfile, ElementName=Root}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </tape:TapeReelPreview.Style>
+                            </tape:TapeReelPreview>
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TapeProfile, ElementName=Root}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <TextBlock Text="{Binding TapeProfile.PickupRotation, ElementName=Root, StringFormat={}Rotation: {0:0.#}°}" Margin="0,0,12,0" />
+                                <TextBlock Text="{Binding TapeProfile.SourceReference, ElementName=Root, StringFormat={}Source: {0}}" Margin="0,0,12,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding TapeProfile.SourceReference, ElementName=Root}" Value=""><Setter Property="Visibility" Value="Collapsed" /></DataTrigger></Style.Triggers></Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding TapeProfile.VerificationStatus, ElementName=Root, StringFormat={}Verification: {0}}" />
+                            </StackPanel>
+                            <TextBlock Text="Данные Tape &amp; Reel отсутствуют" FontStyle="Italic" Opacity=".7" Margin="0,4">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TapeProfile, ElementName=Root}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="СВЯЗАННЫЕ КОМПОНЕНТЫ (MPN)" Padding="8" Margin="0,0,0,10">
+                        <GroupBox.Style>
+                            <Style TargetType="GroupBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelatedComponents.Count, ElementName=Root}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </GroupBox.Style>
+                        <ItemsControl ItemsSource="{Binding RelatedComponents, ElementName=Root}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="0,2" TextTrimming="CharacterEllipsis">
+                                        <Run Text="{Binding Manufacturer}" />
+                                        <Run Text="  " />
+                                        <Run Text="{Binding ManufacturerPartNumber}" FontWeight="SemiBold" />
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </GroupBox>
+
+                    <GroupBox Header="ПРОИЗВОДСТВЕННЫЕ ДАННЫЕ" Padding="8" Margin="0,0,0,10">
+                        <GroupBox.Style>
+                            <Style TargetType="GroupBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding TapeProfile, ElementName=Root}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </GroupBox.Style>
+                        <StackPanel>
+                            <TextBlock Text="{Binding TapeProfile.CarrierTapeWidth, ElementName=Root, StringFormat={}W: {0:0.###} мм}" />
+                            <TextBlock Text="{Binding TapeProfile.PocketPitch, ElementName=Root, StringFormat={}P1: {0:0.###} мм}" />
+                            <TextBlock Text="{Binding TapeProfile.PickupRotation, ElementName=Root, StringFormat={}Rotation: {0:0.#}°}" />
+                            <TextBlock Text="{Binding TapeProfile.PackagingCode, ElementName=Root, StringFormat={}Код упаковки: {0}}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TapeProfile.PackagingCode, ElementName=Root}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="ДОКУМЕНТАЦИЯ И ПРОВЕРКА" Padding="8">
+                        <GroupBox.Style>
+                            <Style TargetType="GroupBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Component, ElementName=Root}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </GroupBox.Style>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Component.DatasheetUrl, ElementName=Root, StringFormat={}Datasheet: {0}}" TextWrapping="Wrap">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding Component.DatasheetUrl, ElementName=Root}" Value=""><Setter Property="Visibility" Value="Collapsed" /></DataTrigger></Style.Triggers></Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Text="{Binding Component.LifecycleStatus, ElementName=Root, StringFormat={}Lifecycle: {0}}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding Component.LifecycleStatus, ElementName=Root}" Value=""><Setter Property="Visibility" Value="Collapsed" /></DataTrigger></Style.Triggers></Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Text="{Binding TapeProfile.SourceReference, ElementName=Root, StringFormat={}Источник Tape &amp; Reel: {0}}" TextWrapping="Wrap">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding TapeProfile, ElementName=Root}" Value="{x:Null}"><Setter Property="Visibility" Value="Collapsed" /></DataTrigger><DataTrigger Binding="{Binding TapeProfile.SourceReference, ElementName=Root}" Value=""><Setter Property="Visibility" Value="Collapsed" /></DataTrigger></Style.Triggers></Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Text="{Binding TapeProfile.VerificationStatus, ElementName=Root, StringFormat={}Проверка: {0}}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding TapeProfile, ElementName=Root}" Value="{x:Null}"><Setter Property="Visibility" Value="Collapsed" /></DataTrigger><DataTrigger Binding="{Binding TapeProfile.VerificationStatus, ElementName=Root}" Value="Unknown"><Setter Property="Visibility" Value="Collapsed" /></DataTrigger></Style.Triggers></Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

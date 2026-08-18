@@ -1,0 +1,47 @@
+<Window x:Class="Vega.StencilUI.Components.ComponentTapeReelEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Tape &amp; Reel" Width="760" Height="780" MinWidth="650" MinHeight="600">
+    <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Сохранить" Width="100" Click="Save_Click" />
+            <Button Content="Отмена" Width="100" Margin="8,0,0,0" Click="Cancel_Click" />
+        </StackPanel>
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding Error}" Foreground="IndianRed" TextWrapping="Wrap" Margin="0,8,0,0" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="TAPE &amp; REEL PROFILE" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" />
+                <GroupBox Header="SOURCE"><Grid Margin="10"><Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                    <TextBlock Text="Packaging Code"/><TextBox Grid.Column="1" Text="{Binding WorkingCopy.PackagingCode,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="1" Text="Tape Standard"/><TextBox Grid.Row="1" Grid.Column="1" Text="{Binding WorkingCopy.TapeStandard,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="2" Text="Source Reference"/><TextBox Grid.Row="2" Grid.Column="1" Text="{Binding WorkingCopy.SourceReference,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="3" Text="Verification Status"/><ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding VerificationStatuses}" SelectedItem="{Binding WorkingCopy.VerificationStatus}"/>
+                </Grid></GroupBox>
+                <GroupBox Header="CARRIER TAPE / POCKET" Margin="0,10,0,0"><Grid Margin="10"><Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                    <TextBlock Text="Carrier Tape Width, mm"/><TextBox Grid.Column="1" Text="{Binding WorkingCopy.CarrierTapeWidth,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                    <TextBlock Grid.Row="1" Text="Pocket Pitch, mm"/><TextBox Grid.Row="1" Grid.Column="1" Text="{Binding WorkingCopy.PocketPitch,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                    <TextBlock Grid.Row="2" Text="Pocket Length, mm"/><TextBox Grid.Row="2" Grid.Column="1" Text="{Binding WorkingCopy.PocketLength,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                    <TextBlock Grid.Row="3" Text="Pocket Width, mm"/><TextBox Grid.Row="3" Grid.Column="1" Text="{Binding WorkingCopy.PocketWidth,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                    <TextBlock Grid.Row="4" Text="Pocket Depth, mm"/><TextBox Grid.Row="4" Grid.Column="1" Text="{Binding WorkingCopy.PocketDepth,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                </Grid></GroupBox>
+                <GroupBox Header="SPROCKET / COVER TAPE" Margin="0,10,0,0"><Grid Margin="10"><Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                    <TextBlock Text="Sprocket Hole Pitch, mm"/><TextBox Grid.Column="1" Text="{Binding WorkingCopy.SprocketHolePitch,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                    <TextBlock Grid.Row="1" Text="Sprocket Hole Diameter, mm"/><TextBox Grid.Row="1" Grid.Column="1" Text="{Binding WorkingCopy.SprocketHoleDiameter,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                    <TextBlock Grid.Row="2" Text="Cover Tape Width, mm"/><TextBox Grid.Row="2" Grid.Column="1" Text="{Binding WorkingCopy.CoverTapeWidth,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                </Grid></GroupBox>
+                <GroupBox Header="ORIENTATION" Margin="0,10,0,0"><Grid Margin="10"><Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                    <TextBlock Text="Feed Direction"/><ComboBox Grid.Column="1" ItemsSource="{Binding FeedDirections}" SelectedItem="{Binding WorkingCopy.FeedDirection}"/>
+                    <TextBlock Grid.Row="1" Text="Pocket Orientation"/><ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding PocketOrientations}" SelectedItem="{Binding WorkingCopy.PocketOrientation}"/>
+                    <TextBlock Grid.Row="2" Text="Pin 1 Orientation"/><TextBox Grid.Row="2" Grid.Column="1" Text="{Binding WorkingCopy.Pin1Orientation,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="3" Text="Pickup Rotation, deg"/><TextBox Grid.Row="3" Grid.Column="1" Text="{Binding WorkingCopy.PickupRotation,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                </Grid></GroupBox>
+                <GroupBox Header="REEL" Margin="0,10,0,0"><Grid Margin="10"><Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                    <TextBlock Text="Reel Diameter, mm"/><TextBox Grid.Column="1" Text="{Binding WorkingCopy.ReelDiameter,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                    <TextBlock Grid.Row="1" Text="Hub Diameter, mm"/><TextBox Grid.Row="1" Grid.Column="1" Text="{Binding WorkingCopy.HubDiameter,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:0.###}}"/>
+                    <TextBlock Grid.Row="2" Text="Quantity per Reel"/><TextBox Grid.Row="2" Grid.Column="1" Text="{Binding WorkingCopy.QuantityPerReel,UpdateSourceTrigger=PropertyChanged}"/>
+                    <CheckBox Grid.Row="3" Grid.ColumnSpan="2" Content="Использовать как профиль по умолчанию" IsChecked="{Binding WorkingCopy.IsDefault}" Margin="0,8,0,0"/>
+                </Grid></GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

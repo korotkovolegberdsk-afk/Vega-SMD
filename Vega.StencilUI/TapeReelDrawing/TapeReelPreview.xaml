@@ -1,0 +1,8 @@
+<UserControl x:Class="Vega.StencilUI.TapeReelDrawing.TapeReelPreview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="320" MinHeight="210">
+    <Border BorderBrush="{DynamicResource GridBorderBrush}" BorderThickness="1" Background="{DynamicResource PreviewBackgroundBrush}">
+        <Canvas x:Name="DrawingCanvas" ClipToBounds="True" SizeChanged="DrawingCanvas_SizeChanged" />
+    </Border>
+</UserControl>

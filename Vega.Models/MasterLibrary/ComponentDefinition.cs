@@ -1,4 +1,4 @@
-﻿namespace Vega.Models.MasterLibrary;
+namespace Vega.Models.MasterLibrary;
 
 public class ComponentDefinition
 {
@@ -39,6 +39,7 @@ public class ComponentDefinition
     public string LifecycleStatus { get; set; } = "";
 
     public string DatasheetUrl { get; set; } = "";
+    public string PreviewImagePath { get; set; } = "";
 
     public string InternalPartNumber { get; set; } = "";
 

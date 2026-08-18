@@ -1,0 +1,180 @@
+<Window x:Class="Vega.StencilUI.Components.ComponentLibraryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tape="clr-namespace:Vega.StencilUI.TapeReelDrawing"
+        xmlns:controls="clr-namespace:Vega.StencilUI.Controls"
+        Title="Компоненты производителя (MPN)" Width="1180" Height="760" MinWidth="940" MinHeight="600">
+    <DockPanel Margin="14">
+        <Grid DockPanel.Dock="Top" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="360" /></Grid.ColumnDefinitions>
+            <TextBlock Text="Поиск компонентов (MPN):" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+        <StatusBar DockPanel.Dock="Bottom"><TextBlock Text="{Binding StatusText}" /></StatusBar>
+        <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="48*" /><ColumnDefinition Width="52*" /></Grid.ColumnDefinitions>
+            <DataGrid x:Name="ComponentsGrid" ItemsSource="{Binding Components}" SelectedItem="{Binding SelectedComponent}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,0,12,0" MouseDoubleClick="ComponentsGrid_MouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="MPN" Binding="{Binding ManufacturerPartNumber}" Width="2*" />
+                    <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" Width="*" />
+                    <DataGridTextColumn Header="Назначенный корпус (Package)" Binding="{Binding Package.PackageName}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <TabControl Grid.Column="1">
+                <TabItem Header="1. Component Information">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="14">
+                            <TextBlock Text="COMPONENT (MPN)" FontWeight="Bold" FontSize="15" Margin="0,0,0,10" />
+                            <TextBlock Text="COMPONENT PREVIEW" FontWeight="Bold" Margin="0,0,0,8" />
+                            <Grid Height="180" Margin="0,0,0,12">
+                                <Border Background="{DynamicResource PanelBackgroundBrush}" BorderBrush="{DynamicResource GridBorderBrush}" BorderThickness="1" CornerRadius="3" />
+                                <Image Source="{Binding SelectedComponent.PreviewImagePath}" Stretch="Uniform" Margin="10" />
+                                <Canvas Width="220" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                                    <Rectangle Canvas.Left="25" Canvas.Top="36" Width="170" Height="68" Fill="#40576A" Stroke="#1F394D" StrokeThickness="2" />
+                                    <Rectangle Canvas.Left="8" Canvas.Top="48" Width="28" Height="44" Fill="#C8A72A" />
+                                    <Rectangle Canvas.Left="184" Canvas.Top="48" Width="28" Height="44" Fill="#C8A72A" />
+                                    <Canvas.Style><Style TargetType="Canvas"><Style.Triggers><DataTrigger Binding="{Binding SelectedComponent.Package.PackageFamily}" Value="CHIP"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style></Canvas.Style>
+                                </Canvas>
+                                <Canvas Width="220" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                                    <Rectangle Canvas.Left="52" Canvas.Top="28" Width="116" Height="84" Fill="#40576A" Stroke="#1F394D" StrokeThickness="2" />
+                                    <Ellipse Canvas.Left="64" Canvas.Top="40" Width="10" Height="10" Fill="#F1C40F" />
+                                    <Rectangle Canvas.Left="28" Canvas.Top="42" Width="24" Height="14" Fill="#C8A72A" /><Rectangle Canvas.Left="28" Canvas.Top="82" Width="24" Height="14" Fill="#C8A72A" />
+                                    <Rectangle Canvas.Left="168" Canvas.Top="62" Width="24" Height="14" Fill="#C8A72A" />
+                                    <Canvas.Style><Style TargetType="Canvas"><Style.Triggers><DataTrigger Binding="{Binding SelectedComponent.Package.PackageFamily}" Value="SOT"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style></Canvas.Style>
+                                </Canvas>
+                                <Canvas Width="220" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                                    <Rectangle Canvas.Left="55" Canvas.Top="25" Width="110" Height="90" Fill="#40576A" Stroke="#1F394D" StrokeThickness="2" />
+                                    <Ellipse Canvas.Left="65" Canvas.Top="35" Width="10" Height="10" Fill="#F1C40F" />
+                                    <Rectangle Canvas.Left="88" Canvas.Top="52" Width="44" Height="36" Fill="#71818D" />
+                                    <Canvas.Style><Style TargetType="Canvas"><Style.Triggers><DataTrigger Binding="{Binding SelectedComponent.Package.PackageFamily}" Value="QFN"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style></Canvas.Style>
+                                </Canvas>
+                                <Canvas Width="220" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                                    <Ellipse Canvas.Left="65" Canvas.Top="20" Width="90" Height="102" Fill="#536B7B" Stroke="#1F394D" StrokeThickness="2" />
+                                    <Ellipse Canvas.Left="72" Canvas.Top="27" Width="76" Height="18" Fill="#AAB4BA" />
+                                    <Rectangle Canvas.Left="95" Canvas.Top="118" Width="8" Height="18" Fill="#C8A72A" /><Rectangle Canvas.Left="118" Canvas.Top="118" Width="8" Height="18" Fill="#C8A72A" />
+                                    <Canvas.Style><Style TargetType="Canvas"><Style.Triggers><DataTrigger Binding="{Binding SelectedComponent.Package.PackageFamily}" Value="ALUMINUM_CAP"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style></Canvas.Style>
+                                </Canvas>
+                            </Grid>
+                            <Grid Margin="0,0,0,14">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="150" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <TextBlock Text="MPN" FontWeight="SemiBold" /><TextBlock Grid.Column="1" Text="{Binding SelectedComponent.ManufacturerPartNumber}" />
+                                <TextBlock Grid.Row="1" Text="Производитель" FontWeight="SemiBold" Margin="0,6,0,0" /><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedComponent.Manufacturer}" Margin="0,6,0,0" />
+                            </Grid>
+                            <Grid>
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="150" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <TextBlock Text="MPN" FontWeight="SemiBold" /><TextBlock Grid.Column="1" Text="{Binding SelectedComponent.ManufacturerPartNumber}" />
+                                <TextBlock Grid.Row="1" Text="Производитель" FontWeight="SemiBold" Margin="0,8,0,0" /><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedComponent.Manufacturer}" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="2" Text="Назначенный корпус (Package)" FontWeight="SemiBold" Margin="0,8,0,0" /><TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedComponent.Package.PackageName}" Margin="0,8,0,0" />
+                                <TextBlock Grid.Row="3" Text="Описание" FontWeight="SemiBold" Margin="0,8,0,0" /><TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedComponent.Description}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                            </Grid>
+                            <Separator Margin="0,16,0,12" />
+                            <TextBlock Text="ИСТОЧНИК / ПРОВЕРКА ДАННЫХ" FontWeight="Bold" Margin="0,0,0,8" />
+                            <Grid>
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="150" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <TextBlock Text="Источник данных" FontWeight="SemiBold" /><TextBlock Grid.Column="1" Text="{Binding SelectedProfile.SourceReference, TargetNullValue=—}" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="1" Text="Статус проверки" FontWeight="SemiBold" Margin="0,8,0,0" /><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedProfile.VerificationStatus, TargetNullValue=—}" Margin="0,8,0,0" />
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="2. Package (Drawing)">
+                    <TabControl Margin="10">
+                        <TabItem Header="2. Package Drawing">
+                            <Grid Margin="12">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                                <TextBlock Text="PACKAGE (DRAWING)" FontWeight="Bold" FontSize="15" />
+                                <Border Grid.Row="1" Margin="0,10,0,0" MinHeight="360" BorderBrush="{DynamicResource GridBorderBrush}" BorderThickness="1"><controls:PackageDrawingPreview Package="{Binding SelectedComponent.Package}" ShowEngineeringViews="True" /></Border>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="3. Land Pattern">
+                            <Grid Margin="12">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                <TextBlock Text="LAND PATTERN" FontWeight="Bold" FontSize="15" />
+                                <Viewbox Grid.Row="1" Stretch="Uniform" Margin="20"><Canvas Width="340" Height="180"><Rectangle Canvas.Left="10" Canvas.Top="65" Width="85" Height="50" Fill="#D4A72C" Stroke="#8A6B00" StrokeThickness="2" /><Rectangle Canvas.Left="245" Canvas.Top="65" Width="85" Height="50" Fill="#D4A72C" Stroke="#8A6B00" StrokeThickness="2" /><Rectangle Canvas.Left="105" Canvas.Top="45" Width="130" Height="90" Fill="#4A657A" Stroke="#214761" StrokeThickness="2" /><TextBlock Canvas.Left="122" Canvas.Top="82" Width="96" TextAlignment="Center" Text="{Binding SelectedComponent.Package.PackageName}" Foreground="White" FontWeight="SemiBold" /></Canvas></Viewbox>
+                                <TextBlock Grid.Row="2" Text="{Binding SelectedComponent.Package.LandPatternName, StringFormat={}Land Pattern: {0}, TargetNullValue=Land Pattern: —}" HorizontalAlignment="Center" />
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </TabItem>                <TabItem Header="4. Stencil Technology">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="14">
+                            <TextBlock Text="ТРАФАРЕТНОЕ ПРАВИЛО КОРПУСА" FontWeight="Bold" FontSize="15" Margin="0,0,0,10" />
+                            <TextBlock Text="{Binding SelectedStencilRule.PreferredShape, StringFormat={}Предпочтительная апертура: {0}, TargetNullValue=Правило трафарета отсутствует}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding SelectedStencilRule.PreferredReductionX, StringFormat={}Уменьшение X: {0:0.###}%}" Margin="0,8,0,0" />
+                            <TextBlock Text="{Binding SelectedStencilRule.PreferredReductionY, StringFormat={}Уменьшение Y: {0:0.###}%}" Margin="0,4,0,0" />
+                            <TextBlock Text="{Binding SelectedStencilRule.RecommendedThickness, StringFormat={}Рекомендуемая толщина: {0:0.###} мм}" Margin="0,4,0,0" />
+                            <TextBlock Text="{Binding SelectedStencilRule.TechnologyGoal, StringFormat={}Технологическая цель: {0}}" Margin="0,4,0,0" />
+                            <TextBlock Text="{Binding SelectedStencilRule.SourceReference, StringFormat={}Источник: {0}}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="5. Tape &amp; Reel">
+                    <DockPanel Margin="10">
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+                            <Button Content="Создать" Click="CreateProfile_Click" IsEnabled="{Binding HasSelectedComponent}" />
+                            <Button Content="Изменить" Click="EditProfile_Click" Margin="8,0,0,0" IsEnabled="{Binding HasSelectedProfile}" />
+                            <Button Content="Удалить" Click="DeleteProfile_Click" Margin="8,0,0,0" IsEnabled="{Binding HasSelectedProfile}" />
+                            <Button Content="Сделать по умолчанию" Click="SetDefault_Click" Margin="18,0,0,0" IsEnabled="{Binding HasSelectedProfile}" />
+                        </StackPanel>
+                        <DataGrid DockPanel.Dock="Top" Height="160" Margin="0,0,0,12" ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="По умолчанию" Binding="{Binding IsDefault}" Width="90" />
+                                <DataGridTextColumn Header="Код упаковки" Binding="{Binding PackagingCode}" Width="*" />
+                                <DataGridTextColumn Header="Лента, мм" Binding="{Binding CarrierTapeWidth, StringFormat={}{0:0.###}}" Width="85" />
+                                <DataGridTextColumn Header="Шаг карманов, мм" Binding="{Binding PocketPitch, StringFormat={}{0:0.###}}" Width="105" />
+                                <DataGridTextColumn Header="Количество" Binding="{Binding QuantityPerReel}" Width="80" />
+                                <DataGridTextColumn Header="Проверка" Binding="{Binding VerificationStatus}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="3*" /><ColumnDefinition Width="2*" /></Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Padding="8" BorderBrush="{DynamicResource GridBorderBrush}" BorderThickness="1">
+                                <Grid>
+                                    <tape:TapeReelPreview Component="{Binding SelectedComponent}" Geometry="{Binding SelectedProfile}" />
+                                    <TextBlock Text="Данные Tape &amp; Reel отсутствуют" HorizontalAlignment="Center" VerticalAlignment="Center" FontStyle="Italic" Opacity="0.7">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed" /><Style.Triggers><DataTrigger Binding="{Binding SelectedProfile}" Value="{x:Null}"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </Border>
+                            <ScrollViewer Grid.Column="1" Margin="12,0,0,0" VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <TextBlock Text="TAPE &amp; REEL КОМПОНЕНТА" FontWeight="Bold" Margin="0,0,0,10" />
+                                    <TextBlock Text="Ширина ленты W" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedProfile.CarrierTapeWidth, StringFormat={}{0:0.###} мм}" Margin="0,2,0,8" />
+                                    <TextBlock Text="Шаг карманов P1" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedProfile.PocketPitch, StringFormat={}{0:0.###} мм}" Margin="0,2,0,8" />
+                                    <TextBlock Text="Rotation" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedProfile.PickupRotation, StringFormat={}{0:0.###}°}" Margin="0,2,0,8" />
+                                    <TextBlock Text="Source" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedProfile.SourceReference}" TextWrapping="Wrap" Margin="0,2,0,8" />
+                                    <TextBlock Text="Verification Status" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedProfile.VerificationStatus}" Margin="0,2,0,8" />
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </DockPanel>
+                </TabItem>                <TabItem Header="6. PnP">
+                    <StackPanel Margin="14">
+                        <TextBlock Text="PNP" FontWeight="Bold" FontSize="15" Margin="0,0,0,10" />
+                        <TextBlock Text="MPN" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding SelectedComponent.ManufacturerPartNumber}" Margin="0,2,0,10" />
+                        <TextBlock Text="Назначенный корпус (Package) используется для PnP-распознавания." TextWrapping="Wrap" Opacity=".75" />
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="7. AOI">
+                    <StackPanel Margin="14">
+                        <TextBlock Text="AOI" FontWeight="Bold" FontSize="15" Margin="0,0,0,10" />
+                        <TextBlock Text="AOI class" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding SelectedComponent.Package.MirtecAoiClass}" Margin="0,2,0,10" />
+                        <TextBlock Text="Корпус (Package) определяет AOI-класс; Component (MPN) хранит производителя и номер детали." TextWrapping="Wrap" Opacity=".75" />
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
+</Window>

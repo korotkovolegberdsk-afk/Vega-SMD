@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -10,7 +10,7 @@
     <Folder Include="Context\" />
     <Folder Include="Import\" />
     <Folder Include="Export\" />
-    <Folder Include="MasterLibrary\Новая папка\" />
+    <Folder Include="MasterLibrary\РќРѕРІР°СЏ РїР°РїРєР°\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,4 +74,9 @@
     <None Update="Migration\022_MasterLibrary_Seed_BGA_CSP.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Migration\023_MasterLibrary_Seed_Special_Passives.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Migration\024_MasterLibrary_PackageTechnologyRules.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\025_MasterLibrary_Verified_SOT23_DPAK_Geometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\026_MasterLibrary_ComponentTapeReelGeometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\027_MasterLibrary_ManufacturerDrawingGeometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
   </ItemGroup></Project>
+
+
