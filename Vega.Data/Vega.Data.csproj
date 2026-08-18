@@ -77,6 +77,14 @@
     <None Update="Migration\025_MasterLibrary_Verified_SOT23_DPAK_Geometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Migration\026_MasterLibrary_ComponentTapeReelGeometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Migration\027_MasterLibrary_ManufacturerDrawingGeometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\028_MasterLibrary_Seed_Infineon_SOT23.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\029_MasterLibrary_VerifiedGeometry_Extensions.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\030_MasterLibrary_Seed_Infineon_SOT23.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\031_MasterLibrary_DrawingPrimitives.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\032_MasterLibrary_Seed_Infineon_SOT23_Primitives.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\033_MasterLibrary_ManufacturerDrawingAssets.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\034_MasterLibrary_Seed_Infineon_SOT23_Asset.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="Migration\035_MasterLibrary_Infineon_SOT23_AssetCrops.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
   </ItemGroup></Project>
 
 

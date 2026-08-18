@@ -32,13 +32,11 @@ public sealed class PackageManufacturerDrawingGeometryService
         var projections = geometry.Projections.Where(p => p.IsAvailable).ToList();
         var top = projections.FirstOrDefault(p => Is(p.ProjectionType, "Top"));
         if (top is null) result.Errors.Add("Verified Top projection is required.");
-        else if (string.IsNullOrWhiteSpace(top.BodyContour)) result.Errors.Add("Top projection has no verified body contour.");
         var sideDeclared = geometry.Projections.Any(p => Is(p.ProjectionType, "Side"));
         if (sideDeclared && projections.All(p => !Is(p.ProjectionType, "Side"))) result.Errors.Add("Declared Side projection is unavailable.");
         foreach (var projection in projections)
         {
             if (!Finite(projection.OriginX) || !Finite(projection.OriginY)) result.Errors.Add($"Projection {projection.ProjectionType} has non-finite coordinates.");
-            if (string.IsNullOrWhiteSpace(projection.BodyContour)) result.Errors.Add($"Projection {projection.ProjectionType} has no verified body contour.");
         }
         foreach (var lead in geometry.Leads)
         {

@@ -1,7 +1,9 @@
 using System.Globalization;
+using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.Data.Sqlite;
 using Vega.Data.MasterLibrary.Database;
 using Vega.Models.MasterLibrary;
@@ -35,7 +37,9 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var package = Package;
         if (ShowEngineeringViews)
         {
-            DrawVerifiedEngineeringViews(dc, package);
+            var cleanTemplate = PackageDrawingTemplateResolver.Resolve(package);
+            var cleanScene = ParametricPackageGeometryBuilder.Build(package);
+            DrawEngineeringViews(dc, package, cleanTemplate, cleanScene);
             return;
         }
 
@@ -91,6 +95,7 @@ public sealed class PackageDrawingPreview : FrameworkElement
         };
         var types = new[] { "Top", "Side", "End", "ThreeD" };
         var titles = new[] { "Вид сверху", "Вид сбоку", "Вид с торца", $"3D вид ({package.PackageName})" };
+        var assetService = new PackageManufacturerDrawingAssetService();
         for (var i = 0; i < cells.Length; i++)
         {
             DrawViewFrame(dc, cells[i], titles[i]);
@@ -103,7 +108,165 @@ public sealed class PackageDrawingPreview : FrameworkElement
                 DrawText(dc, message, new Point(cells[i].Left + 18, cells[i].Top + cells[i].Height / 2), Brushes.Black);
                 continue;
             }
-            DrawVerifiedProjection(dc, cells[i], projection, LoadDrawingPrimitives(projection.Id));
+            var primitives = LoadDrawingPrimitives(projection.Id);
+            if (HasRenderablePrimitives(primitives))
+            {
+                DrawVerifiedProjection(dc, cells[i], projection, primitives);
+                continue;
+            }
+
+            var asset = assetService.GetVerifiedAsset(geometry, types[i]);
+            if (asset is not null && DrawVerifiedAsset(dc, cells[i], asset))
+                continue;
+
+            DrawText(dc, "Недостаточно verified geometry данных для детальной проекции",
+                new Point(cells[i].Left + 18, cells[i].Top + cells[i].Height / 2), Brushes.Black);
+        }
+    }
+
+    private static bool HasRenderablePrimitives(IReadOnlyList<PrimitiveSnapshot> primitives) =>
+        primitives.Any(p => PrimitivePoints(p).Any());
+
+    private static bool DrawVerifiedAsset(DrawingContext dc, Rect cell, PackageManufacturerDrawingAsset asset)
+    {
+        var path = asset.FilePath;
+        if (!Path.IsPathRooted(path))
+            path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path.Replace('\\', Path.DirectorySeparatorChar));
+        if (!File.Exists(path)) return false;
+
+        try
+        {
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.UriSource = new Uri(path, UriKind.Absolute);
+            image.CacheOption = BitmapCacheOption.OnLoad;
+            image.EndInit();
+            image.Freeze();
+
+            var area = new Rect(cell.Left + 12, cell.Top + 30,
+                Math.Max(1, cell.Width - 24), Math.Max(1, cell.Height - 42));
+            // Use only the projection region recorded in the verified asset
+            // metadata. This removes duplicate views and page footnotes while
+            // preserving the manufacturer's dimensions and extension lines.
+            var source = GetDisplaySource(asset, image.PixelWidth, image.PixelHeight);
+            var scale = Math.Min(area.Width / source.Width, area.Height / source.Height);
+            if (!double.IsFinite(scale) || scale <= 0) return false;
+            var size = new Size(source.Width * scale, source.Height * scale);
+            var destination = new Rect(
+                area.Left + (area.Width - size.Width) / 2,
+                area.Top + (area.Height - size.Height) / 2,
+                size.Width, size.Height);
+            BitmapSource renderImage = image;
+            if (source.Width < image.PixelWidth || source.Height < image.PixelHeight || source.X > 0 || source.Y > 0)
+            {
+                var crop = new CroppedBitmap(image, new Int32Rect(
+                    (int)Math.Floor(source.X), (int)Math.Floor(source.Y),
+                    Math.Max(1, (int)Math.Ceiling(source.Width)), Math.Max(1, (int)Math.Ceiling(source.Height))));
+                crop.Freeze();
+                renderImage = crop;
+            }
+            dc.DrawImage(renderImage, destination);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    private static Rect GetCropSource(string cropReference, int pixelWidth, int pixelHeight)
+    {
+        if (string.IsNullOrWhiteSpace(cropReference)) return new Rect(0, 0, pixelWidth, pixelHeight);
+        try
+        {
+            using var doc = JsonDocument.Parse(cropReference);
+            var root = doc.RootElement;
+            if (!root.TryGetProperty("coordinateSystem", out var cs) || cs.GetString() != "normalized-page")
+                return new Rect(0, 0, pixelWidth, pixelHeight);
+            var x = root.GetProperty("x").GetDouble();
+            var y = root.GetProperty("y").GetDouble();
+            var w = root.GetProperty("width").GetDouble();
+            var h = root.GetProperty("height").GetDouble();
+            if (x < 0 || y < 0 || w <= 0 || h <= 0 || x + w > 1 || y + h > 1)
+                return new Rect(0, 0, pixelWidth, pixelHeight);
+            return new Rect(x * pixelWidth, y * pixelHeight, w * pixelWidth, h * pixelHeight);
+        }
+        catch (JsonException)
+        {
+            return new Rect(0, 0, pixelWidth, pixelHeight);
+        }
+    }
+
+    private static Rect GetDisplaySource(PackageManufacturerDrawingAsset asset, int pixelWidth, int pixelHeight)
+    {
+        // Keep the database/source evidence untouched. These display-only
+        // regions omit Infineon's datum and GD&T callouts without painting over
+        // or modifying the original manufacturer file.
+        if (string.Equals(asset.ProjectionType, "Top", StringComparison.OrdinalIgnoreCase))
+            return new Rect(pixelWidth * .035, pixelHeight * .08, pixelWidth * .405, pixelHeight * .66);
+        if (string.Equals(asset.ProjectionType, "Side", StringComparison.OrdinalIgnoreCase))
+            return new Rect(pixelWidth * .635, pixelHeight * .045, pixelWidth * .335, pixelHeight * .68);
+        return GetCropSource(asset.CropReference, pixelWidth, pixelHeight);
+    }
+
+    private static void DrawDisplayRedactions(DrawingContext dc, string projectionType, Rect source, Rect destination, int pixelWidth, int pixelHeight)
+    {
+        var normalized = new List<Rect>();
+        if (string.Equals(projectionType, "Top", StringComparison.OrdinalIgnoreCase))
+        {
+            // Remove only local service labels; dimension lines and values stay.
+            normalized.Add(new Rect(.250, .205, .075, .145)); // lead number 3
+            normalized.Add(new Rect(.135, .595, .085, .105)); // lead number 1
+            normalized.Add(new Rect(.340, .595, .085, .105)); // lead number 2
+            normalized.Add(new Rect(.035, .625, .160, .125)); // Pin1 label
+            normalized.Add(new Rect(.385, .625, .105, .125)); // datum C
+            normalized.Add(new Rect(.390, .045, .105, .125)); // datum B leader/box
+            normalized.Add(new Rect(.390, .155, .170, .115)); // GD&T frame
+        }
+        else if (string.Equals(projectionType, "Side", StringComparison.OrdinalIgnoreCase))
+        {
+            // Keep every numeric dimension; remove only the GD&T frame and
+            // datum A box that are not dimensions for the display preview.
+            normalized.Add(new Rect(.490, .635, .185, .125)); // GD&T frame
+            normalized.Add(new Rect(.835, .535, .145, .165)); // datum A leader/box
+        }
+
+        foreach (var region in normalized)
+        {
+            var sx = region.Left * pixelWidth;
+            var sy = region.Top * pixelHeight;
+            var sw = region.Width * pixelWidth;
+            var sh = region.Height * pixelHeight;
+            var clippedLeft = (sx - source.Left) / source.Width;
+            var clippedTop = (sy - source.Top) / source.Height;
+            var clippedRight = (sx + sw - source.Left) / source.Width;
+            var clippedBottom = (sy + sh - source.Top) / source.Height;
+            var left = destination.Left + Math.Max(0, clippedLeft) * destination.Width;
+            var top = destination.Top + Math.Max(0, clippedTop) * destination.Height;
+            var right = destination.Left + Math.Min(1, clippedRight) * destination.Width;
+            var bottom = destination.Top + Math.Min(1, clippedBottom) * destination.Height;
+            if (right > left && bottom > top)
+                dc.DrawRectangle(Brushes.White, null, new Rect(left, top, right - left, bottom - top));
+        }
+    }
+
+    private void DrawCleanNominalDimensions(DrawingContext dc, string projectionType, Rect destination, PackageDefinition package)
+    {
+        var brush = Brushes.Black;
+        if (string.Equals(projectionType, "Top", StringComparison.OrdinalIgnoreCase))
+        {
+            DrawText(dc, $"A = {Millimetres(BodyLength(package))}", new Point(destination.Left + destination.Width * .28, destination.Top + 8), brush);
+            DrawText(dc, $"B = {Millimetres(BodyWidth(package))}", new Point(destination.Left + 8, destination.Top + destination.Height * .48), brush);
+            if (GeometryPitch(package, 0) > 0)
+                DrawText(dc, $"P = {Millimetres(GeometryPitch(package, 0))}", new Point(destination.Left + destination.Width * .28, destination.Bottom - 24), brush);
+            if (GeometryLeadWidth(package, 0) > 0)
+                DrawText(dc, $"J = {Millimetres(GeometryLeadWidth(package, 0))}", new Point(destination.Left + destination.Width * .28, destination.Bottom - 8), brush);
+        }
+        else if (string.Equals(projectionType, "Side", StringComparison.OrdinalIgnoreCase))
+        {
+            var height = GeometryBodyHeight(package);
+            if (height > 0)
+                DrawText(dc, $"H = {Millimetres(height)}", new Point(destination.Right - 58, destination.Top + destination.Height * .44), brush);
         }
     }
 
@@ -237,8 +400,12 @@ public sealed class PackageDrawingPreview : FrameworkElement
 
     private void DrawViewFrame(DrawingContext dc, Rect cell, string title)
     {
-        dc.DrawRectangle(Brushes.Transparent, new Pen(new SolidColorBrush(Color.FromRgb(190, 196, 202)), .8), cell);
-        DrawText(dc, title, new Point(cell.Left + 10, cell.Top + 7), Brushes.Black);
+        var border = new SolidColorBrush(Color.FromRgb(190, 196, 202));
+        var heading = new SolidColorBrush(Color.FromRgb(31, 78, 121));
+        border.Freeze();
+        heading.Freeze();
+        dc.DrawRectangle(Brushes.White, new Pen(border, .8), cell);
+        DrawText(dc, title, new Point(cell.Left + 10, cell.Top + 7), heading);
     }
 
     private void DrawPlanView(DrawingContext dc, Rect cell, PackageDefinition package, PackageDrawingTemplate template, DrawingScene scene, bool showDimensions, bool bottomView, double? sharedScale = null)
@@ -363,7 +530,9 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var topPhysicalWidth = length;
         var topPhysicalHeight = width + lead * 2;
         var sideProjection = lead;
-        var sidePhysicalWidth = length + sideProjection * 2;
+        // Gull-wing profile extends beyond the body on both sides. Reserve
+        // the full orthogonal lead envelope so SIDE uses the same mm scale.
+        var sidePhysicalWidth = length + sideProjection * 2.4;
         var sidePhysicalHeight = height + sideProjection * .65;
         var endPhysicalWidth = width + lead * 1.8;
         var endPhysicalHeight = height + lead * .45;
@@ -429,16 +598,18 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var pen = EngineeringDimensionPen();
         if (!bottomView)
         {
-            HorizontalDimension(dc, body.Left, body.Right, Math.Max(cell.Top + 31, body.Top - leadL - 18), $"A = {Millimetres(length)}", pen);
-            VerticalDimension(dc, body.Top, body.Bottom, Math.Max(cell.Left + 17, body.Left - 20), $"B = {Millimetres(width)}", pen);
+            // Dedicated dimension lanes keep every label outside the body and
+            // prevent the short lead-width/pitch dimensions from colliding.
+            HorizontalDimension(dc, body.Left, body.Right, Math.Max(cell.Top + 34, body.Top - leadL - 28), $"A = {Millimetres(length)}", pen);
+            VerticalDimension(dc, body.Top, body.Bottom, Math.Max(cell.Left + 28, body.Left - 34), $"B = {Millimetres(width)}", pen);
             if (leadL > 0)
-                VerticalDimension(dc, body.Top - leadL, body.Bottom + leadL, Math.Min(cell.Right - 17, body.Right + 32), $"O = {Millimetres(width + leadLength * 2)}", pen);
+                VerticalDimension(dc, body.Top - leadL, body.Bottom + leadL, Math.Min(cell.Right - 28, body.Right + 48), $"O = {Millimetres(width + leadLength * 2)}", pen);
             if (topPositions.Count > 1)
-                HorizontalDimension(dc, topPositions[0], topPositions[1], Math.Max(cell.Top + 44, body.Top - leadL - 42), $"H = {Millimetres(pitch)}", pen);
+                HorizontalDimension(dc, topPositions[0], topPositions[1], Math.Max(cell.Top + 58, body.Top - leadL - 56), $"H = {Millimetres(pitch)}", pen);
             if (leadWidth > 0)
-                HorizontalDimension(dc, topPositions[0] - leadW / 2, topPositions[0] + leadW / 2, Math.Min(cell.Bottom - 28, body.Top - leadL - 62), $"J = {Millimetres(leadWidth)}", pen);
+                HorizontalDimension(dc, topPositions[0] - leadW / 2, topPositions[0] + leadW / 2, Math.Max(cell.Top + 82, body.Top - leadL - 84), $"J = {Millimetres(leadWidth)}", pen);
             if (GeometryLeadLength(package, 0) > 0)
-                VerticalDimension(dc, body.Top - leadL, body.Top, topPositions[0] - leadW / 2 - 12, $"K = {Millimetres(GeometryLeadLength(package, 0))}", pen);
+                VerticalDimension(dc, body.Top - leadL, body.Top, Math.Max(cell.Left + 12, body.Left - 68), $"K = {Millimetres(GeometryLeadLength(package, 0))}", pen);
         }
         else
         {
@@ -482,8 +653,10 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var projectionMm = GeometryLeadLength(package, 0);
         var projection = projectionMm > 0 ? projectionMm : Math.Max(length * .12, height * .30);
         var totalHeight = height + projection * .65;
-        var projectionWidth = projection;
-        var scale = sharedScale ?? Math.Min(area.Width / (length + projectionWidth * 2), area.Height / totalHeight) * .66;
+        var horizontalMm = Math.Max(height * .30, projection * .52);
+        var shelfMm = Math.Max(height * .30, projection * .68);
+        var profileWidthMm = length + (horizontalMm + shelfMm) * 2;
+        var scale = sharedScale ?? Math.Min(area.Width / profileWidthMm, area.Height / totalHeight) * .66;
         var body = new Rect(area.Left + (area.Width - length * scale) / 2,
             area.Top + (area.Height - totalHeight * scale) / 2,
             length * scale, height * scale);
@@ -498,14 +671,14 @@ public sealed class PackageDrawingPreview : FrameworkElement
         leadPen.EndLineCap = PenLineCap.Square;
         leadPen.LineJoin = PenLineJoin.Round;
         var rootY = body.Bottom - body.Height * .18;
-        var horizontal = Math.Max(body.Height * .30, projection * scale * .52);
+        var horizontal = horizontalMm * scale;
         var drop = Math.Max(body.Height * .20, projection * scale * .48);
-        var shelf = Math.Max(body.Height * .30, projection * scale * .68);
+        var shelf = shelfMm * scale;
         DrawGullWingSideLead(dc, new Point(body.Left, rootY), -1, horizontal, drop, shelf, leadOutlinePen, leadPen);
         DrawGullWingSideLead(dc, new Point(body.Right, rootY), 1, horizontal, drop, shelf, leadOutlinePen, leadPen);
         dc.DrawRectangle(PackageBodyBrush(), outline, body);
         var pen = EngineeringDimensionPen();
-        VerticalDimension(dc, body.Top, body.Bottom, Math.Min(cell.Right - 17, body.Right + 20), $"C = {Millimetres(height)}", pen);
+        VerticalDimension(dc, body.Top, body.Bottom, Math.Min(cell.Right - 34, body.Right + 56), $"C = {Millimetres(height)}", pen);
     }
 
     private static void DrawGullWingSideLead(
@@ -591,13 +764,15 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var frontLeads = totalLeads - backLeads;
         var pitch = GeometryPitch(package, length / Math.Max(2, backLeads));
         var area = new Rect(cell.Left + 28, cell.Top + 46, Math.Max(1, cell.Width - 56), Math.Max(1, cell.Height - 72));
-        var topWidth = area.Width * .58;
-        var topHeight = Math.Min(area.Height * .34, topWidth * width / length * .55);
+        var topWidth = area.Width * .62;
+        var topHeight = Math.Min(area.Height * .38, topWidth * width / length * .55);
         var height = GeometryBodyHeight(package);
         var depth = Math.Min(area.Height * .18, Math.Max(10, height > 0 ? topHeight * height / width * .45 : topHeight * .4));
         var left = area.Left + (area.Width - topWidth) / 2;
         var top = area.Top + (area.Height - topHeight - depth) / 2;
-        var skew = topHeight * .42;
+        // Keep the 3D body close to an orthographic package view; the former
+        // large skew made the SOT look like a thin wedge.
+        var skew = topHeight * .22;
         var centerX = left + topWidth / 2;
         var pitchPixels = topWidth * pitch / length;
         var leadSize = Math.Clamp(topWidth * Math.Max(GeometryLeadWidth(package, length * .10), length * .10) / length, 6, 14);
@@ -614,7 +789,7 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var topFace = Parallelogram(new Point(left + skew, top), new Point(left + topWidth, top), new Point(left + topWidth - skew, top + topHeight), new Point(left, top + topHeight));
         var frontFace = Parallelogram(new Point(left, top + topHeight), new Point(left + topWidth - skew, top + topHeight),
             new Point(left + topWidth - skew, top + topHeight + depth), new Point(left, top + topHeight + depth));
-        dc.DrawGeometry(PackageBodyBrush(), EngineeringOutlinePen(), topFace);
+        dc.DrawGeometry(PackageBodyTopBrush(), EngineeringOutlinePen(), topFace);
         dc.DrawGeometry(PackageBodyShadowBrush(), EngineeringOutlinePen(), frontFace);
 
         foreach (var x in Enumerable.Range(0, frontLeads)
@@ -804,8 +979,9 @@ public sealed class PackageDrawingPreview : FrameworkElement
 
     private Brush GeometryBrush() => TryFindResource("GridBorderBrush") as Brush ?? Brushes.DimGray;
     private Brush DimensionBrush() => TryFindResource("TextBrush") as Brush ?? Brushes.Black;
-    private static Brush PackageBodyBrush() => new SolidColorBrush(Color.FromRgb(78, 88, 96));
-    private static Brush PackageBodyShadowBrush() => new SolidColorBrush(Color.FromRgb(58, 67, 74));
+    private static Brush PackageBodyBrush() => new SolidColorBrush(Color.FromRgb(92, 105, 116));
+    private static Brush PackageBodyTopBrush() => new SolidColorBrush(Color.FromRgb(111, 126, 138));
+    private static Brush PackageBodyShadowBrush() => new SolidColorBrush(Color.FromRgb(70, 82, 92));
     private static Brush CeramicBrush() => new SolidColorBrush(Color.FromRgb(166, 112, 72));
     private static Brush CeramicShadowBrush() => new SolidColorBrush(Color.FromRgb(126, 79, 50));
     private static Brush MetalBrush() => new SolidColorBrush(Color.FromRgb(220, 224, 226));

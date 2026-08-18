@@ -25,5 +25,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Vega-SMD-Logo.jpg" />
+    <None Include="Assets\Manufacturer\Infineon\PG-SOT23-3-4-Package-Outline.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
