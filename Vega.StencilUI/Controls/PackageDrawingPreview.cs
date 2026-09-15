@@ -37,9 +37,9 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var package = Package;
         if (ShowEngineeringViews)
         {
-            var cleanTemplate = PackageDrawingTemplateResolver.Resolve(package);
-            var cleanScene = ParametricPackageGeometryBuilder.Build(package);
-            DrawEngineeringViews(dc, package, cleanTemplate, cleanScene);
+            // Verified engineering views do not use parametric fallback geometry.
+
+            DrawVerifiedEngineeringViews(dc, package);
             return;
         }
 
@@ -53,7 +53,7 @@ public sealed class PackageDrawingPreview : FrameworkElement
         {
             dc.DrawRectangle(Brushes.White, null, new Rect(0, 0, ActualWidth, ActualHeight));
             var sideCell = new Rect(0, 0, ActualWidth, ActualHeight);
-            DrawViewFrame(dc, sideCell, "Вид сбоку");
+            DrawViewFrame(dc, sideCell, "2  ВИД СБОКУ");
             DrawSideView(dc, sideCell, package, template, scene);
             return;
         }
@@ -78,23 +78,25 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var geometry = new PackageManufacturerDrawingGeometryService().GetVerifiedGeometry(package);
         if (geometry is null)
         {
-            DrawText(dc, "Проверенный чертёж производителя отсутствует",
-                new Point(Math.Max(12, (ActualWidth - 300) / 2), Math.Max(12, ActualHeight / 2)), Brushes.Black);
+            DrawMissingVerifiedViews(dc, package);
             return;
         }
 
         const double gap = 8;
+        const double headerHeight = 34;
+        DrawText(dc, "Vega-SMD  |  ЧЕРТЁЖ КОРПУСА  |  " + package.PackageName, new Point(12, 8), new SolidColorBrush(Color.FromRgb(31, 78, 121)));
+        dc.DrawLine(new Pen(new SolidColorBrush(Color.FromRgb(31, 78, 121)), 1), new Point(0, headerHeight - 2), new Point(ActualWidth, headerHeight - 2));
         var cellWidth = (ActualWidth - gap) / 2;
-        var cellHeight = (ActualHeight - gap) / 2;
+        var cellHeight = (ActualHeight - headerHeight - gap) / 2;
         var cells = new[]
         {
-            new Rect(0, 0, cellWidth, cellHeight),
-            new Rect(cellWidth + gap, 0, cellWidth, cellHeight),
-            new Rect(0, cellHeight + gap, cellWidth, cellHeight),
-            new Rect(cellWidth + gap, cellHeight + gap, cellWidth, cellHeight)
+            new Rect(0, headerHeight, cellWidth, cellHeight),
+            new Rect(cellWidth + gap, headerHeight, cellWidth, cellHeight),
+            new Rect(0, headerHeight + cellHeight + gap, cellWidth, cellHeight),
+            new Rect(cellWidth + gap, headerHeight + cellHeight + gap, cellWidth, cellHeight)
         };
-        var types = new[] { "Top", "Side", "End", "ThreeD" };
-        var titles = new[] { "Вид сверху", "Вид сбоку", "Вид с торца", $"3D вид ({package.PackageName})" };
+        var types = new[] { "Top", "End", "Side", "ThreeD" };
+        var titles = new[] { "1  ВИД СВЕРХУ", "2  ВИД СНИЗУ", "3  ВИД СБОКУ", $"4  3D вид ({package.PackageName})" };
         var assetService = new PackageManufacturerDrawingAssetService();
         for (var i = 0; i < cells.Length; i++)
         {
@@ -102,6 +104,15 @@ public sealed class PackageDrawingPreview : FrameworkElement
             var projection = geometry.Projections.FirstOrDefault(p => string.Equals(p.ProjectionType, types[i], StringComparison.OrdinalIgnoreCase) && p.IsAvailable);
             if (projection is null)
             {
+                if (types[i].Equals("ThreeD", StringComparison.OrdinalIgnoreCase))
+                {
+                    var localImage = ResolveLocalComponentImage(package);
+                    if (localImage is not null)
+                    {
+                        DrawLocalComponentImage(dc, cells[i], localImage);
+                        continue;
+                    }
+                }
                 var message = types[i].Equals("ThreeD", StringComparison.OrdinalIgnoreCase)
                     ? "3D модель отсутствует в чертеже производителя"
                     : "Вид отсутствует в чертеже производителя";
@@ -115,8 +126,21 @@ public sealed class PackageDrawingPreview : FrameworkElement
                 continue;
             }
 
+            if (string.Equals(package.PackageName?.Trim(), "SOT23", StringComparison.OrdinalIgnoreCase) && types[i].Equals("Top", StringComparison.OrdinalIgnoreCase))
+            {
+                var content = new Rect(cells[i].Left + 36, cells[i].Top + 42, Math.Max(1, cells[i].Width - 72), Math.Max(1, cells[i].Height - 76));
+                DrawSotPlanProjection(dc, cells[i], content, package, false, false);
+                DrawCleanNominalDimensions(dc, "Top", content, package);
+                continue;
+            }
+            if (string.Equals(package.PackageName?.Trim(), "SOT23", StringComparison.OrdinalIgnoreCase) && types[i].Equals("Side", StringComparison.OrdinalIgnoreCase))
+            {
+                DrawSotSideProjection(dc, cells[i], package);
+                DrawCleanNominalDimensions(dc, "Side", cells[i], package);
+                continue;
+            }
             var asset = assetService.GetVerifiedAsset(geometry, types[i]);
-            if (asset is not null && DrawVerifiedAsset(dc, cells[i], asset))
+            if (asset is not null && DrawVerifiedAsset(dc, cells[i], asset, package))
                 continue;
 
             DrawText(dc, "Недостаточно verified geometry данных для детальной проекции",
@@ -124,10 +148,41 @@ public sealed class PackageDrawingPreview : FrameworkElement
         }
     }
 
+    private void DrawMissingVerifiedViews(DrawingContext dc, PackageDefinition package)
+    {
+        dc.DrawRectangle(Brushes.White, null, new Rect(0, 0, ActualWidth, ActualHeight));
+        const double gap = 8;
+        var cellWidth = (ActualWidth - gap) / 2;
+        var cellHeight = (ActualHeight - gap) / 2;
+        var cells = new[]
+        {
+            new Rect(0, 0, cellWidth, cellHeight),
+            new Rect(cellWidth + gap, 0, cellWidth, cellHeight),
+            new Rect(0, cellHeight + gap, cellWidth, cellHeight),
+            new Rect(cellWidth + gap, cellHeight + gap, cellWidth, cellHeight)
+        };
+        var titles = new[] { "1  ВИД СВЕРХУ", "2  ВИД СНИЗУ", "3  ВИД СБОКУ", $"4  3D вид ({package.PackageName})" };
+        for (var i = 0; i < cells.Length; i++)
+        {
+            DrawViewFrame(dc, cells[i], titles[i]);
+            if (i == 3)
+            {
+                var localImage = ResolveLocalComponentImage(package);
+                if (localImage is not null)
+                {
+                    DrawLocalComponentImage(dc, cells[i], localImage);
+                    continue;
+                }
+            }
+            DrawText(dc, "Подтверждённые данные производителя отсутствуют",
+                new Point(cells[i].Left + 18, cells[i].Top + cells[i].Height / 2), Brushes.Black);
+        }
+    }
+
     private static bool HasRenderablePrimitives(IReadOnlyList<PrimitiveSnapshot> primitives) =>
         primitives.Any(p => PrimitivePoints(p).Any());
 
-    private static bool DrawVerifiedAsset(DrawingContext dc, Rect cell, PackageManufacturerDrawingAsset asset)
+    private bool DrawVerifiedAsset(DrawingContext dc, Rect cell, PackageManufacturerDrawingAsset asset, PackageDefinition package)
     {
         var path = asset.FilePath;
         if (!Path.IsPathRooted(path))
@@ -166,6 +221,8 @@ public sealed class PackageDrawingPreview : FrameworkElement
                 renderImage = crop;
             }
             dc.DrawImage(renderImage, destination);
+            DrawDisplayRedactions(dc, asset.ProjectionType, source, destination, image.PixelWidth, image.PixelHeight);
+            DrawCleanNominalDimensions(dc, asset.ProjectionType, destination, package);
             return true;
         }
         catch (Exception)
@@ -252,21 +309,22 @@ public sealed class PackageDrawingPreview : FrameworkElement
 
     private void DrawCleanNominalDimensions(DrawingContext dc, string projectionType, Rect destination, PackageDefinition package)
     {
-        var brush = Brushes.Black;
+        var brush = new SolidColorBrush(Color.FromRgb(74, 85, 104));
+        brush.Freeze();
         if (string.Equals(projectionType, "Top", StringComparison.OrdinalIgnoreCase))
         {
-            DrawText(dc, $"A = {Millimetres(BodyLength(package))}", new Point(destination.Left + destination.Width * .28, destination.Top + 8), brush);
-            DrawText(dc, $"B = {Millimetres(BodyWidth(package))}", new Point(destination.Left + 8, destination.Top + destination.Height * .48), brush);
+            DrawText(dc, Millimetres(BodyLength(package)), new Point(destination.Left + destination.Width * .30, destination.Top - 18), brush);
+            DrawText(dc, Millimetres(BodyWidth(package)), new Point(destination.Left - 2, destination.Top + destination.Height * .48), brush);
             if (GeometryPitch(package, 0) > 0)
-                DrawText(dc, $"P = {Millimetres(GeometryPitch(package, 0))}", new Point(destination.Left + destination.Width * .28, destination.Bottom - 24), brush);
+                DrawText(dc, Millimetres(GeometryPitch(package, 0)), new Point(destination.Left + destination.Width * .30, destination.Bottom + 4), brush);
             if (GeometryLeadWidth(package, 0) > 0)
-                DrawText(dc, $"J = {Millimetres(GeometryLeadWidth(package, 0))}", new Point(destination.Left + destination.Width * .28, destination.Bottom - 8), brush);
+                DrawText(dc, Millimetres(GeometryLeadWidth(package, 0)), new Point(destination.Left + destination.Width * .30, destination.Bottom + 20), brush);
         }
         else if (string.Equals(projectionType, "Side", StringComparison.OrdinalIgnoreCase))
         {
             var height = GeometryBodyHeight(package);
             if (height > 0)
-                DrawText(dc, $"H = {Millimetres(height)}", new Point(destination.Right - 58, destination.Top + destination.Height * .44), brush);
+                DrawText(dc, Millimetres(height), new Point(destination.Right + 4, destination.Top + destination.Height * .44), brush);
         }
     }
 
@@ -377,14 +435,14 @@ public sealed class PackageDrawingPreview : FrameworkElement
             new Rect(cellWidth + gap, cellHeight + gap, cellWidth, cellHeight)
         };
 
-        DrawViewFrame(dc, cells[0], "Вид сверху");
-        DrawViewFrame(dc, cells[1], "Вид сбоку");
+        DrawViewFrame(dc, cells[0], "1  ВИД СВЕРХУ");
+        DrawViewFrame(dc, cells[1], "2  ВИД СБОКУ");
         // The first approved SOT rule is intentionally limited to SOT23.  Keep
         // the topology guard, but tolerate package names coming from legacy
         // rows with incidental whitespace.
         var isSot23 = template.TopologyType == PackageTopologyType.MiniMold
             && string.Equals(package.PackageName?.Trim(), "SOT23", StringComparison.OrdinalIgnoreCase);
-        DrawViewFrame(dc, cells[2], isSot23 ? "Вид с торца" : "Вид снизу");
+        DrawViewFrame(dc, cells[2], isSot23 ? "3  ВИД С ТОРЦА" : "Вид снизу");
         DrawViewFrame(dc, cells[3], $"3D вид ({package.PackageName})");
         var orthographicScale = template.TopologyType == PackageTopologyType.MiniMold
             ? ComputeSotOrthographicScale(package, cells)
@@ -491,6 +549,18 @@ public sealed class PackageDrawingPreview : FrameworkElement
 
     private void DrawThreeDimensionalView(DrawingContext dc, Rect cell, PackageDefinition package, PackageDrawingTemplate template, DrawingScene scene)
     {
+        var localImage = ResolveLocalComponentImage(package);
+        if (localImage is null)
+        {
+            DrawText(dc, "3D-модель из документации производителя отсутствует",
+                new Point(cell.Left + 18, cell.Top + cell.Height / 2), Brushes.Black);
+            return;
+        }
+
+        DrawLocalComponentImage(dc, cell, localImage);
+        return;
+
+        /*
         if (template.TopologyType == PackageTopologyType.MiniMold)
         {
             DrawSotThreeDimensional(dc, cell, package);
@@ -505,10 +575,15 @@ public sealed class PackageDrawingPreview : FrameworkElement
         var depth = Math.Min(area.Height * .22, Math.Max(10, package.Height > 0 ? topHeight * package.Height / bodyWidth * .55 : topHeight * .35));
         var left = area.Left + (area.Width - topWidth) / 2;
         var top = area.Top + (area.Height - topHeight - depth) / 2;
-        var skew = topHeight * .45;
-        var topFace = Parallelogram(new Point(left + skew, top), new Point(left + topWidth, top), new Point(left + topWidth - skew, top + topHeight), new Point(left, top + topHeight));
-        var frontFace = Parallelogram(new Point(left, top + topHeight), new Point(left + topWidth - skew, top + topHeight), new Point(left + topWidth - skew, top + topHeight + depth), new Point(left, top + topHeight + depth));
+        var skew = topHeight * .38;
         var isChip = template.TopologyType == PackageTopologyType.Chip;
+        var capWidth = isChip ? topWidth * .17 : 0;
+        var topFace = isChip
+            ? Parallelogram(new Point(left + skew + capWidth, top), new Point(left + topWidth - capWidth, top), new Point(left + topWidth - skew - capWidth, top + topHeight), new Point(left + capWidth, top + topHeight))
+            : Parallelogram(new Point(left + skew, top), new Point(left + topWidth, top), new Point(left + topWidth - skew, top + topHeight), new Point(left, top + topHeight));
+        var frontFace = isChip
+            ? Parallelogram(new Point(left + capWidth, top + topHeight), new Point(left + topWidth - skew - capWidth, top + topHeight), new Point(left + topWidth - skew - capWidth, top + topHeight + depth), new Point(left + capWidth, top + topHeight + depth))
+            : Parallelogram(new Point(left, top + topHeight), new Point(left + topWidth - skew, top + topHeight), new Point(left + topWidth - skew, top + topHeight + depth), new Point(left, top + topHeight + depth));
         dc.DrawGeometry(isChip ? CeramicBrush() : PackageBodyBrush(), EngineeringOutlinePen(), topFace);
         dc.DrawGeometry(isChip ? CeramicShadowBrush() : PackageBodyShadowBrush(), EngineeringOutlinePen(), frontFace);
         if (isChip)
@@ -517,6 +592,58 @@ public sealed class PackageDrawingPreview : FrameworkElement
             return;
         }
         DrawThreeDimensionalContacts(dc, left, top, topWidth, topHeight, depth, skew, scene, template.TopologyType);
+        */
+    }
+
+    private static string? ResolveLocalComponentImage(PackageDefinition package)
+    {
+        var name = (package.PackageName ?? string.Empty).Trim().ToLowerInvariant();
+        var family = (package.PackageFamily ?? string.Empty).Trim().ToLowerInvariant();
+        var suffix = name.TrimStart('r', 'c', 'l');
+        var key = family switch
+        {
+            "chip" when package.ComponentType.Contains("res", StringComparison.OrdinalIgnoreCase) => $"resistor_{suffix}",
+            "chip" when package.ComponentType.Contains("ind", StringComparison.OrdinalIgnoreCase) => $"inductor_{suffix}",
+            "chip" => $"capacitor_{suffix}",
+            _ => name.Replace("-", "_")
+        };
+        var mapPath = Path.Combine(AppContext.BaseDirectory, "Assets", "components_images.json");
+        if (!File.Exists(mapPath)) return null;
+        try
+        {
+            using var document = JsonDocument.Parse(File.ReadAllText(mapPath));
+            if (!document.RootElement.TryGetProperty(key, out var value)) return null;
+            var relative = value.GetString();
+            if (string.IsNullOrWhiteSpace(relative)) return null;
+            var path = Path.Combine(AppContext.BaseDirectory, relative.Replace('/', Path.DirectorySeparatorChar));
+            return File.Exists(path) ? path : null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private void DrawLocalComponentImage(DrawingContext dc, Rect cell, string path)
+    {
+        try
+        {
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.UriSource = new Uri(path, UriKind.Absolute);
+            image.CacheOption = BitmapCacheOption.OnLoad;
+            image.EndInit();
+            image.Freeze();
+            var area = new Rect(cell.Left + 24, cell.Top + 34, Math.Max(1, cell.Width - 48), Math.Max(1, cell.Height - 62));
+            var scale = Math.Min(area.Width / image.PixelWidth, area.Height / image.PixelHeight) * .82;
+            var size = new Size(image.PixelWidth * scale, image.PixelHeight * scale);
+            var destination = new Rect(area.Left + (area.Width - size.Width) / 2, area.Top + (area.Height - size.Height) / 2, size.Width, size.Height);
+            dc.DrawImage(image, destination);
+        }
+        catch (Exception)
+        {
+            DrawText(dc, "Не удалось загрузить локальную 3D-модель", new Point(cell.Left + 18, cell.Top + cell.Height / 2), Brushes.Black);
+        }
     }
 
     private double ComputeSotOrthographicScale(PackageDefinition package, IReadOnlyList<Rect> cells)
@@ -818,13 +945,13 @@ public sealed class PackageDrawingPreview : FrameworkElement
 
     private void DrawChipThreeDimensionalCaps(DrawingContext dc, double left, double top, double width, double height, double depth, double skew)
     {
-        var capWidth = width * .16;
+        var capWidth = width * .17;
         var leftCap = Parallelogram(new Point(left + skew, top), new Point(left + skew + capWidth, top), new Point(left + capWidth, top + height), new Point(left, top + height));
         var rightCap = Parallelogram(new Point(left + width - capWidth, top), new Point(left + width, top), new Point(left + width - skew, top + height), new Point(left + width - skew - capWidth, top + height));
-        dc.DrawGeometry(MetalBrush(), EngineeringOutlinePen(), leftCap);
-        dc.DrawGeometry(MetalBrush(), EngineeringOutlinePen(), rightCap);
-        dc.DrawRectangle(MetalShadowBrush(), EngineeringOutlinePen(), new Rect(left, top + height, capWidth, depth));
-        dc.DrawRectangle(MetalShadowBrush(), EngineeringOutlinePen(), new Rect(left + width - skew - capWidth, top + height, capWidth, depth));
+        dc.DrawGeometry(ChipCapBrush(), EngineeringOutlinePen(), leftCap);
+        dc.DrawGeometry(ChipCapBrush(), EngineeringOutlinePen(), rightCap);
+        dc.DrawRoundedRectangle(ChipCapShadowBrush(), EngineeringOutlinePen(), new Rect(left, top + height, capWidth, depth), 2, 2);
+        dc.DrawRoundedRectangle(ChipCapShadowBrush(), EngineeringOutlinePen(), new Rect(left + width - skew - capWidth, top + height, capWidth, depth), 2, 2);
     }
 
     private void DrawThreeDimensionalContacts(DrawingContext dc, double left, double top, double width, double height, double depth, double skew, DrawingScene scene, PackageTopologyType topology)
@@ -982,9 +1109,17 @@ public sealed class PackageDrawingPreview : FrameworkElement
     private static Brush PackageBodyBrush() => new SolidColorBrush(Color.FromRgb(92, 105, 116));
     private static Brush PackageBodyTopBrush() => new SolidColorBrush(Color.FromRgb(111, 126, 138));
     private static Brush PackageBodyShadowBrush() => new SolidColorBrush(Color.FromRgb(70, 82, 92));
-    private static Brush CeramicBrush() => new SolidColorBrush(Color.FromRgb(166, 112, 72));
-    private static Brush CeramicShadowBrush() => new SolidColorBrush(Color.FromRgb(126, 79, 50));
+    private static Brush CeramicBrush() => new LinearGradientBrush(
+        Color.FromRgb(124, 126, 116), Color.FromRgb(87, 99, 108),
+        new Point(0, 0), new Point(1, 1));
+    private static Brush CeramicShadowBrush() => new SolidColorBrush(Color.FromRgb(52, 64, 75));
     private static Brush MetalBrush() => new SolidColorBrush(Color.FromRgb(220, 224, 226));
+    private static Brush ChipCapBrush() => new LinearGradientBrush(
+        Color.FromRgb(232, 231, 222), Color.FromRgb(174, 178, 177),
+        new Point(0, 0), new Point(1, 1));
+    private static Brush ChipCapShadowBrush() => new LinearGradientBrush(
+        Color.FromRgb(205, 210, 208), Color.FromRgb(150, 158, 161),
+        new Point(0, 0), new Point(0, 1));
     private static Brush MetalShadowBrush() => new SolidColorBrush(Color.FromRgb(176, 183, 187));
     private static Pen EngineeringOutlinePen(double thickness = .8) => new(Brushes.Black, thickness);
     private static Pen EngineeringDimensionPen() => new(Brushes.Black, .8);

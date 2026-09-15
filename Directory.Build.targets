@@ -1,0 +1,8 @@
+<Project>
+  <Target Name="SyncSot23PackageDrawing" BeforeTargets="Build">
+    <Copy
+      SourceFiles="$(MSBuildThisFileDirectory)..\..\Source\пример чертежа SOT23.png"
+      DestinationFiles="$(MSBuildThisFileDirectory)Vega.StencilUI\Assets\Approved\Sot23-Package-Approved.png"
+      SkipUnchangedFiles="false" />
+  </Target>
+</Project>

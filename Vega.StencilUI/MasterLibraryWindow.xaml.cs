@@ -21,6 +21,12 @@ public partial class MasterLibraryWindow : Window
     private void AddPackage_Click(object sender, RoutedEventArgs e) => OpenEditor(PackageEditorMode.Create, null);
     private void ImportPackages_Click(object sender, RoutedEventArgs e) => new PackageImportWindow { Owner = this }.ShowDialog();
 
+    private void PackagesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.AddedItems.Count == 1 && e.AddedItems[0] is PackageDefinition package && !ReferenceEquals(Vm.SelectedPackage, package))
+            Vm.SelectedPackage = package;
+    }
+
     private void ExportImportTemplate_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new SaveFileDialog { Filter = "Excel workbook|*.xlsx", FileName = "MasterLibrary_Package_Template.xlsx" };

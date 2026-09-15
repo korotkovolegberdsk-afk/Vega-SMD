@@ -475,6 +475,18 @@
                         <TextBox x:Name="PasteReductionTextBox" Height="30"/>
                         <TextBlock Text="Тип апертуры" Margin="0,12,0,0"/>
                         <TextBox x:Name="FootprintApertureTypeTextBox" Height="30"/>
+
+                        <TextBlock Text="Источник Footprint" FontSize="18" FontWeight="Bold" Margin="0,22,0,0"/>
+                        <TextBlock Text="Источник" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintSourceSystemTextBox" Height="30"/>
+                        <TextBlock Text="Ссылка на источник" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintSourceUrlTextBox" Height="30"/>
+                        <TextBlock Text="Точный MPN" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintSourceMpnTextBox" Height="30"/>
+                        <TextBlock Text="Вариант Footprint" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintSourceVariantTextBox" Height="30"/>
+                        <TextBlock Text="Статус проверки" Margin="0,12,0,0"/>
+                        <TextBox x:Name="FootprintVerificationStatusTextBox" Height="30"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

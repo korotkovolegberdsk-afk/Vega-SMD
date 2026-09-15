@@ -67,6 +67,11 @@ public partial class PackageEditorWindow : Window
         ColumnCountTextBox.Text = _viewModel.Footprint.ColumnCount.ToString(CultureInfo.CurrentCulture);
         PasteReductionTextBox.Text = FormatNumber(_viewModel.Footprint.PasteReduction);
         FootprintApertureTypeTextBox.Text = _viewModel.Footprint.ApertureType;
+        FootprintSourceSystemTextBox.Text = _viewModel.Footprint.SourceSystem;
+        FootprintSourceUrlTextBox.Text = _viewModel.Footprint.SourceUrl;
+        FootprintSourceMpnTextBox.Text = _viewModel.Footprint.SourceMpn;
+        FootprintSourceVariantTextBox.Text = _viewModel.Footprint.SourceVariant;
+        FootprintVerificationStatusTextBox.Text = _viewModel.Footprint.VerificationStatus;
     }
 
     private void Save_Click(object sender, RoutedEventArgs e)
@@ -143,6 +148,11 @@ public partial class PackageEditorWindow : Window
         _viewModel.Footprint.ColumnCount = columnCount;
         _viewModel.Footprint.PasteReduction = pasteReduction;
         _viewModel.Footprint.ApertureType = FootprintApertureTypeTextBox.Text.Trim();
+        _viewModel.Footprint.SourceSystem = FootprintSourceSystemTextBox.Text.Trim();
+        _viewModel.Footprint.SourceUrl = FootprintSourceUrlTextBox.Text.Trim();
+        _viewModel.Footprint.SourceMpn = FootprintSourceMpnTextBox.Text.Trim();
+        _viewModel.Footprint.SourceVariant = FootprintSourceVariantTextBox.Text.Trim();
+        _viewModel.Footprint.VerificationStatus = FootprintVerificationStatusTextBox.Text.Trim();
 
         try
         {

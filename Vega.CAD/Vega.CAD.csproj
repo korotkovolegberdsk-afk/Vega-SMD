@@ -2,11 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetCore.OCCTProxy" Version="1.0.5" />
+    <None Include="$(NuGetPackageRoot)dotnetcore.occtproxy\1.0.5\lib\net8.0\OCCTProxy.dll" CopyToOutputDirectory="PreserveNewest" Link="OCCTProxy.dll" />
+    <None Include="$(NuGetPackageRoot)dotnetcore.occtproxy\1.0.5\lib\net8.0\OCCTProxy.dll" CopyToOutputDirectory="PreserveNewest" Link="OpenCascade\x64\OCCTProxy.dll" />
+    <None Include="$(NuGetPackageRoot)dotnetcore.occtproxy\1.0.5\OpenCascade\x64\*.dll" CopyToOutputDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
     <ProjectReference Include="..\Vega.Models\Vega.Models.csproj" />
     <ProjectReference Include="..\Vega.Gerber\Vega.Gerber.csproj" />
   </ItemGroup>

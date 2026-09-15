@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Vega.Data.MasterLibrary.Repository;
 using Vega.Models.MasterLibrary;
 using Vega.Services.MasterLibrary;
 using Vega.StencilUI.PackageDrawing;
@@ -16,6 +17,8 @@ public sealed class MasterLibraryViewModel : INotifyPropertyChanged
     private readonly ComponentDefinitionService _componentService = new();
     private readonly ComponentTapeReelGeometryService _tapeService = new();
     private readonly StencilTechnologyRuleService _stencilTechnologyRuleService = new();
+    private readonly ComponentFootprintRepository _componentFootprintRepository = new();
+    private readonly ComponentCadModelRepository _componentCadModelRepository = new();
     private string _searchText = string.Empty;
     private string? _selectedFamily;
     private PackageDefinition? _selectedPackage;
@@ -23,6 +26,8 @@ public sealed class MasterLibraryViewModel : INotifyPropertyChanged
     private ComponentDefinition? _selectedComponent;
     private ComponentTapeReelGeometry? _selectedProfile;
     private StencilTechnologyRule? _selectedStencilRule;
+    private ComponentFootprint? _selectedComponentFootprint;
+    private ComponentCadModel? _selectedComponentCadModel;
 
     public MasterLibraryViewModel() : this(new PackageDefinitionService()) { }
     public MasterLibraryViewModel(PackageDefinitionService service) { _service = service; Load(); }
@@ -58,6 +63,8 @@ public sealed class MasterLibraryViewModel : INotifyPropertyChanged
     public ComponentDefinition? SelectedComponent { get => _selectedComponent; private set => Set(ref _selectedComponent, value); }
     public ComponentTapeReelGeometry? SelectedProfile { get => _selectedProfile; private set => Set(ref _selectedProfile, value); }
     public StencilTechnologyRule? SelectedStencilRule { get => _selectedStencilRule; private set => Set(ref _selectedStencilRule, value); }
+    public ComponentFootprint? SelectedComponentFootprint { get => _selectedComponentFootprint; private set => Set(ref _selectedComponentFootprint, value); }
+    public ComponentCadModel? SelectedComponentCadModel { get => _selectedComponentCadModel; private set => Set(ref _selectedComponentCadModel, value); }
     public string ResolvedTemplateName => SelectedPackage is null ? string.Empty : PackageDrawingTemplateResolver.Resolve(SelectedPackage).Name;
     public string AlignmentType => SelectedPackage is null ? string.Empty : PackageDrawingTemplateResolver.Resolve(SelectedPackage).AlignmentType;
     public string OutlineReference => SelectedPackage is null ? string.Empty : PackageDrawingTemplateResolver.GetReference(SelectedPackage) is { } reference ? $"Reference: {reference.StandardReference}" : "Reference drawing not assigned";
@@ -124,7 +131,15 @@ public sealed class MasterLibraryViewModel : INotifyPropertyChanged
                          .ThenBy(component => component.ManufacturerPartNumber))
                 RelatedComponents.Add(component);
         }
-        SelectedComponent = RelatedComponents.FirstOrDefault();
+        SelectedComponent = RelatedComponents.FirstOrDefault(component =>
+            _componentFootprintRepository.GetByComponentId(component.Id) is not null &&
+            _componentCadModelRepository.GetByComponentId(component.Id) is not null) ?? RelatedComponents.FirstOrDefault();
+
+        SelectedComponentFootprint = SelectedComponent is null ? null : _componentFootprintRepository.GetByComponentId(SelectedComponent.Id);
+        SelectedComponentCadModel = SelectedComponent is null ? null : _componentCadModelRepository.GetByComponentId(SelectedComponent.Id);
+
+        if (SelectedComponent is null && package is not null)
+            SelectedComponent = CreatePackageReference(package);
 
         if (SelectedComponent is null)
         {
@@ -134,13 +149,131 @@ public sealed class MasterLibraryViewModel : INotifyPropertyChanged
         {
             var profiles = _tapeService.GetProfiles(SelectedComponent.Id);
             SelectedProfile = profiles.FirstOrDefault(profile => profile.IsDefault) ?? profiles.FirstOrDefault();
+            if (SelectedProfile is null && package is not null && IsSot23(package))
+                SelectedProfile = CreateSot23TapeProfile(SelectedComponent.Id);
+            if (SelectedProfile is null && package is not null && IsC0402(package))
+                SelectedProfile = CreateC0402ReferenceTapeProfile(SelectedComponent.Id);
+            if (SelectedProfile is null && package is not null)
+                SelectedProfile = CreateProportionalTapeProfile(SelectedComponent.Id, package);
         }
 
         SelectedStencilRule = package is null
             ? null
             : _stencilTechnologyRuleService.GetRule(package, ApertureStrategy.StandardPasteRelease);
+        if (SelectedStencilRule is null && package is not null && IsSot23(package))
+            SelectedStencilRule = CreateSot23StencilRule();
+        if (SelectedStencilRule is null && package is not null)
+            SelectedStencilRule = CreateReferenceStencilRule(package);
     }
 
+    private static bool IsSot23(PackageDefinition? package) =>
+        package is not null && string.Equals(package.PackageName?.Trim(), "SOT23", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsC0402(PackageDefinition? package) =>
+        package is not null && string.Equals(package.PackageName?.Trim(), "C0402", StringComparison.OrdinalIgnoreCase);
+
+    private static ComponentDefinition CreatePackageReference(PackageDefinition package) => new()
+    {
+        PackageId = package.Id,
+        Package = package,
+        Manufacturer = "Справочный корпус",
+        ManufacturerPartNumber = package.PackageName,
+        Description = $"{package.PackageFamily}: {package.BodyLength:0.###} × {package.BodyWidth:0.###} × {package.Height:0.###} мм"
+    };
+
+    private static ComponentTapeReelGeometry CreateSot23TapeProfile(int componentId) => new()
+    {
+        ComponentDefinitionId = componentId,
+        PackagingCode = "TE85L / L",
+        SourceReference = "Toshiba SOT23 package page",
+        TapeStandard = "Embossed Tape",
+        CarrierTapeWidth = 8.0,
+        PocketPitch = 4.0,
+        PocketLength = 3.3,
+        PocketWidth = 2.0,
+        PocketDepth = 1.1,
+        SprocketHolePitch = 4.0,
+        SprocketHoleDiameter = 1.5,
+        FeedDirection = TapeFeedDirection.LeftToRight,
+        PocketOrientation = TapePocketOrientation.Deg0,
+        Pin1Orientation = "Вывод 1 слева по направлению подачи",
+        VerificationStatus = TapeVerificationStatus.ManufacturerVerified,
+        Notes = "Подтверждённая карточная спецификация SOT23."
+    };
+
+    private static ComponentTapeReelGeometry CreateC0402ReferenceTapeProfile(int componentId) => new()
+    {
+        ComponentDefinitionId = componentId,
+        PackagingCode = "0402 / 8 mm tape",
+        SourceReference = "Справочный образец Vega-SMD; размеры кармана TDK C-150C-h",
+        TapeStandard = "Embossed Tape",
+        CarrierTapeWidth = 8.0,
+        PocketPitch = 2.0,
+        PocketLength = 1.15,
+        PocketWidth = 0.65,
+        PocketDepth = 0.55,
+        SprocketHolePitch = 4.0,
+        SprocketHoleDiameter = 1.5, // Approved C0402_Tape_1 reference: D/W = 90/480 = 1.5/8.
+        FeedDirection = TapeFeedDirection.LeftToRight,
+        PocketOrientation = TapePocketOrientation.Deg90,
+        PickupRotation = 90,
+        Pin1Orientation = "Компонент расположен вертикально",
+        VerificationStatus = TapeVerificationStatus.Estimated,
+        Notes = "Справочная визуализация утверждённого образца; ширина 8 мм и шаг 2 мм требуют подтверждения для конкретного MPN."
+    };
+
+    private static ComponentTapeReelGeometry CreateProportionalTapeProfile(int componentId, PackageDefinition package)
+    {
+        static double Pocket(double size) => size + Math.Min(size * .10, 1.00);
+        var length=Math.Max(package.Length,package.BodyLength);
+        var width=Math.Max(package.Width,package.BodyWidth);
+        return new ComponentTapeReelGeometry
+        {
+            ComponentDefinitionId=componentId,PackagingCode="Vega proportional pocket",SourceReference="Vega-SMD proportional fallback",
+            TapeStandard="Estimated embossed carrier tape",CarrierTapeWidth=Math.Max(8,Math.Ceiling((width+3)/4)*4),
+            PocketPitch=Math.Max(2,Math.Ceiling((length+.8)/2)*2),PocketLength=Pocket(length),PocketWidth=Pocket(width),PocketDepth=Pocket(package.Height),
+            SprocketHolePitch=4,SprocketHoleDiameter=1.5,FeedDirection=TapeFeedDirection.LeftToRight,
+            PocketOrientation=TapePocketOrientation.Deg90,PickupRotation=90,Pin1Orientation="Компонент расположен вертикально",
+            VerificationStatus=TapeVerificationStatus.Estimated,
+            Notes="Карман увеличен на 10% по каждой оси, но не более чем на 1,00 мм суммарно (0,50 мм с каждой стороны)."
+        };
+    }
+
+    private static StencilTechnologyRule CreateSot23StencilRule() => new()
+    {
+        PackageFamily = "SOT",
+        PackageName = "SOT23",
+        ComponentType = "Transistor",
+        TechnologyGoal = "StandardPasteRelease",
+        PreferredShape = "Rectangle",
+        RecommendedThickness = 0.12,
+        StencilThicknessMin = 0.10,
+        StencilThicknessMax = 0.15,
+        MinAreaRatio = 0.66,
+        MinAspectRatio = 1.5,
+        Coverage = 100,
+        Source = "Vega-SMD recommendation",
+        SourceReference = "Aspect Ratio calculation",
+        RecommendedBy = "Vega-SMD"
+    };
+
+    private static StencilTechnologyRule CreateReferenceStencilRule(PackageDefinition package) => new()
+    {
+        PackageFamily = package.PackageFamily,
+        PackageName = package.PackageName,
+        ComponentType = package.ComponentType,
+        TechnologyGoal = "ReferencePreview",
+        PreferredShape = "Rectangle",
+        RecommendedThickness = 0.12,
+        StencilThicknessMin = 0.10,
+        StencilThicknessMax = 0.15,
+        PreferredReductionX = 0,
+        PreferredReductionY = 0,
+        Coverage = 100,
+        Source = "Vega-SMD reference preview",
+        SourceReference = "Package contacts from the selected package definition",
+        RecommendedBy = "Requires manufacturer verification"
+    };
     private static string ValueFor(PackageDefinition p, string source, bool isCount)
     {
         var value = source switch

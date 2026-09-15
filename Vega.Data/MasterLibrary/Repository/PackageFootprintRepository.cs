@@ -14,7 +14,8 @@ public class PackageFootprintRepository
         """
         SELECT Id, PackageId, PatternName, StandardName, Description,
                PadCount, PadLength, PadWidth, PadPitch, Pin1Offset,
-               RowCount, ColumnCount, PasteReduction, ApertureType
+               RowCount, ColumnCount, PasteReduction, ApertureType,
+               SourceSystem, SourceUrl, SourceMpn, SourceVariant, VerificationStatus
         FROM PackageFootprint
         WHERE PackageId = $packageId;
         """;
@@ -34,13 +35,15 @@ public class PackageFootprintRepository
         (
             PackageId, PatternName, StandardName, Description,
             PadCount, PadLength, PadWidth, PadPitch, Pin1Offset,
-            RowCount, ColumnCount, PasteReduction, ApertureType
+            RowCount, ColumnCount, PasteReduction, ApertureType,
+            SourceSystem, SourceUrl, SourceMpn, SourceVariant, VerificationStatus
         )
         VALUES
         (
             $packageId, $patternName, $standardName, $description,
             $padCount, $padLength, $padWidth, $padPitch, $pin1Offset,
-            $rowCount, $columnCount, $pasteReduction, $apertureType
+            $rowCount, $columnCount, $pasteReduction, $apertureType,
+            $sourceSystem, $sourceUrl, $sourceMpn, $sourceVariant, $verificationStatus
         );
         """;
         AddParameters(command, footprint);
@@ -66,7 +69,12 @@ public class PackageFootprintRepository
             RowCount = $rowCount,
             ColumnCount = $columnCount,
             PasteReduction = $pasteReduction,
-            ApertureType = $apertureType
+            ApertureType = $apertureType,
+            SourceSystem = $sourceSystem,
+            SourceUrl = $sourceUrl,
+            SourceMpn = $sourceMpn,
+            SourceVariant = $sourceVariant,
+            VerificationStatus = $verificationStatus
         WHERE Id = $id;
         """;
         AddParameters(command, footprint);
@@ -89,6 +97,11 @@ public class PackageFootprintRepository
         command.Parameters.AddWithValue("$columnCount", footprint.ColumnCount);
         command.Parameters.AddWithValue("$pasteReduction", footprint.PasteReduction);
         command.Parameters.AddWithValue("$apertureType", footprint.ApertureType);
+        command.Parameters.AddWithValue("$sourceSystem", footprint.SourceSystem);
+        command.Parameters.AddWithValue("$sourceUrl", footprint.SourceUrl);
+        command.Parameters.AddWithValue("$sourceMpn", footprint.SourceMpn);
+        command.Parameters.AddWithValue("$sourceVariant", footprint.SourceVariant);
+        command.Parameters.AddWithValue("$verificationStatus", footprint.VerificationStatus);
     }
 
     private static PackageFootprint Map(SqliteDataReader reader) => new()
@@ -106,6 +119,11 @@ public class PackageFootprintRepository
         RowCount = reader.GetInt32(reader.GetOrdinal("RowCount")),
         ColumnCount = reader.GetInt32(reader.GetOrdinal("ColumnCount")),
         PasteReduction = reader.GetDouble(reader.GetOrdinal("PasteReduction")),
-        ApertureType = reader.GetString(reader.GetOrdinal("ApertureType"))
+        ApertureType = reader.GetString(reader.GetOrdinal("ApertureType")),
+        SourceSystem = reader.GetString(reader.GetOrdinal("SourceSystem")),
+        SourceUrl = reader.GetString(reader.GetOrdinal("SourceUrl")),
+        SourceMpn = reader.GetString(reader.GetOrdinal("SourceMpn")),
+        SourceVariant = reader.GetString(reader.GetOrdinal("SourceVariant")),
+        VerificationStatus = reader.GetString(reader.GetOrdinal("VerificationStatus"))
     };
 }

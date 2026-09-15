@@ -86,7 +86,7 @@
                             <Grid Margin="12">
                                 <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
                                 <TextBlock Text="PACKAGE (DRAWING)" FontWeight="Bold" FontSize="15" />
-                                <Border Grid.Row="1" Margin="0,10,0,0" MinHeight="360" BorderBrush="{DynamicResource GridBorderBrush}" BorderThickness="1"><controls:PackageDrawingPreview Package="{Binding SelectedComponent.Package}" ShowEngineeringViews="True" /></Border>
+                                <Border Grid.Row="1" Margin="0,10,0,0" MinHeight="360" BorderBrush="{DynamicResource GridBorderBrush}" BorderThickness="1"><controls:KiCadModelPreview Package="{Binding SelectedComponent.Package}" /></Border>
                             </Grid>
                         </TabItem>
                         <TabItem Header="3. Land Pattern">

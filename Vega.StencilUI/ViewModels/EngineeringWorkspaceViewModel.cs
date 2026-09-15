@@ -164,8 +164,9 @@ public class EngineeringWorkspaceViewModel : INotifyPropertyChanged
     }
     public void AnalyzeStencil()
     {
-        if (_stencilProjectSession is null) { StatusMessage = "Проект не загружен"; return; }
-        try { Log($"[INFO] Project loaded: {(_stencilProjectSession is not null ? "yes" : "no")}"); var result = _stencilProjectService.Analyze(_stencilProjectSession); ApertureCount = result.ApertureCount; ChangesCount = _workflowProject.CorrectedPaste?.Changes.Count ?? 0; AnalysisResultView = $"Apertures: {ApertureCount}; Warnings: {result.WarningCount}; Changes: {ChangesCount}"; Log($"[INFO] AnalysisContext: Apertures count {ApertureCount}"); Log($"[INFO] Changes count {ChangesCount}"); StatusMessage = "Анализ трафарета выполнен"; LogSessionState("AFTER ANALYZE"); ActionRequested?.Invoke("AnalyzeStencil"); }
+        if (_stencilProjectSession is null) { StatusMessage = "Для анализа трафарета загрузите проект"; return; }
+        var session = _stencilProjectSession;
+        try { Log($"[INFO] Project loaded: {"yes"}"); var result = _stencilProjectService.Analyze(session); ApertureCount = result.ApertureCount; ChangesCount = _workflowProject?.CorrectedPaste?.Changes.Count ?? 0; AnalysisResultView = $"Apertures: {ApertureCount}; Warnings: {result.WarningCount}; Changes: {ChangesCount}"; Log($"[INFO] AnalysisContext: Apertures count {ApertureCount}"); Log($"[INFO] Changes count {ChangesCount}"); StatusMessage = "Анализ трафарета выполнен"; LogSessionState("AFTER ANALYZE"); ActionRequested?.Invoke("AnalyzeStencil"); }
         catch (Exception exception) { StatusMessage = exception.Message; }
     }
 

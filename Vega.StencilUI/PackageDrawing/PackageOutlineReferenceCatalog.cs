@@ -1,4 +1,4 @@
-﻿using Vega.Models.MasterLibrary;
+using Vega.Models.MasterLibrary;
 
 namespace Vega.StencilUI.PackageDrawing;
 
@@ -10,18 +10,22 @@ public static class PackageOutlineReferenceCatalog
         var name = (package.PackageName ?? string.Empty).Trim().ToUpperInvariant();
         var family = (package.PackageFamily ?? string.Empty).Trim().ToUpperInvariant();
 
-        if (name is "C0805" or "R0603") return Ref("CHIP", "IEC 60115 / EIA package outline", "Chip termination component outline", "Rectangular", "Terminations", "E/W", "Two", false, false, false, false, false);
+        if (family == "CHIP") return Ref("CHIP", "IEC 60115 / EIA package outline", "Chip termination component outline", "Rectangular", "Terminations", "E/W", "Two", false, false, false, false, false);
         if (family == "MELF") return Ref("MELF", "IEC 60115 cylindrical MELF outline", "MELF package outline", "Cylindrical", "End caps", "E/W", "Two", false, false, false, false, false);
         if (name == "SOT23") return Ref("SOT23", "JEDEC TO-236AB", "SOT-23 package outline", "Rectangular", "Gull-wing", "N/S", "2+1", false, false, false, false, true);
         if (name == "SOT25") return Ref("SOT25", "JEDEC MO-178", "SOT-23-5 package outline", "Rectangular", "Gull-wing", "N/S", "3+2", false, false, false, false, true);
         if (name == "SOT26") return Ref("SOT26", "JEDEC MO-178", "SOT-23-6 package outline", "Rectangular", "Gull-wing", "N/S", "3+3", false, false, false, false, true);
         if (name == "SOT323") return Ref("SOT323", "JEDEC MO-203 / SC-70", "SOT-323 / SC-70 package outline", "Rectangular", "Gull-wing", "N/S", "2+1", false, false, false, false, true);
+        if (name == "SOT353") return Ref("SOT353", "JEITA SC-88A", "SOT-353 / TSSOP5 package outline", "Rectangular", "Gull-wing", "N/S", "3+2", false, false, false, false, true);
+        if (name == "SOT363") return Ref("SOT363", "JEITA SC-88", "SOT-363 / TSSOP6 package outline", "Rectangular", "Gull-wing", "N/S", "3+3", false, false, false, false, true);
+        if (name == "SOT523") return Ref("SOT523", "SOT523", "SOT523 package outline", "Rectangular", "Gull-wing", "N/S", "2+1", false, false, false, false, true);
         if (name == "SOT89") return Ref("SOT89", "JEDEC TO-243", "SOT-89 package outline", "Rectangular", "Gull-wing", "N/S", "Asymmetric", false, false, false, false, true);
         if (name == "SOT223") return Ref("SOT223", "JEDEC TO-261", "SOT-223 package outline", "Rectangular", "Gull-wing and tab", "N/S", "Lead row + tab", true, false, false, false, true);
         if (name == "SOD123") return Ref("SOD123", "JEDEC DO-219AB", "SOD-123 package outline", "Rectangular", "Terminations", "E/W", "Two", false, false, false, true, false);
         if (name is "SMA" or "SMB" or "SMC") return Ref(name, "JEDEC power diode outline", $"{name} power diode outline", "Rectangular", "Terminations", "E/W", "Two", false, false, false, true, false);
         if (name == "SO08P127W078" || name == "SO08") return Ref("SO8", "JEDEC MS-012", "SOIC-8 package outline", "Rectangular", "Gull-wing", "E/W", "4+4", false, false, false, false, true);
-        if (name == "SSOP80P065W140") return Ref("SSOP8", "Approved seed 018 / package-specific outline", "SSOP-8 package outline", "Rectangular", "Gull-wing", "E/W", "4+4", false, false, false, false, true);
+        if (name == "SSOP08P065W43") return Ref("SSOP8-DCT", "TI DCT package drawing", "SSOP-8 / DCT", "Rectangular", "Gull-wing", "E/W", "4+4", false, false, false, false, true);
+        if (name is "SSOP16P065W78" or "SSOP28P065W78") return Ref("SSOP-DB", "TI DB package drawing", "SSOP / DB", "Rectangular", "Gull-wing", "E/W", name.StartsWith("SSOP16") ? "8+8" : "14+14", false, false, false, false, true);
         if (name == "TSOP28P127W112V2") return Ref("TSOP28", "Approved seed 018 / package-specific outline", "TSOP-28 package outline", "Rectangular", "Gull-wing", "E/W", "14+14", false, false, false, false, true);
         if (name.StartsWith("TSSOP28", StringComparison.Ordinal)) return Ref("TSSOP28", "JEDEC MO-153", "TSSOP-28 package outline", "Rectangular", "Gull-wing", "E/W", "14+14", false, false, false, false, true);
         if (family is "SOP" or "SOIC" or "SSOP" or "TSSOP" or "TSOP" or "MSOP") return Ref("SOP", "Master Library leaded-IC outline", "Two-sided gull-wing IC outline", "Rectangular", "Gull-wing", "E/W", "Two rows", false, false, false, false, true);
@@ -56,4 +60,3 @@ public static class PackageOutlineReferenceCatalog
             Notes = "Vector drawing derived from the assigned package-outline reference; verify revision before production use."
         };
 }
-

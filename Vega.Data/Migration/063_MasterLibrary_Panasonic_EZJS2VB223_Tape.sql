@@ -1,0 +1,3 @@
+-- EZJS2VB223 is documented as paper tape.  Do not borrow the embossed-tape
+-- profile of EZJS2YD472: its geometry is not confirmed for this exact MPN.
+-- No tape row is inserted until Panasonic provides the matching paper-tape data.

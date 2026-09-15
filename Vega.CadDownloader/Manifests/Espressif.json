@@ -1,0 +1,12 @@
+[
+  {
+    "manufacturer": "Espressif",
+    "manufacturerPartNumber": "ESP32-S3-WROOM-1-N8",
+    "sourceUrl": "https://www.espressif.com/sites/default/files/3dmodel/ESP32-S3-WROOM-1%203D%20Model.STEP"
+  },
+  {
+    "manufacturer": "Espressif",
+    "manufacturerPartNumber": "ESP32-S3-WROOM-1-N8",
+    "sourceUrl": "https://raw.githubusercontent.com/espressif/kicad-libraries/main/footprints/Espressif.pretty/ESP32-S3-WROOM-1.kicad_mod"
+  }
+]

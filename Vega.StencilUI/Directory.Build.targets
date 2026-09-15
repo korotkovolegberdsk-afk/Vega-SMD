@@ -1,0 +1,11 @@
+<Project>
+  <ItemGroup>
+    <Compile Remove="Controls\Sot23ApprovedApertureOverlay.cs" />
+    <Compile Remove="Controls\Sot23ApprovedApertureOverlayFixed.cs" />
+    <Compile Remove="Controls\Sot23ApertureDuplicateLayerFix.cs" />
+    <Compile Remove="Controls\Sot23ApertureDuplicateLayerLateFix.cs" />
+    <Compile Remove="Controls\Sot23ApertureGrayOverlayFix.cs" />
+    <Compile Remove="Components\ComponentCard.DrawingHook.cs" />
+    <Compile Remove="Components\ComponentCard.GeneratedPackageDrawing.cs" />
+  </ItemGroup>
+</Project>

@@ -18,6 +18,7 @@
   <Project Path="Vega.EngineeringDashboard/Vega.EngineeringDashboard.csproj" />
   <Project Path="Vega.Localization/Vega.Localization.csproj" />
   <Project Path="Vega.Services/Vega.Services.csproj" Id="b8f781e8-f992-48b9-a50b-b874d6fc5fde" />
+  <Project Path="Vega.CadDownloader/Vega.CadDownloader.csproj" />
   <Project Path="Vega.StencilCAM/Vega.StencilCAM.csproj" />
   <Project Path="Vega.StencilInput/Vega.StencilInput.csproj" />
   <Project Path="Vega.StencilViewer/Vega.StencilViewer.csproj" />

@@ -87,7 +87,7 @@ public static class PackageDrawingTemplateResolver
         {
             "CHIP" => PackageTopologyType.Chip,
             "MELF" => PackageTopologyType.Melf,
-            "SOT23" or "SOT25" or "SOT26" or "SOT323" or "SOT89" => PackageTopologyType.MiniMold,
+            "SOT23" or "SOT25" or "SOT26" or "SOT323" or "SOT523" or "SOT89" => PackageTopologyType.MiniMold,
             "SOT223" => PackageTopologyType.Sot223,
             "SOD123" => PackageTopologyType.Sod,
             "SMA" or "SMB" or "SMC" => PackageTopologyType.PowerDiode,

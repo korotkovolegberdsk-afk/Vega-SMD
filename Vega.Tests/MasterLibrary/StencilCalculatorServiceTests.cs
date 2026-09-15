@@ -54,4 +54,14 @@ public class StencilCalculatorServiceTests
         Assert.Throws<ArgumentOutOfRangeException>(
             () => _service.Calculate(1.5, 0.6, 0.12, 100));
     }
+
+    [Fact]
+    public void Calculate_Should_Return_Thickness_Range_Limited_By_Both_Ratios()
+    {
+        var result = _service.Calculate(0.6, 0.7, 0.12, 0, ApertureShape.Rectangle);
+
+        Assert.Equal(0, result.CalculatedMinimumStencilThickness);
+        Assert.Equal(0.244755245, result.CalculatedMaximumStencilThickness, 6);
+        Assert.Contains("0 < t <= 0,245", result.CalculatedThicknessRange);
+    }
 }

@@ -31,7 +31,12 @@ public class PackageFootprintServiceTests : IDisposable
             RowCount = 2,
             ColumnCount = 4,
             PasteReduction = 0.1,
-            ApertureType = "Rounded rectangle"
+            ApertureType = "Rounded rectangle",
+            SourceSystem = "Ultra Librarian",
+            SourceUrl = "https://app.ultralibrarian.com/details/example",
+            SourceMpn = "MLG1005S56NJTD25",
+            SourceVariant = "IND_1005_TDK",
+            VerificationStatus = "Verified"
         };
 
         _service.AddFootprint(footprint);
@@ -41,6 +46,10 @@ public class PackageFootprintServiceTests : IDisposable
         Assert.Equal("SOIC-8-1.27", savedFootprint!.PatternName);
         Assert.Equal(8, savedFootprint.PadCount);
         Assert.Equal("Rounded rectangle", savedFootprint.ApertureType);
+        Assert.Equal("Ultra Librarian", savedFootprint.SourceSystem);
+        Assert.Equal("MLG1005S56NJTD25", savedFootprint.SourceMpn);
+        Assert.Equal("IND_1005_TDK", savedFootprint.SourceVariant);
+        Assert.Equal("Verified", savedFootprint.VerificationStatus);
 
         savedFootprint.PadWidth = 0.65;
         savedFootprint.PasteReduction = 0.12;

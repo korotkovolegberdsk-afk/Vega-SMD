@@ -24,4 +24,7 @@ public class StencilCalculationResult
     public ApertureShape ApertureShape { get; init; }
     public CalculationStatus CalculationStatus { get; init; }
     public string Recommendation { get; init; } = "";
+    public double CalculatedMinimumStencilThickness { get; init; }
+    public double CalculatedMaximumStencilThickness { get; init; }
+    public string CalculatedThicknessRange { get; init; } = "";
 }

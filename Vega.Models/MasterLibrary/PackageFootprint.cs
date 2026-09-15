@@ -20,4 +20,10 @@ public class PackageFootprint
 
     public double PasteReduction { get; set; }
     public string ApertureType { get; set; } = "";
+
+    public string SourceSystem { get; set; } = "";
+    public string SourceUrl { get; set; } = "";
+    public string SourceMpn { get; set; } = "";
+    public string SourceVariant { get; set; } = "";
+    public string VerificationStatus { get; set; } = "";
 }

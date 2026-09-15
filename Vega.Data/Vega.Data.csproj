@@ -1,90 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <Folder Include="Context\" />
     <Folder Include="Import\" />
     <Folder Include="Export\" />
     <Folder Include="MasterLibrary\РќРѕРІР°СЏ РїР°РїРєР°\" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Vega.Models\Vega.Models.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <None Update="Migration\001_MasterLibrary.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-
-    <None Update="Migration\002_MasterLibrary_Packages.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-
-    <None Update="Migration\003_MasterLibrary_Components.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-
-    <None Update="Migration\004_MasterLibrary_PackageGeometry.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Migration\005_MasterLibrary_PackageFootprint.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Migration\006_MasterLibrary_StencilRecommendationRules.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Migration\007_MasterLibrary_StencilTechnologyRules.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Migration\009_MasterLibrary_PackageDocuments.sql">
+    <None Include="Migration\*.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Migration\010_MasterLibrary_PackageRecognitionRules.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Migration\011_MasterLibrary_TechnologySources.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Migration\012_MasterLibrary_TechnologyRecommendations.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Migration\014_MasterLibrary_PackageLibrarySchema.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\015_MasterLibrary_PackageFamilies.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\016_MasterLibrary_Seed_CHIP.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\017_MasterLibrary_Seed_Discrete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\018_MasterLibrary_Seed_IC.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\019_MasterLibrary_Seed_CHIP_Complete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\020_MasterLibrary_Seed_Discrete_Complete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\021_MasterLibrary_Seed_IC_Complete.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\022_MasterLibrary_Seed_BGA_CSP.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\023_MasterLibrary_Seed_Special_Passives.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\024_MasterLibrary_PackageTechnologyRules.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\025_MasterLibrary_Verified_SOT23_DPAK_Geometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\026_MasterLibrary_ComponentTapeReelGeometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\027_MasterLibrary_ManufacturerDrawingGeometry.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\028_MasterLibrary_Seed_Infineon_SOT23.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\029_MasterLibrary_VerifiedGeometry_Extensions.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\030_MasterLibrary_Seed_Infineon_SOT23.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\031_MasterLibrary_DrawingPrimitives.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\032_MasterLibrary_Seed_Infineon_SOT23_Primitives.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\033_MasterLibrary_ManufacturerDrawingAssets.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\034_MasterLibrary_Seed_Infineon_SOT23_Asset.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-    <None Update="Migration\035_MasterLibrary_Infineon_SOT23_AssetCrops.sql"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-  </ItemGroup></Project>
-
-
+</Project>

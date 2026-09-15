@@ -1,0 +1,1 @@
+-- Do not create component records from catalogue series names.

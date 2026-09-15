@@ -1,0 +1,5 @@
+-- Candidate rejected during visual validation on 12-Sep-2026.
+-- The downloaded vendor STEP renders as 34.30 x 25.90 x 3.55 mm, which does not
+-- match the 18.00 x 25.50 x 3.10 mm envelope stated for ESP32-S3-WROOM-1-N8.
+-- Keep the downloader manifest and source files for investigation, but never
+-- create a component card from this model.

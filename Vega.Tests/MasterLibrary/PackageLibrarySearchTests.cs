@@ -26,7 +26,7 @@ public sealed class PackageLibrarySearchTests
 
     [Fact]
     public void Geometry_Finds_Qfn_By_Pitch_And_Body()
-        => Assert.Contains(CreateService().FindByGeometry("QFN", 0.50, 5.00, 5.00), item => item.PackageName == "QFN32P050W500");
+        => Assert.Contains(CreateService().FindByGeometry("QFN", 0.50, 5.00, 5.00), item => item.PackageName == "QFN032P050W500");
 
     [Fact]
     public void Geometry_Finds_Bga_By_BallPitch()

@@ -52,6 +52,7 @@
           <DataGrid Grid.Column="1" ItemsSource="{Binding Packages}" SelectedItem="{Binding SelectedPackage}"
                     AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
                     SelectionMode="Single" SelectionUnit="FullRow"
+                    SelectionChanged="PackagesGrid_SelectionChanged"
                     MouseDoubleClick="PackagesGrid_MouseDoubleClick" PreviewKeyDown="PackagesGrid_PreviewKeyDown">
             <DataGrid.RowStyle>
               <Style TargetType="DataGridRow">
@@ -88,6 +89,8 @@
                               Component="{Binding SelectedComponent}"
                               Package="{Binding SelectedPackage}"
                               Geometry="{Binding SelectedGeometry}"
+                              Footprint="{Binding SelectedComponentFootprint}"
+                              CadModel="{Binding SelectedComponentCadModel}"
                               TapeProfile="{Binding SelectedProfile}"
                               StencilRule="{Binding SelectedStencilRule}"
                               RelatedComponents="{Binding RelatedComponents}"/>

@@ -41,6 +41,9 @@ public class StencilCalculatorService
         // Aspect Ratio = минимальный размер апертуры / толщина трафарета.
         var aspectRatio = minimumDimension / stencilThickness;
         var status = GetStatus(areaRatio, aspectRatio);
+        var maximumByAreaRatio = area / (perimeter * 0.66);
+        var maximumByAspectRatio = minimumDimension / 1.5;
+        var maximumThickness = Math.Min(maximumByAreaRatio, maximumByAspectRatio);
 
         return new StencilCalculationResult
         {
@@ -50,7 +53,10 @@ public class StencilCalculatorService
             AspectRatio = aspectRatio,
             ApertureShape = apertureShape,
             CalculationStatus = status,
-            Recommendation = GetRecommendation(status)
+            Recommendation = GetRecommendation(status),
+            CalculatedMinimumStencilThickness = 0,
+            CalculatedMaximumStencilThickness = maximumThickness,
+            CalculatedThicknessRange = $"0 < t <= {maximumThickness:0.###} мм"
         };
     }
 

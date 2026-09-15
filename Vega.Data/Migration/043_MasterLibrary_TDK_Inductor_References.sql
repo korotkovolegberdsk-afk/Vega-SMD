@@ -1,0 +1,2 @@
+-- TDK series names are catalogue navigation data, not manufacturer part numbers.
+-- Exact MPNs are imported only from an identified manufacturer or CAD source.

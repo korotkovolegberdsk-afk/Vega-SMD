@@ -1,5 +1,6 @@
 using Vega.Models.MasterLibrary;
 using Vega.Services.MasterLibrary;
+using Xunit;
 
 namespace Vega.Tests.MasterLibrary;
 

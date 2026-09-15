@@ -1,0 +1,2 @@
+-- Reserved. ESP32-S3-WROOM-1-N8 is outside the current scope: the library is
+-- presently limited to the primary SMD component groups.
